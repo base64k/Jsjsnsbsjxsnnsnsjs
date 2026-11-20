@@ -139,3 +139,11 @@ server `0x01000002`, which no module here serves, and the bind left it
 unbound, so it polls (the IOP at 93% of the time). The patch now binds such a
 server to an empty record and answers calls to it with an error (patch_iop.py),
 so the driver goes on; the next report shows what it does then.
+
+### The bind's answer (CI report, commit 1221c3d)
+
+The trace names the poll: `sceSifBindRpc(client, 0x01000002, 0, ...) -> 0`, and
+the driver prints `Check that ZnaSnd.irx have been loaded...` after each bind
+that answers 0. A bound server answers 1 (the SIF's answer), so the empty
+record now answers 1. The disc is read fine by then: the driver builds its
+file system from the disc's sectors (sceCdRead) before this check.

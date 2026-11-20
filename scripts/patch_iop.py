@@ -142,8 +142,9 @@ Outcome CdStatus(Vm&, Context& c) { return Ret(c, 2); }     // SCECdComplete
 Outcome CdBreak(Vm&, Context& c) { return Ret(c, 1); }      // the break is made
 
 // sceSifBindRpc(client, server, mode): a server the host does not run binds to
-// an empty record, so the module goes on (it polls until a server binds); a
-// call to that record is answered with an error. Each server is logged once.
+// an empty record and answers 1 (bound), so the module goes on - it prints and
+// polls while the bind answers 0; a call to that record is answered with an
+// error. Each server is logged once.
 std::map<u32, bool> PortLoggedBinds;
 
 Outcome SifBindRpc(Vm& vm, Context& c) {
@@ -154,7 +155,7 @@ Outcome SifBindRpc(Vm& vm, Context& c) {
         PortLoggedBinds[server] = true;
         Log("SIF: IOP binds the server " + std::to_string(server) + " (not run by the host: an empty record)");
     }
-    return Ret(c, 0);
+    return Ret(c, 1);                     // bound: the SIF's answer for a server that is there
 }
 
 // sceSifCallRpc(client, procedure, mode, ...): the call to an empty record is answered with an error at once.
