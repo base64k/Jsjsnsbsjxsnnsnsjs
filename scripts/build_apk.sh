@@ -151,7 +151,11 @@ if has host; then
     PC_BUILD="$GAME/build/port/cmake"
     if [ ! -x "$PC_BUILD/_deps/glslang-build/StandAlone/glslang" ]; then
         log "preparing the host's build tools (glslang, SDL's sources)"
-        cmake -S "$ENGINE/host" -B "$PC_BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release >/dev/null
+        # Only glslang is built here (the shaders' compiler) and SDL's sources
+        # are only read (the APK's Java comes from them), so SDL needs no
+        # X11 or Wayland: SDL_UNIX_CONSOLE_BUILD skips the check for them.
+        cmake -S "$ENGINE/host" -B "$PC_BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \
+              -DSDL_UNIX_CONSOLE_BUILD=ON >/dev/null
         cmake --build "$PC_BUILD" --target glslang-standalone -j "$JOBS"
     fi
     [ -d "$PC_BUILD/_deps/sdl3-src" ] || die "SDL's sources are missing ($PC_BUILD/_deps/sdl3-src)"

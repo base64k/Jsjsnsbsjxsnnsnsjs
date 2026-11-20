@@ -25,6 +25,18 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
 > жинау **әлі бір рет тексерілмеген**. Бірінші CI жүрісі — шынайы сынақ. Оның
 > нәтижесінде қандай қадам қажет екені осында көрінеді.
 
+### Не тексерілді (жергілікті, осы сессияда)
+
+| Тексеру | Нәтиже |
+|---|---|
+| Engine-дің өз тесттері (`python -m unittest discover -s engine/tests`) | ✅ 444 өтті |
+| Түйіндік pipeline (синтетикалық ELF-мен): analyze → signatures → lift → dispatch table | ✅ бәрі жұмыс істейді |
+| Порттың CMake конфигурациясы (SDL3 + Vulkan + хост) | ✅ |
+| PC reference build (437 мақсат, `up` орындалады: «Up, version 0.1.0-alpha») | ✅ |
+| ISO-дан программаны шығару, Android/NDK жинауы, APK жинақтауы | ⛔ осында тексерілмеді (диск пен NDK жоқ) |
+| Ойынның өзі | ⛔ әлі бір кадр да көрінген жоқ |
+
+
 ---
 
 ## Қалай іске қосу керек (GitHub Actions — ең арзан жол)
@@ -168,6 +180,17 @@ the `engine/` submodule.
 The disc image is not in this repository, so the decompilation and the build
 have **not been exercised yet**. The first CI run is the real test, and its
 output says which step has to come next.
+
+### What has been checked (locally, in this session)
+
+| Check | Result |
+|---|---|
+| The engine's own tests (`python -m unittest discover -s engine/tests`) | 444 pass |
+| The core pipeline on a synthetic ELF: analyze → signatures → lift → dispatch table | works |
+| The port's CMake configure (SDL3 + Vulkan + the host) | works |
+| The PC reference build (437 targets; `up` runs: "Up, version 0.1.0-alpha") | works |
+| Taking the program out of the ISO, the Android/NDK build, the APK packaging | **not checked here** (no disc, no NDK in this sandbox) |
+| The game itself | no frame yet |
 
 ## Running it
 

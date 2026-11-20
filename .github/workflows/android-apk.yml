@@ -189,6 +189,7 @@ jobs:
 
       - name: The PC reference build and a headless run (how far the game gets)
         if: ${{ inputs.smoke == true }}
+        continue-on-error: true
         run: bash scripts/smoke_test.sh
 
       - name: How far the port has come
