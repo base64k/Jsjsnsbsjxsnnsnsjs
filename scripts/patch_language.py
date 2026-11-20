@@ -139,6 +139,33 @@ def main():
         waitingFor = null;
         synchronized (picking) {
 """),
+           ("""    /* Called by the native side, on its own thread: the disc image as a path
+""", """    /* The app's own words about the stop, in the player's language (the
+       native side's, when the game stops). */
+    public String stoppedText(String log) {
+        return Strings.get(this, "stopped", log);
+    }
+
+    /* Whether this phone's Vulkan is new enough (1.1): the port needs it.
+       The check is the system's own answer, not a list of makers - Adreno,
+       Mali and the rest are all the same to it. */
+    private boolean vulkanNewEnough() {
+        try {
+            android.content.pm.FeatureInfo info = getPackageManager()
+                .getSystemFeature(PackageManager.FEATURE_VULKAN_HARDWARE_VERSION);
+            return info != null && info.version >= 0x00401000;
+        } catch (RuntimeException e) {
+            return true;               // (not known: the native side says it better)
+        }
+    }
+
+    /* Called by the native side, on its own thread: the disc image as a path
+"""),
+           ("""        if (mLayout == null) return;      // SDL refused to start (its own message shown)
+""", """        if (mLayout == null) return;      // SDL refused to start (its own message shown)
+        if (!vulkanNewEnough())
+            Toast.makeText(this, Strings.get(this, "vulkan_needed"), Toast.LENGTH_LONG).show();
+"""),
            ("""    private TouchControls touch;
 """, """    private TouchControls touch;
     /* The game's name, while its dialog waits for the player (the language
@@ -146,6 +173,57 @@ def main():
     private String waitingFor;
 """)],
           "the activity's own words")
+
+    patch(os.path.join(ENGINE, "host", "src", "main.cpp"),
+          [("""    env->DeleteLocalRef(type);
+    env->DeleteLocalRef(activity);
+    return path;
+}
+#elif defined(_WIN32)
+""", """    env->DeleteLocalRef(type);
+    env->DeleteLocalRef(activity);
+    return path;
+}
+
+/* The app's own words about the stop, in the player's language (the
+   activity's Strings: the log's name is put in). */
+std::string AppText(const std::string& log) {
+    const std::string fallback = "The game stopped because of an error. What happened is in " +
+                                 log + ", beside the game.";
+    JNIEnv* env = static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
+    jobject activity = static_cast<jobject>(SDL_GetAndroidActivity());
+    if (!env || !activity) return fallback;
+    jclass type = env->GetObjectClass(activity);
+    jmethodID method = env->GetMethodID(type, "stoppedText", "(Ljava/lang/String;)Ljava/lang/String;");
+    std::string text;
+    if (method) {
+        jstring name = env->NewStringUTF(log.c_str());
+        auto answer = static_cast<jstring>(env->CallObjectMethod(activity, method, name));
+        if (env->ExceptionCheck()) env->ExceptionClear();
+        if (answer) {
+            const char* chars = env->GetStringUTFChars(answer, nullptr);
+            text = chars ? chars : "";
+            env->ReleaseStringUTFChars(answer, chars);
+            env->DeleteLocalRef(answer);
+        }
+        env->DeleteLocalRef(name);
+    }
+    env->DeleteLocalRef(type);
+    env->DeleteLocalRef(activity);
+    return text.empty() ? fallback : text;
+}
+#elif defined(_WIN32)
+"""),
+           ("""        const std::string text = "The game stopped because of an error. What happened is in " +
+                                 g_log + ", beside the game.";
+""", """#ifdef __ANDROID__
+        const std::string text = AppText(g_log);            // (the app's own words)
+#else
+        const std::string text = "The game stopped because of an error. What happened is in " +
+                                 g_log + ", beside the game.";
+#endif
+""")],
+          "the native side's own words")
 
     patch(CONTROLS,
           [("""        final int bit; final String label; final boolean right; final float fx, fy, fw, fh;

@@ -50,6 +50,12 @@ public final class Strings {
         TEXTS.put("russian", new String[]{"Russian", "Русский"});
         TEXTS.put("no_picker", new String[]{"No file picker on this device.",
             "На этом устройстве нет выбора файлов."});
+        TEXTS.put("stopped", new String[]{
+            "The game stopped because of an error. What happened is in %s, beside the game.",
+            "Игра остановилась из-за ошибки. Что произошло - в %s, рядом с игрой."});
+        TEXTS.put("vulkan_needed", new String[]{
+            "This phone's Vulkan is older than 1.1, which the port needs.",
+            "На этом телефоне Vulkan старее 1.1, а порту нужна версия 1.1 или новее."});
         TEXTS.put("select", new String[]{"SELECT", "ВЫБОР"});
         TEXTS.put("start", new String[]{"START", "СТАРТ"});
     }
