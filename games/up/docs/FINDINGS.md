@@ -46,3 +46,48 @@ code is the point - override as little as possible.
 - The engine was built for Burnout 3 (RenderWare); Up's middleware is
   different, so what the host already provides and what it does not is the
   first thing the `smoke` run's report answers.
+
+### The first run on a phone (the player's own report)
+
+The first APK starts, shows the game's loading screen ("graphics loading")
+and then stops with:
+
+    The game stopped because of an error. What happened is in up.log, beside
+    the game.
+
+`up.log` (in the app's own folder on the phone:
+`Android/data/io.github.base64k.up/files/up.log`) says where:
+
+    stopped: a call to 0x80076000, code copied from 0x00714678 at run time,
+    not translated yet (port.py translates it for the next build)
+    ...
+    discovered: code at 0x80076000 is a copy of 0x00714678
+
+So the game does not stop on anything missing: it stops because the program
+copies a piece of its own code to `0x80076000` (the kernel's address space)
+at run time, and that copy is not in the translated set yet. The engine's own
+loop is the answer: the run writes the copy down (`--discover`), the copy is
+translated, the game is run again. The port's `scripts/smoke_test.sh` does
+that (eight rounds), and the APK's stage builds the dispatch table with
+everything the rounds found.
+
+What the report says about the state of the port at that moment:
+
+| | |
+|---|---|
+| Time to the stop | 2.2 s |
+| Guest functions run | 14 |
+| Kernel services used | `SetupThread`, `SetupHeap`, `CreateSema`, `kCopy`, `FlushCache`, `SetSyscall` and three the engine does not name yet (numbers 91, 131 and `?`) |
+| GS | 0 primitives, 0 pixels - the game has not drawn anything yet |
+| GPU | 1 submission, nothing drawn |
+
+The loading screen the player saw is the PS2's own (drawn by the kernel's
+overlay or by the game's first frame); the report counts no GS primitive, so
+what was on the screen came from the engine's own path, not from the game's
+graphics yet.
+
+The addresses `0x003E5778`, `0x003E5878 SetSyscall`, `0x003E5730 RFU083`,
+`0x003E5D10 MachineType_or_rfu`, `0x003E5D58 GetMemorySize_or_rfu` and
+`0x003DC820 FlushCache` are the PS2 kernel's own (they are in the kernel's
+`0x003E0000` area, not in the game's code) - the EE's boot, before the
+game's own entry point runs.

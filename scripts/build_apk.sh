@@ -9,9 +9,11 @@
 #   scripts/build_apk.sh --stage apk    # only the last stage
 #   scripts/build_apk.sh --jobs 4       # how many processes to work in parallel
 #
-# Stages: disc, extract, analyze, derive, lift, host, apk. Each one is skipped
-# when its result is already there, so a second run only does what is missing
-# (and the CI's cache keeps the slow ones between runs).
+# Stages: disc, extract, analyze, derive, lift, host, lib, apk. Each one is
+# skipped when its result is already there, so a second run only does what is
+# missing (and the CI's cache keeps the slow ones between runs). The library
+# (lib) and the package around it (apk) are apart, so that a run whose code
+# has not changed can take the library from the cache.
 
 set -euo pipefail
 
@@ -22,7 +24,7 @@ GAME="games/up"
 ENGINE="engine"
 ISO="${UP_ISO:-disc/up.iso}"
 JOBS="${UP_JOBS:-$(nproc 2>/dev/null || echo 2)}"
-STAGES="disc extract analyze derive lift host apk"
+STAGES="disc extract analyze derive lift host lib apk"
 ABI="${UP_ABI:-arm64-v8a}"
 
 while [ $# -gt 0 ]; do
@@ -168,12 +170,27 @@ fi
 
 # ------------------------------------------------------------------ 7. the APK ---
 
-if has apk; then
-    log "building the APK ($ABI)"
+# The library (the native code, for the phone) and the package around it.
+# They are two stages, so that a run whose code has not changed can take the
+# library from the cache and only make the package again.
+
+if has lib; then
+    log "building the library ($ABI)"
     # The APK's own permissions: the shared storage, where the player's disc
     # image is kept (the engine's build tree is patched, not the engine).
     python3 scripts/patch_android.py
-    python3 "$ENGINE/tools/android.py" --game "$GAME" apk --abi "$ABI"
+    python3 "$ENGINE/tools/android.py" --game "$GAME" build --abi "$ABI"
+fi
+
+if has apk; then
+    log "the APK ($ABI)"
+    python3 scripts/patch_android.py
+    LIB="games/up/build/port/android-$([ "$ABI" = arm64-v8a ] && echo arm64 || echo "$ABI")/libup.stripped.so"
+    if [ ! -f "$LIB" ]; then
+        log "no library yet ($LIB): building it"
+        python3 "$ENGINE/tools/android.py" --game "$GAME" build --abi "$ABI"
+    fi
+    python3 scripts/package_apk.py "$ABI"
     APK="$(find "$GAME/build/android" -name '*.apk' | head -1)"
     [ -n "$APK" ] || die "no APK was built"
     mkdir -p build

@@ -40,6 +40,15 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
 | CI: шынайы ойын кодын C++-қа айналдыру және `arm64-v8a` APK жинау | ✅ өтті (36 МБ APK) |
 | Ойынның өзі (бірінші кадр) | ⛔ әлі жоқ — `smoke` жүрісінің хаты келесі қадамды көрсетеді |
 
+### Телефондағы бірінші жүріс
+
+APK іске қосылып, ойынның жүктелу экранын көрсетеді де, мына хатымен
+тоқтайды: «The game stopped because of an error. What happened is in up.log».
+Демек ойын өзінің кодын жүріс кезінде `0x80076000`-ге көшіріп, ол көшірме
+әлі аударылған жинаққа қосылмаған. Себебі тек осында. `smoke` жүрісі оны
+тауып, аударып, ойынды қайта іске қосады; APK-ның кезеңі dispatch table-ды
+жүрістер тапқан кодпен жинайды. Толық жазу: `games/up/docs/FINDINGS.md`.
+
 
 ---
 
@@ -65,7 +74,7 @@ Workflow-дың кіру параметрлері (`workflow_dispatch`):
 
 | Параметр | Не істейді |
 |---|---|
-| `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host apk` |
+| `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host lib apk` |
 | `abi` | `arm64-v8a` (телефон) немесе `x86_64` (эмулятор) |
 | `cache` | диск образын және декомпиляция нәтижесін кэшта сақтау (әдепкі: қосулы) |
 | `smoke` | PC reference build + headless жүріс (ойын қаншалықты ашылады); push-та әдепкі ол қосулы |
@@ -73,7 +82,9 @@ Workflow-дың кіру параметрлері (`workflow_dispatch`):
 
 **Экономия:** бір job, матрица жоқ, кэш бар жерде қарымды кезеңдер өткізіледі,
 жаңа push ағымдағы жүрісті тоқтатады (`concurrency`), әр жүріс 300 минутпен
-шектелген.
+шектелген. Кэште: диск образы, декомпиляция нәтижесі, хосттың құралдары,
+кілт (бірдей болса, жаңа APK ескесінің үстіне орнатылады) және **library**
+(`lib`) — код өзгермеген жүріс оны қайта жинамай-ақ, тек APK-ны қайта жинайды.
 
 ### Диск образы
 
@@ -204,6 +215,15 @@ Android, а не эмулятор: код EE переписывается в C++
 | CI: декомпиляция настоящей игры и сборка APK для `arm64-v8a` | проходит (APK 36 МБ) |
 | Сама игра (первый кадр) | ещё нет — отчёт smoke-запуска укажет следующий шаг |
 
+### Первый запуск на телефоне
+
+APK запускается, показывает экран загрузки игры и останавливается с
+сообщением: «The game stopped because of an error. What happened is in
+up.log». То есть игра сама копирует свой код в `0x80076000` во время
+запуска, а эта копия ещё не переведена. Причина только в этом. Smoke-запуск
+находит её, переводит и запускает игру снова, а этап APK собирает таблицу
+вызовов уже с найденным кодом. Подробно: `games/up/docs/FINDINGS.md`.
+
 ## Как запустить
 
 **GitHub Actions (самый дешёвый способ).** Откройте вкладку Actions в
@@ -219,6 +239,13 @@ Android, а не эмулятор: код EE переписывается в C++
 `cache` (хранить диск и декомпилированный код в кэше раннера),
 `smoke` (PC reference build и запуск без окна; при push он включён по
 умолчанию), `publish` (прикрепить APK к pre-release).
+
+Экономия: один job, без матрицы, медленные этапы пропускаются, если результат
+уже в кэше; новый push отменяет текущий запуск (`concurrency`); каждый запуск
+ограничен 300 минутами. В кэше: образ диска, результат декомпиляции, рабочие
+инструменты хоста, ключ подписи (тот же самый — новый APK ставится поверх
+старого) и **библиотека** (`lib`): если код не менялся, запуск не компилирует
+её заново, а только собирает APK заново.
 
 **Локально:**
 
@@ -299,6 +326,15 @@ packaging all passed.
 | CI: decompiling the real game and building the `arm64-v8a` APK | passes (a 36 MB APK) |
 | The game itself (one frame) | not yet - the smoke run's report names the next step |
 
+### The first run on a phone
+
+The APK starts, shows the game's loading screen and stops with "The game
+stopped because of an error. What happened is in up.log": the game copies a
+piece of its own code to `0x80076000` at run time, and that copy is not in the
+translated set yet. That is the whole reason. The smoke run finds it,
+translates it and runs the game again, and the APK's stage builds the dispatch
+table with what the runs found. The details: `games/up/docs/FINDINGS.md`.
+
 ## Running it
 
 **GitHub Actions (the cheapest way).** Open the repository's Actions tab, run
@@ -314,6 +350,14 @@ Inputs: `stages` (which stages to run), `abi` (`arm64-v8a` or `x86_64`),
 `cache` (keep the disc and the decompiled code in the runner's cache),
 `smoke` (the PC reference build and the headless run; on a push it is on by
 default), `publish` (attach the APK to a prerelease).
+
+Economy: one job, no matrix, the slow stages are skipped when the cache has
+them, a new push cancels the run in flight (`concurrency`), and every run stops
+at its timeout. The cache holds the disc image, the decompiled code, the
+host's build tools, the signing key (the same one every run, so a new APK
+installs over the one the player has) and the **library** (`lib`): a run whose
+code has not changed does not compile it again, it only packages the APK
+again.
 
 **Locally:**
 

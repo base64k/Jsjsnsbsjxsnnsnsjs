@@ -71,6 +71,13 @@ jobs:
       UP_SMOKE: ${{ github.event_name == 'push' && 'true' || (inputs.smoke && 'true' || 'false') }}
       UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host apk' }}
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
+      # The smoke test's rounds: each one translates the code the run found
+      # copied at run time and runs the game again.
+      UP_SMOKE_ROUNDS: '8'
+      UP_SMOKE_SECONDS: '60'
+      # The signing key, in the workspace (the cache keeps it, so that a new
+      # APK installs over the one the player already has).
+      PS2_ANDROID_KEYSTORE: ${{ github.workspace }}/build/keys/ps2port-release.jks
     steps:
       - name: Check out the repository (with the engine)
         uses: actions/checkout@v7
@@ -243,6 +250,28 @@ jobs:
           path: games/up/build/port/cmake
           key: tools-${{ steps.engine.outputs.sha }}
 
+      # The signing key: the same one every run, so that a new APK installs
+      # over the one the player already has.
+      - name: The signing key - the cache
+        if: ${{ env.UP_CACHE == 'true' }}
+        uses: actions/cache@v6
+        with:
+          path: build/keys
+          key: keystore-v1
+
+      # The code the runs found copied at run time (the overlays do): it is
+      # translated, and the game is run again. It is kept under a hash of
+      # what it says, so that each new finding is kept and the same one is
+      # not kept twice.
+      - name: The code found at run time - the cache
+        if: ${{ env.UP_CACHE == 'true' }}
+        uses: actions/cache/restore@v6
+        with:
+          path: games/up/build/port/discovered.txt
+          key: discovered-v1-nothing-yet
+          restore-keys: |
+            discovered-v1-
+
       # The game's program: the disc's own, the analysis of it, the lifted
       # code and the host's build tools. The APK itself is built after the
       # smoke test, so that it has the code the run found in it.
@@ -260,9 +289,36 @@ jobs:
         continue-on-error: true
         run: bash scripts/smoke_test.sh
 
+      # The library: the native code, for the phone. The same code means the
+      # same library, so a run whose code has not changed takes it from here
+      # instead of compiling it again.
+      - name: The code's own hash (what the library is made of)
+        id: inputs
+        run: echo "sha=$(bash scripts/apk_inputs_hash.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: The library from the cache (the code has not changed)
+        id: libcache
+        uses: actions/cache/restore@v6
+        with:
+          path: games/up/build/port/android-arm64/libup.stripped.so
+          key: lib-${{ steps.inputs.outputs.sha }}
+          fail-on-cache-miss: true
+
+      - name: The library (the native code, for the phone)
+        if: steps.libcache.outputs.cache-hit != 'true'
+        run: bash scripts/build_apk.sh --stage lib --abi "$UP_ABI"
+
+      - name: The library - keep it
+        if: always() && steps.libcache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: games/up/build/port/android-arm64/libup.stripped.so
+          key: lib-${{ steps.inputs.outputs.sha }}
+
       # The APK's stage, when it was asked for. (The check is in the shell:
       # GitHub's expressions have no way to ask whether a word is in a list.)
-      - name: Build the APK
+      - name: The APK
         run: |
           case " $UP_STAGES " in
             *" apk "*) bash scripts/build_apk.sh --stage apk --abi "$UP_ABI" ;;
@@ -279,6 +335,27 @@ jobs:
 
       # The game's own report and the pictures it drew: they are how far the
       # port has come, and the log is not always readable from outside.
+      # The code the runs found: kept under a hash of what it says, so that a
+      # later run starts from it (the next round of the porting work).
+      - name: The code found at run time - its hash
+        id: found
+        if: ${{ always() }}
+        run: |
+          FILE=games/up/build/port/discovered.txt
+          if [ -f "$FILE" ]; then
+            echo "sha=$(sha256sum "$FILE" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: The code found at run time - keep it
+        if: ${{ always() && env.UP_CACHE == 'true' && env.UP_SMOKE == 'true' }}
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: games/up/build/port/discovered.txt
+          key: discovered-v1-${{ steps.found.outputs.sha }}
+
       - name: The smoke test's report and pictures
         if: ${{ always() && env.UP_SMOKE == 'true' }}
         uses: actions/upload-artifact@v7
