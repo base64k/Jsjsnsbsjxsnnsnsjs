@@ -1,1 +1,219 @@
-# Up-android_port
+# Up (PS2) → Android
+
+`Disney/Pixar Up` (PS2, **SLUS-21864 / SLUS_218.64**) — нақты PS2 эмуляторы
+емес, **нативты** Android порты: ойынның EE коды C++-қа айналдырылып,
+ARM64 (arm64-v8a) үшін қайта жиналып, Vulkan арқылы сызылады.
+
+Негізгі құрал — [ps2-port-engine](https://github.com/danielgomesvieira2000/ps2-port-engine)
+(idanielgomesvieira2000, MIT): PS2 программасын тексерілген C++-қа айналдыратын
+toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, диск, дыбыс).
+Ол `engine/` ішіндегі submodule ретінде қосылған.
+
+---
+
+## Қазіргі күйі (шынымен, қысқаша)
+
+| Бөлік | Күйі |
+|---|---|
+| Репозиторийдің құрылымы (`engine/`, `games/up/`, `scripts/`) | ✅ дайын |
+| `ps2-port-engine` (v0.9.0-дан кейінгі commit, Android қолдауы бар) | ✅ submodule-ке қосылған |
+| Ойынның конфигурациясы (`game.json`, иконка, `overrides.cpp`) | ✅ дайын |
+| CI: диск → декомпиляция → APK (`android-apk.yml`) | ✅ жазылған, **бірінші рет іске қосылмаған** |
+| Нақты APK (ойын ойнатылған күйі) | ⛔ әлі жоқ — төмендегі «Не қажет» бөлімін қараңыз |
+
+> Осы сәтте бұл репозиторийде диск образы **жоқ**, сондықтан декомпиляция мен
+> жинау **әлі бір рет тексерілмеген**. Бірінші CI жүрісі — шынайы сынақ. Оның
+> нәтижесінде қандай қадам қажет екені осында көрінеді.
+
+---
+
+## Қалай іске қосу керек (GitHub Actions — ең арзан жол)
+
+Репозиторийде дайын workflow бар: **`.github/workflows/android-apk.yml`**.
+
+1. **Actions → Android APK → Run workflow** (қолмен) немесе `main`ке push.
+2. Workflow өзі:
+   - диск образын сіздің Google Drive файлыңыздан алады (`scripts/fetch_disc.sh`,
+     ~1 ГБ, еште қолмен жүктеу қажет емес);
+   - `SYSTEM.CNF`-тен ойынның программасын (`SLUS_218.64`) алып, ISO-дан шығарады;
+   - `analyze.py` → `signatures.py` → `derive.py` → `lift.py` арқылы ойынның
+     функцияларын C++-қа айналдырып, түпнұсқа кодпен салыстырып тексереді;
+   - `android.py` арқылы `arm64-v8a` кітапханасын жасап, APK-ны жинайды;
+   - APK-ны **артефакт** ретінде береді (жүктеп алып телефонға орнатуға болады).
+
+Workflow-дың кіру параметрлері (`workflow_dispatch`):
+
+| Параметр | Не істейді |
+|---|---|
+| `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host apk` |
+| `abi` | `arm64-v8a` (телефон) немесе `x86_64` (эмулятор) |
+| `cache` | диск образын және декомпиляция нәтижесін кэшта сақтау (әдепкі: қосулы) |
+| `smoke` | PC reference build + headless жүріс (ойын қаншалықты ашылады) |
+| `publish` | APK-ны GitHub release-ке жариялау (prerelease) |
+
+**Экономия:** бір job, матрица жоқ, кэш бар жерде қарымды кезеңдер өткізіледі,
+жаңа push ағымдағы жүрісті тоқтатады (`concurrency`), әр жүріс 300 минутпен
+шектелген.
+
+### Диск образы
+
+Ол сіздің Google Drive файлыңызда:
+`Disney-Pixar Up (USA) (EnFr).zip` (`1LIzZFzNoXUteK5fnJLT1P6vGoIxg1fDA`),
+«кімде болса — оқу» деп ашылған. Workflow `gdown` арқылы сол сілтемеден
+алады және ішінен `.iso`-ды тауып `disc/up.iso` жасайды.
+
+Drive-да «жүктеулер көп» деген қате шықса — файлдың көшірмесін жасап,
+жаңа сілтемені workflow-дың `env:` бөліміне (`UP_DRIVE_FILE_ID`) қою керек.
+
+---
+
+## Жергілікті (өз компьютеріңізде) жинау
+
+CI жоқ болса да, бәрі жергілікті жұмады:
+
+```sh
+git clone --recursive <repo>
+cd Up-android_port
+
+# 1. диск образы (Drive-тан немесе локальді файлдан)
+UP_DISC_FILE=/path/to/up.iso bash scripts/fetch_disc.sh
+
+# 2. бәрі: талдау → декомпиляция → APK
+bash scripts/build_apk.sh
+```
+
+Керек: Python 3.10+, Android SDK + NDK + build-tools 35, JDK 17, CMake, Ninja,
+Pillow, gdown. `UP_JOBS` — параллел процесс саны (декомпиляция көп процесс
+жұмыс істейді).
+
+---
+
+## Репозиторийдің құрылымы
+
+```
+Up-android_port/
+├── engine/                    ps2-port-engine (submodule, 65c46e9)
+├── games/up/                  ойынның каталогы (engine/tools/port.py init жасаған)
+│   ├── game.json              ойынның аты, программасы (SLUS_218.64), Android пакеті
+│   ├── config/functions.csv   порттың жетілуі (функциялардың кестесі)
+│   ├── docs/FINDINGS.md       не табылды, не жасалды
+│   └── port/
+│       ├── CMakeLists.txt     порттың жинауы
+│       ├── overrides.cpp       ойынның функцияларына астын салған хост-код
+│       ├── icon.ico           порттың өз иконкасы (оЙыннан емес, скрипт сызған)
+│       ├── release/README.txt ойыншыға арналған мәтін (APK үшін)
+│       └── runs/              скрипттелген жүрістер (регресс тесттері)
+├── scripts/
+│   ├── fetch_disc.sh          Drive-тан дискты алу
+│   ├── build_apk.sh           барлық кезеңдер (CI да осыны шақырады)
+│   ├── smoke_test.sh          PC build + headless жүріс
+│   └── make_icon.py           иконканы сызу
+└── .github/workflows/android-apk.yml
+```
+
+**Ойынның коды репозиторийге кірмейді.** `lift.py` шығаратын C++ (`games/up/src/`)
+— ойынның меншігі; ол `.gitignore`-де, CI-да қайта тудырылады. Мұрада
+жарияланған кезде де осы ереже сақталады (см. `engine/.claude/skills/ps2-release`).
+
+---
+
+## Қандай мәселелер күтуге болады
+
+`ps2-port-engine` **Burnout 3** үшін жасалған, ал Up — басқа middleware (Zouna/EA
+немесе басқа) пайдаланады. Сондықтан:
+
+- EE-дегі кейбір жүйелік қызмет (syscall) немесе IOP модулі Up-ке тән болуы
+  мүмкін → оларды `engine/host`-та (қажет болса) немесе `games/up/port/overrides.cpp`-те
+  іске асыру керек;
+- VU микрокоды (VU1) болса — оны жазу және AOT жинау керек;
+- `smoke` жүрісінің хаты айтады: ойын қай кезеңде тоқтайды (қай syscall,
+  қай регистр) — ол келесі қадамның картасы.
+
+Сондықтан алғашқы мақсат — **бірінші кадрды көрсету**, әлі толық ойын емес.
+
+---
+
+## Құқықтық жағы
+
+Бұл ресми емес, әуесқан жасалған порт. Ойындың авторлары мен
+таратушыларымен байланыстығы жоқ; «Up» — олардың белгісі. Репозиторийде
+ойынның коды мен активтері **жоқ**: APK ойыншыдан өз диск образын сұрайды
+(бірінші іске қосқанда жүйе файлын таңдау терезесі арқылы) және ойынды
+сол дисктен оқиды. Құқықтық тұрғыдан: engine-дің MIT лицензиясы тек
+құралға қатысты; ойынның коды — ойыншының өзінікі.
+
+---
+
+# Up (PS2) → Android (English)
+
+`Disney/Pixar Up` (PS2, **SLUS-21864 / SLUS_218.64**) as a **native** Android
+port, not an emulator: the game's EE code is recompiled to C++ and built for
+ARM64, drawn with Vulkan.
+
+The tool is [ps2-port-engine](https://github.com/danielgomesvieira2000/ps2-port-engine)
+(MIT): a toolchain that turns a PS2 program into verified C++ plus a native
+host (EE kernel, IOP, SPU2, GS on Vulkan, VUs, disc, audio). It is vendored as
+the `engine/` submodule.
+
+## Where it stands
+
+| Part | State |
+|---|---|
+| Repository layout (`engine/`, `games/up/`, `scripts/`) | done |
+| `ps2-port-engine` pinned (a commit with the Android support) | done |
+| The game's configuration (`game.json`, icon, `overrides.cpp`) | done |
+| CI: disc → decompile → APK (`.github/workflows/android-apk.yml`) | written, **never run yet** |
+| A playable APK | not yet - see below |
+
+The disc image is not in this repository, so the decompilation and the build
+have **not been exercised yet**. The first CI run is the real test, and its
+output says which step has to come next.
+
+## Running it
+
+**GitHub Actions (the cheapest way).** Open the repository's Actions tab, run
+the *Android APK* workflow (or push to `main`). It fetches the disc image from
+your Google Drive file, takes the program out of it (`SLUS_218.64`), decompiles
+and verifies every function against the original machine code, and builds the
+`arm64-v8a` APK. The APK comes out as an artifact.
+
+Inputs: `stages` (which stages to run), `abi` (`arm64-v8a` or `x86_64`),
+`cache` (keep the disc and the decompiled code in the runner's cache),
+`smoke` (also build the PC reference build and run the game headless),
+`publish` (attach the APK to a prerelease).
+
+**Locally:**
+
+```sh
+git clone --recursive <repo> && cd Up-android_port
+UP_DISC_FILE=/path/to/up.iso bash scripts/fetch_disc.sh
+bash scripts/build_apk.sh
+```
+
+Needs Python 3.10+, the Android SDK (NDK, platform, build-tools 35), JDK 17,
+CMake, Ninja, Pillow and gdown.
+
+## The disc image
+
+Your own Drive file, `Disney-Pixar Up (USA) (EnFr).zip`
+(`1LIzZFzNoXUteK5fnJLT1P6vGoIxg1fDA`), shared with anyone who has the link.
+`scripts/fetch_disc.sh` downloads it with `gdown`, unpacks it and leaves the
+image at `disc/up.iso`. If Drive complains that the file is downloaded too
+often, make a copy and put the new file id in the workflow's `env:` block
+(`UP_DRIVE_FILE_ID`).
+
+## What to expect
+
+`ps2-port-engine` was built for *Burnout 3*; *Up* runs on different middleware.
+Some of its kernel services, IOP modules or VU microcode may need work - in
+`engine/host` (if every game needs it) or in `games/up/port/overrides.cpp` (if
+only this game does). The `smoke` run's report says where the game stops, which
+is the map for the next step. The first goal is **one frame on the screen**,
+not the whole game.
+
+## Legal
+
+An unofficial, fan-made port. Not affiliated with, endorsed by or sponsored by
+the game's publisher or developer; the trademark belongs to its owner. The
+repository holds no game code and no assets: the APK asks the player for their
+own disc image on the first run and reads the game from it.
