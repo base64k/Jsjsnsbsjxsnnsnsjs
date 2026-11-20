@@ -276,10 +276,17 @@ jobs:
       # code and the host's build tools. The APK itself is built after the
       # smoke test, so that it has the code the run found in it.
       - name: The game's program (the disc, the analysis, the lifted code)
+        id: stages
         run: |
           STAGES="${UP_STAGES% apk}"
           [ -n "$STAGES" ] || STAGES="disc extract analyze lift host"
           bash scripts/build_apk.sh --stage "$STAGES" --abi "$UP_ABI"
+          # Whether the APK's stage was asked for (the check is in the shell:
+          # GitHub's expressions have no way to ask whether a word is in a list).
+          case " $UP_STAGES " in
+            *" apk "*) echo "apk=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "apk=false" >> "$GITHUB_OUTPUT" ;;
+          esac
 
       # The PC reference build and its headless run: it says how far the game
       # gets, which is the porting work's measure. It fails on its own without
@@ -302,7 +309,6 @@ jobs:
         with:
           path: games/up/build/port/android-arm64/libup.stripped.so
           key: lib-${{ steps.inputs.outputs.sha }}
-          fail-on-cache-miss: true
 
       - name: The library (the native code, for the phone)
         if: steps.libcache.outputs.cache-hit != 'true'
@@ -326,6 +332,7 @@ jobs:
           esac
 
       - name: The APK
+        if: ${{ steps.stages.outputs.apk == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: up-android-${{ inputs.abi || 'arm64-v8a' }}
@@ -333,8 +340,6 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      # The game's own report and the pictures it drew: they are how far the
-      # port has come, and the log is not always readable from outside.
       # The code the runs found: kept under a hash of what it says, so that a
       # later run starts from it (the next round of the porting work).
       - name: The code found at run time - its hash
@@ -356,6 +361,8 @@ jobs:
           path: games/up/build/port/discovered.txt
           key: discovered-v1-${{ steps.found.outputs.sha }}
 
+      # The game's own report and the pictures it drew: they are how far the
+      # port has come, and the log is not always readable from outside.
       - name: The smoke test's report and pictures
         if: ${{ always() && env.UP_SMOKE == 'true' }}
         uses: actions/upload-artifact@v7
