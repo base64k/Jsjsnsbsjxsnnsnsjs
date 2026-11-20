@@ -32,7 +32,11 @@ Getting started
 2. Start it. The first time, the app asks for your disc image: pick the .iso
    with the system's file picker. It is remembered; you can change it in the
    app's settings.
-3. The on-screen controls appear over the picture - a small button shows and
+3. The app also asks for access to the phone's shared storage (the "all files"
+   permission). It is optional: the file picker above works without it, but
+   with it the port can see an image you keep in the Downloads folder or
+   anywhere else on the storage.
+4. The on-screen controls appear over the picture - a small button shows and
    hides them. A controller (a DualShock 2 or an Xbox pad over USB or
    Bluetooth) works too.
 
