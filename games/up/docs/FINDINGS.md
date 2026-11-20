@@ -109,3 +109,14 @@ and its calls (procedures 513, 768, 1797, 1808) were answered with zeros by
 the host, which the game never accepts. The fix is to run the game's own
 modules (`games/up/port/overrides.cpp`: ZNASND.IRX, LIBSD.IRX) in the IOP
 interpreter, so that the server is the game's and answers as the driver does.
+
+### Next stop (CI report, commit a69d5a0)
+
+With only ZNASND.IRX run in the IOP interpreter, the game's own sound server
+`0x01000001` is bound and served (`a module serves RPC 0x01000001`). The run
+then stops at the first IOP library the host lacks:
+`timrman#21 SetOverflowHandler`. The module also imports these, which the host
+lacks: `ioman#4,5,6,8` (open, close, read, lseek: the sound bank read from the
+disc), `sysclib#35` (strtok), `timrman#10` (GetTimerCounter), `cdvdman#28`
+(sceCdStatus) and `cdvdman#39` (sceCdBreak). They belong in the engine's IOP
+library table (`engine/host/src/iop_libs.cpp`), which is outside this port.
