@@ -76,6 +76,9 @@ if [ -d "$HOST_BUILD/_deps/sdl3-src" ]; then
 fi
 
 build_reference() {
+    # The engine's own patches for what the game's IOP modules import (the same
+    # patch the APK's build makes, before it builds).
+    python3 scripts/patch_iop.py >/dev/null || return 1
     mkdir -p "$GAME/build/smoke"
     local log="$GAME/build/smoke/build.log"
     if ! cmake -S "$GAME/port" -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \

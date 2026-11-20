@@ -120,3 +120,13 @@ lacks: `ioman#4,5,6,8` (open, close, read, lseek: the sound bank read from the
 disc), `sysclib#35` (strtok), `timrman#10` (GetTimerCounter), `cdvdman#28`
 (sceCdStatus) and `cdvdman#39` (sceCdBreak). They belong in the engine's IOP
 library table (`engine/host/src/iop_libs.cpp`), which is outside this port.
+
+### The IOP functions the sound driver needs (scripts/patch_iop.py)
+
+The engine's IOP library table is outside this repository, so the functions
+the game's sound driver imports are added to the engine's build tree by
+`scripts/patch_iop.py` (idempotent, like the other patches): ioman open, close,
+read and lseek on the disc; strtok; GetTimerCounter and SetOverflowHandler;
+sceCdStatus and sceCdBreak; and the IOP's sceSifBindRpc and sceSifCallRpc,
+which log the server they are asked for. The next headless run shows where the
+driver stops with them in place.
