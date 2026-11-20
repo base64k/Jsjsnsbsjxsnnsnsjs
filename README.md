@@ -74,15 +74,22 @@ APK-ның өз сөздері (терезелер, хабарламалар, э
    - **PC reference build** жасайды да, ойынды headless іске қосады: хаты
      «ойын қай кезеңде тоқтайды» деп айтады, ал сызған кадрларын
      `up-smoke` артефактына сақтайды;
-   - соңынан `android.py` арқылы `arm64-v8a` кітапханасын жасап, APK-ны жинайды
-     (жүріс кезінде табылған код та APK-да болады);
+   - **APK сұралған жағдайда** (`stages` параметріне `apk` қосу) `android.py`
+     арқылы `arm64-v8a` кітапханасын жасап, APK-ны жинайды (жүріс кезінде
+     табылған код та APK-да болады);
    - APK-ны **артефакт** ретінде береді (жүктеп алып телефонға орнатуға болады).
+
+**APK әзірше өзі құрылмайды.** Порт әлі толық натив емес (ойын өзі толық
+жүктелмейді), сондықты әр жүрісте APK жинау — уақыттың бекірісі. Әзірше
+әдепкі жүріс — диск, талдау, аудару және **headless жүріс** (жүріс кезінде
+табылған кодты аударып, ойынды қайта іске қосады): порттың өзі осыдан
+алға жылжиды. APK керек болғанда `stages` параметріне `apk` қосыңыз.
 
 Workflow-дың кіру параметрлері (`workflow_dispatch`):
 
 | Параметр | Не істейді |
 |---|---|
-| `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host lib apk` |
+| `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host lib apk` (әдепкі: `apk` жоқ) |
 | `abi` | `arm64-v8a` (телефон) немесе `x86_64` (эмулятор) |
 | `cache` | диск образын және декомпиляция нәтижесін кэшта сақтау (әдепкі: қосулы) |
 | `smoke` | PC reference build + headless жүріс (ойын қаншалықты ашылады); push-та әдепкі ол қосулы |
@@ -248,8 +255,14 @@ up.log». То есть игра сама копирует свой код в `0
 программу (`SLUS_218.64`), декомпилирует и сверяет каждую функцию с
 оригинальным машинным кодом, собирает PC reference и запускает игру без
 окна (отчёт говорит, где игра остановилась, а нарисованные кадры кладутся в
-артефакт `up-smoke`), и наконец собирает APK для `arm64-v8a` — уже с кодом,
-найденным во время запуска. APK выходит артефактом.
+артефакт `up-smoke`), и — **если APK запрошен** — собирает APK для `arm64-v8a`
+уже с кодом, найденным во время запуска. APK выходит артефактом.
+
+**Пока APK собирается не автоматически.** Порт ещё не полностью нативный
+(игра ещё не идёт до конца), и собирать APK каждый раз - это потерянное время.
+По умолчанию запуск делает диск, анализ, перевод и **запуск без окна**
+(тот переводит код, найденный во время запуска, и запускает игру снова): так
+двигается сам порт. Когда APK нужен, добавьте `apk` в параметр `stages`.
 
 Параметры: `stages` (какие этапы выполнять), `abi` (`arm64-v8a` или `x86_64`),
 `cache` (хранить диск и декомпилированный код в кэше раннера),
@@ -366,9 +379,16 @@ the *Android APK* workflow (or push to `main`). It fetches the disc image from
 your Google Drive file, takes the program out of it (`SLUS_218.64`), decompiles
 and verifies every function against the original machine code, builds the PC
 reference and runs the game headless (its report says where the game stops,
-and the pictures it drew come out as the `up-smoke` artifact), and finally
-builds the `arm64-v8a` APK - with the code the run found in it. The APK comes
-out as an artifact.
+and the pictures it drew come out as the `up-smoke` artifact), and - **when the
+APK is asked for** - builds the `arm64-v8a` APK, with the code the run found in
+it. The APK comes out as an artifact.
+
+**The APK is not built automatically for now.** The port is not fully native
+yet (the game does not run to the end), and building the APK on every run
+wastes the time the porting work needs. The default run does the disc, the
+analysis, the translation and the **headless run** (which translates the code
+found at run time and runs the game again): that is what moves the port
+forward. When you want an APK, add `apk` to the `stages` input.
 
 Inputs: `stages` (which stages to run), `abi` (`arm64-v8a` or `x86_64`),
 `cache` (keep the disc and the decompiled code in the runner's cache),

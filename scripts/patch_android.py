@@ -54,19 +54,32 @@ JAVA_METHOD = """
 
 
 def patch(path, edits, what):
-    """edits: a list of (anchor, replacement) - the anchor must be there."""
+    """edits: a list of (anchor, replacement, marker).
+
+    The anchor is where the patch goes; the marker is a piece of the
+    replacement that is in the file only when the patch is already made - so
+    that running the script twice does nothing the second time. (The marker
+    is not the whole replacement: another patch may have put something
+    between the two, and then the whole one is not there any more - which
+    would make the patch go in twice.)"""
     if not os.path.isfile(path):
         sys.exit("patch_android: %s is missing (the engine submodule?)" % path)
     with open(path, encoding="utf-8") as handle:
         text = handle.read()
     changed = False
-    for anchor, replacement in edits:
-        if replacement in text:
+    for anchor, replacement, marker in edits:
+        if marker in text:
             continue                      # already patched
         if anchor not in text:
             sys.exit("patch_android: %s: cannot find the place to patch (%s)" % (path, what))
         text = text.replace(anchor, replacement, 1)
         changed = True
+    # The guard: a patch that went in twice would make the same method twice
+    # (the build would not compile). It must be there once.
+    for anchor, replacement, marker in edits:
+        if text.count(marker) != 1:
+            sys.exit("%s: %s: the patch is there %d times (once it must be): %s"
+                     % ("%s", path, text.count(marker), marker))
     if changed:
         with open(path, "w", encoding="utf-8") as handle:
             handle.write(text)
@@ -79,7 +92,7 @@ def main():
     patch(os.path.join(ENGINE, "tools", "android.py"),
           [("""    <uses-permission android:name="android.permission.VIBRATE" />
 """, """    <uses-permission android:name="android.permission.VIBRATE" />
-""" + PERMISSIONS)],
+""" + PERMISSIONS, "MANAGE_EXTERNAL_STORAGE")],
           "the APK's permissions")
 
     patch(os.path.join(ENGINE, "android", "java", "org", "ps2port", "PortActivity.java"),
@@ -88,19 +101,19 @@ def main():
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-"""),
+""", "import android.os.Environment;"),
            ("""    private static final String KEY_TOUCH = "touch_controls";
 """, """    private static final String KEY_TOUCH = "touch_controls";
     private static final String KEY_ALL_FILES = "all_files_asked";
-"""),
+""", "private static final String KEY_ALL_FILES"),
            ("""    private void launchPicker() {
 """, JAVA_METHOD + """
     private void launchPicker() {
-"""),
+""", "private void askForAllFiles()"),
            ("""        tellKeyboard(getResources().getConfiguration());
 """, """        tellKeyboard(getResources().getConfiguration());
         askForAllFiles();
-""")],
+""", "askForAllFiles();")],
           "the activity's request for the shared storage")
     return 0
 

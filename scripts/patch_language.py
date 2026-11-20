@@ -27,19 +27,33 @@ ENGINE_JAVA = os.path.join(ENGINE, "android", "java", "org", "ps2port")
 
 
 def patch(path, edits, what):
-    """edits: a list of (anchor, replacement) - the anchor must be there."""
+    """edits: a list of (anchor, replacement, marker).
+
+    The anchor is where the patch goes; the marker is a piece of the
+    replacement that is in the file only when the patch is already made - so
+    that running the script twice does nothing the second time. (The marker
+    is not the whole replacement: another patch may have put something
+    between the two - the storage's patch puts its own method there - and
+    then the whole one is not there any more, which would make this patch go
+    in twice: the same method twice, and the build would not compile.)"""
     if not os.path.isfile(path):
         sys.exit("patch_language: %s is missing (the engine submodule?)" % path)
     with open(path, encoding="utf-8") as handle:
         text = handle.read()
     changed = False
-    for anchor, replacement in edits:
-        if replacement in text:
+    for anchor, replacement, marker in edits:
+        if marker in text:
             continue                      # already patched
         if anchor not in text:
             sys.exit("patch_language: %s: cannot find the place to patch (%s)" % (path, what))
         text = text.replace(anchor, replacement, 1)
         changed = True
+    # The guard: a patch that went in twice would make the same method twice
+    # (the build would not compile). It must be there once.
+    for anchor, replacement, marker in edits:
+        if text.count(marker) != 1:
+            sys.exit("%s: %s: the patch is there %d times (once it must be): %s"
+                     % ("%s", path, text.count(marker), marker))
     if changed:
         with open(path, "w", encoding="utf-8") as handle:
             handle.write(text)
@@ -77,7 +91,7 @@ def main():
                                                Toast.LENGTH_LONG).show());
 """, """            runOnUiThread(() -> Toast.makeText(this, Strings.get(this, "not_the_disc", gameName),
                                                Toast.LENGTH_LONG).show());
-"""),
+""", "Strings.get(this, \"not_the_disc\", gameName)"),
            ("""                    new AlertDialog.Builder(this)
                         .setTitle(gameName)
                         .setMessage("Choose your own " + gameName + " disc image (.iso) - it stays on your device; "
@@ -87,10 +101,10 @@ def main():
                         .setNegativeButton("Quit", (d, w) -> answer(null))
                         .show();
 """, """                    showDiscDialog(gameName);
-"""),
+""", "showDiscDialog(gameName);"),
            ("""            Toast.makeText(this, "No file picker on this device.", Toast.LENGTH_LONG).show();
 """, """            Toast.makeText(this, Strings.get(this, "no_picker"), Toast.LENGTH_LONG).show();
-"""),
+""", "Strings.get(this, \"no_picker\")"),
            ("""    private void launchPicker() {
 """, """    /* The disc's dialog: the image the player chooses. The language of the
        app's own words is in it too (the third button), and the game is
@@ -132,13 +146,13 @@ def main():
     }
 
     private void launchPicker() {
-"""),
+""", "private void askLanguage()"),
            ("""    private void answer(Uri uri) {
         synchronized (picking) {
 """, """    private void answer(Uri uri) {
         waitingFor = null;
         synchronized (picking) {
-"""),
+""", "waitingFor = null;"),
            ("""    /* Called by the native side, on its own thread: the disc image as a path
 """, """    /* The app's own words about the stop, in the player's language (the
        native side's, when the game stops). */
@@ -160,18 +174,18 @@ def main():
     }
 
     /* Called by the native side, on its own thread: the disc image as a path
-"""),
+""", "public String stoppedText(String log)"),
            ("""        if (mLayout == null) return;      // SDL refused to start (its own message shown)
 """, """        if (mLayout == null) return;      // SDL refused to start (its own message shown)
         if (!vulkanNewEnough())
             Toast.makeText(this, Strings.get(this, "vulkan_needed"), Toast.LENGTH_LONG).show();
-"""),
+""", "if (!vulkanNewEnough())"),
            ("""    private TouchControls touch;
 """, """    private TouchControls touch;
     /* The game's name, while its dialog waits for the player (the language
        is chosen there, and the dialog is made again afterwards). */
     private String waitingFor;
-""")],
+""", "private String waitingFor;")],
           "the activity's own words")
 
     patch(os.path.join(ENGINE, "host", "src", "main.cpp"),
@@ -213,7 +227,7 @@ std::string AppText(const std::string& log) {
     return text.empty() ? fallback : text;
 }
 #elif defined(_WIN32)
-"""),
+""", "std::string AppText(const std::string& log)"),
            ("""        const std::string text = "The game stopped because of an error. What happened is in " +
                                  g_log + ", beside the game.";
 """, """#ifdef __ANDROID__
@@ -222,19 +236,19 @@ std::string AppText(const std::string& log) {
         const std::string text = "The game stopped because of an error. What happened is in " +
                                  g_log + ", beside the game.";
 #endif
-""")],
+""", "AppText(g_log)")],
           "the native side's own words")
 
     patch(CONTROLS,
           [("""        final int bit; final String label; final boolean right; final float fx, fy, fw, fh;
 """, """        final int bit; String label; final boolean right; final float fx, fy, fw, fh;
-"""),
+""", "final int bit; String label;"),
            ("""    public TouchControls(Context context) {
         super(context);
 """, """    public TouchControls(Context context) {
         super(context);
         setLanguage();
-"""),
+""", "        setLanguage();"),
            ("""    public void setListener(Listener listener) { this.listener = listener; }
 """, """    public void setListener(Listener listener) { this.listener = listener; }
 
@@ -246,7 +260,7 @@ std::string AppText(const std::string& log) {
         buttons[9].label = Strings.get(context, "start");
         invalidate();
     }
-""")],
+""", "public void setLanguage()")],
           "the touch controls' words")
     return 0
 

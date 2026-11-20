@@ -19,8 +19,8 @@ on:
   workflow_dispatch:
     inputs:
       stages:
-        description: "Stages to run: disc extract analyze [derive] lift host apk - 'derive' is the slow, readable tier and is not needed for the APK"
-        default: "disc extract analyze lift host apk"
+        description: "Stages to run: disc extract analyze [derive] lift host [lib] [apk] - 'derive' is the slow, readable tier; 'lib' and 'apk' are for the phone's build (ask for them when you want an APK)"
+        default: "disc extract analyze lift host"
         type: string
       abi:
         description: "The ABIs to build (arm64-v8a for phones, x86_64 for the emulator)"
@@ -69,7 +69,7 @@ jobs:
       # The PC reference build and its headless run: on a push it runs too (it
       # is what says how far the game gets), but it can be switched off.
       UP_SMOKE: ${{ github.event_name == 'push' && 'true' || (inputs.smoke && 'true' || 'false') }}
-      UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host apk' }}
+      UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host' }}
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
       # The smoke test's rounds: each one translates the code the run found
       # copied at run time and runs the game again.
@@ -324,24 +324,28 @@ jobs:
 
       # The library: the native code, for the phone. The same code means the
       # same library, so a run whose code has not changed takes it from here
-      # instead of compiling it again.
+      # instead of compiling it again. (Only when the APK was asked for: the
+      # library is for the APK, and half an hour of compiling it for nothing
+      # is half an hour of the porting work lost.)
       - name: The code's own hash (what the library is made of)
         id: inputs
+        if: ${{ steps.stages.outputs.apk == 'true' }}
         run: echo "sha=$(bash scripts/apk_inputs_hash.sh)" >> "$GITHUB_OUTPUT"
 
       - name: The library from the cache (the code has not changed)
         id: libcache
+        if: ${{ steps.stages.outputs.apk == 'true' }}
         uses: actions/cache/restore@v6
         with:
           path: games/up/build/port/android-arm64/libup.stripped.so
           key: lib-${{ steps.inputs.outputs.sha }}
 
       - name: The library (the native code, for the phone)
-        if: steps.libcache.outputs.cache-hit != 'true'
+        if: ${{ steps.stages.outputs.apk == 'true' && steps.libcache.outputs.cache-hit != 'true' }}
         run: bash scripts/build_apk.sh --stage lib --abi "$UP_ABI"
 
       - name: The library - keep it
-        if: always() && steps.libcache.outputs.cache-hit != 'true'
+        if: ${{ always() && steps.stages.outputs.apk == 'true' && steps.libcache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v6
         continue-on-error: true
         with:
@@ -353,10 +357,12 @@ jobs:
       # so a run whose package has not changed takes it from here.
       - name: The package's own hash
         id: package
+        if: ${{ steps.stages.outputs.apk == 'true' }}
         run: echo "sha=$(bash scripts/apk_package_hash.sh)" >> "$GITHUB_OUTPUT"
 
       - name: The APK from the cache (nothing that goes into it has changed)
         id: apkc
+        if: ${{ steps.stages.outputs.apk == 'true' }}
         uses: actions/cache/restore@v6
         with:
           path: build/up-android.apk
@@ -367,7 +373,7 @@ jobs:
       # What it says is kept in a file: the log of a run is not always
       # readable from outside, but this one is.
       - name: The APK
-        if: steps.apkc.outputs.cache-hit != 'true'
+        if: ${{ steps.stages.outputs.apk == 'true' && steps.apkc.outputs.cache-hit != 'true' }}
         run: |
           set -o pipefail
           mkdir -p build/logs
@@ -377,7 +383,7 @@ jobs:
           esac
 
       - name: The APK - keep it
-        if: always() && steps.apkc.outputs.cache-hit != 'true'
+        if: ${{ always() && steps.stages.outputs.apk == 'true' && steps.apkc.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v6
         continue-on-error: true
         with:
