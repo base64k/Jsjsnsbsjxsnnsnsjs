@@ -314,6 +314,22 @@ jobs:
           path: games/up/build/port/cmake
           key: tools-${{ steps.engine.outputs.sha }}
 
+      # The PC reference build: the port's own build of the game, for the
+      # runner's processor. It is the slowest part after the translation, so
+      # it is kept: a run that only translates the code the last run found
+      # takes it from here and builds only what changed.
+      - name: The reference build's own hash
+        id: reference
+        if: ${{ env.UP_SMOKE == 'true' }}
+        run: echo "sha=$(bash scripts/reference_hash.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: The PC reference build - the cache
+        if: ${{ env.UP_SMOKE == 'true' && env.UP_CACHE == 'true' }}
+        uses: actions/cache/restore@v6
+        with:
+          path: games/up/build/linux/up
+          key: reference-${{ steps.reference.outputs.sha }}
+
       # The PC reference build and its headless run: it says how far the game
       # gets, which is the porting work's measure. It fails on its own without
       # stopping the run: the report is worth more than the build.
@@ -321,6 +337,14 @@ jobs:
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: bash scripts/smoke_test.sh
+
+      - name: The PC reference build - keep it
+        if: ${{ always() && env.UP_SMOKE == 'true' && env.UP_CACHE == 'true' }}
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: games/up/build/linux/up
+          key: reference-${{ steps.reference.outputs.sha }}
 
       # The library: the native code, for the phone. The same code means the
       # same library, so a run whose code has not changed takes it from here
