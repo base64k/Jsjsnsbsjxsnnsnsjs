@@ -448,29 +448,24 @@ jobs:
       # The sound driver's own code, disassembled: the report names the call
       # that polls, and the code says what it waits for. (The disc's file
       # comes out of the image with 7-Zip; the MIPS disassembler is binutils'.)
-      # A MIPS disassembler for the sound driver's code (optional: without it
-      # the code is not in the report, and nothing else changes).
-      - name: The MIPS disassembler (optional)
-        if: ${{ always() && env.UP_SMOKE == 'true' }}
-        continue-on-error: true
-        run: sudo apt-get install -y --no-install-recommends binutils-mips-linux-gnu
-
+      # The sound driver's own code, disassembled: the report names the call
+      # that polls, and the code says what it waits for. (The module comes out
+      # of the disc image with 7-Zip; the MIPS disassembler is capstone's.)
       - name: The sound driver's code, disassembled (for the poll)
         if: ${{ always() && env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: |
           mkdir -p build/irx
+          python3 -m venv build/irx/venv
+          build/irx/venv/bin/pip install -q capstone pyelftools
           7z x -y -obuild/irx disc/up.iso 'MODULES/ZNASND.IRX*' >/dev/null 2>&1 || true
           f="$(find build/irx -iname 'ZNASND.IRX*' -type f | head -1)"
           if [ -n "$f" ]; then
-            mips-linux-gnu-objdump -d "$f" > build/irx/disasm.txt 2>&1 || true
+            build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10600 0x10800 > build/irx/disasm.txt 2>&1 || true
           fi
           {
-            echo "objdump: $(command -v mips-linux-gnu-objdump || echo none)"
-            echo "image: $(ls -l disc/up.iso 2>&1 | head -1)"
-            echo "7z list (irx):"; 7z l disc/up.iso 2>&1 | grep -i 'irx' | head -20 || true
-            echo "extracted:"; find build/irx -type f | head -20
-            echo "disasm lines: $(wc -l < build/irx/disasm.txt 2>/dev/null || echo 0)"
+            echo "module: ${f:-none}"
+            echo "lines: $(wc -l < build/irx/disasm.txt 2>/dev/null || echo 0)"
           } > build/irx/diag.txt 2>&1 || true
           cat build/irx/diag.txt || true
 
