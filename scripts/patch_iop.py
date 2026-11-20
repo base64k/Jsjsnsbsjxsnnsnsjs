@@ -141,21 +141,28 @@ Outcome SetOverflowHandler(Vm& vm, Context& c) {
 Outcome CdStatus(Vm&, Context& c) { return Ret(c, 2); }     // SCECdComplete
 Outcome CdBreak(Vm&, Context& c) { return Ret(c, 1); }      // the break is made
 
-// sceSifBindRpc(client, server, mode): the IOP's own call to a server. A server
-// the host does not run is logged; the client is left unbound.
+// sceSifBindRpc(client, server, mode): a server the host does not run binds to
+// an empty record, so the module goes on (it polls until a server binds); a
+// call to that record is answered with an error. Each server is logged once.
+std::map<u32, bool> PortLoggedBinds;
+
 Outcome SifBindRpc(Vm& vm, Context& c) {
     const u32 client = A(vm, c, 0), server = A(vm, c, 1);
-    if (client) vm.Write(client, 0, 4);
-    Log("SIF: IOP binds the server " + std::to_string(server) + " (not run by the host)");
+    const u32 record = vm.Allocate(64);
+    if (client) vm.Write(client, record, 4);
+    if (!PortLoggedBinds[server]) {
+        PortLoggedBinds[server] = true;
+        Log("SIF: IOP binds the server " + std::to_string(server) + " (not run by the host: an empty record)");
+    }
     return Ret(c, 0);
 }
 
-// sceSifCallRpc(client, procedure, mode, ...): with no server bound, an error at once.
+// sceSifCallRpc(client, procedure, mode, ...): the call to an empty record is answered with an error at once.
 Outcome SifCallRpc(Vm& vm, Context& c) {
     const u32 client = A(vm, c, 0), procedure = A(vm, c, 1);
-    const u32 server = client ? vm.Read(client, 4) : 0;
-    Log("SIF: IOP calls procedure " + std::to_string(procedure) + " of server " + std::to_string(server) +
-        " (not run by the host): answered with an error");
+    const u32 record = client ? vm.Read(client, 4) : 0;
+    Log("SIF: IOP calls procedure " + std::to_string(procedure) + " of a server the host does not run: answered with an error");
+    (void)record;
     return Ret(c, u32(-1));
 }
 

@@ -130,3 +130,12 @@ read and lseek on the disc; strtok; GetTimerCounter and SetOverflowHandler;
 sceCdStatus and sceCdBreak; and the IOP's sceSifBindRpc and sceSifCallRpc,
 which log the server they are asked for. The next headless run shows where the
 driver stops with them in place.
+
+### The sound driver's poll (CI report, commit e1380f6)
+
+With the functions in place, the driver runs and prints
+`[IOP] Check that ZnaSnd.irx have been loaded...` over and over: it binds
+server `0x01000002`, which no module here serves, and the bind left it
+unbound, so it polls (the IOP at 93% of the time). The patch now binds such a
+server to an empty record and answers calls to it with an error (patch_iop.py),
+so the driver goes on; the next report shows what it does then.
