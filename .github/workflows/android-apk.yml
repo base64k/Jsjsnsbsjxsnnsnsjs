@@ -64,6 +64,11 @@ jobs:
       cancel-in-progress: true
     env:
       UP_ABI: ${{ inputs.abi || 'arm64-v8a' }}
+      # 'true' unless the run says otherwise: a push has no inputs at all.
+      UP_CACHE: ${{ github.event_name == 'push' && 'true' || (inputs.cache && 'true' || 'false') }}
+      # The PC reference build and its headless run: on a push it runs too (it
+      # is what says how far the game gets), but it can be switched off.
+      UP_SMOKE: ${{ github.event_name == 'push' && 'true' || (inputs.smoke && 'true' || 'false') }}
       UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host apk' }}
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
     steps:
@@ -167,7 +172,7 @@ jobs:
           tail -3 /tmp/sdk.log | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: The compiler for the PC reference build (clang 19 or later)
-        if: ${{ inputs.smoke == true }}
+        if: ${{ env.UP_SMOKE == 'true' }}
         run: |
           if ! clang++ --version 2>/dev/null | grep -qE 'clang version (19|2[0-9])'; then
             wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
@@ -185,7 +190,7 @@ jobs:
       # committed. Cached, so that only the first run pays for it.
       # ------------------------------------------------------------------
       - name: The disc image - the cache
-        if: ${{ inputs.cache != false }}
+        if: ${{ env.UP_CACHE == 'true' }}
         uses: actions/cache@v6
         with:
           path: disc
@@ -205,7 +210,7 @@ jobs:
       # The image is kept right away: a later stage failing must not throw a
       # gigabyte away.
       - name: The disc image - keep it
-        if: ${{ always() && inputs.cache != false }}
+        if: ${{ always() && env.UP_CACHE == 'true' }}
         uses: actions/cache/save@v6
         continue-on-error: true
         with:
@@ -217,7 +222,7 @@ jobs:
       # first run (and a run after the engine changes) pays for it.
       # ------------------------------------------------------------------
       - name: The decompiled code - the cache
-        if: ${{ inputs.cache != false }}
+        if: ${{ env.UP_CACHE == 'true' }}
         uses: actions/cache@v6
         with:
           path: |
@@ -232,19 +237,55 @@ jobs:
       # The host's build tools for the Android build (glslang, SDL's sources):
       # a few minutes of compiling, worth keeping.
       - name: The host's build tools - the cache
-        if: ${{ inputs.cache != false }}
+        if: ${{ env.UP_CACHE == 'true' }}
         uses: actions/cache@v6
         with:
           path: games/up/build/port/cmake
           key: tools-${{ steps.engine.outputs.sha }}
 
-      - name: Build the APK
-        run: bash scripts/build_apk.sh --stage "$UP_STAGES" --abi "$UP_ABI"
+      # The game's program: the disc's own, the analysis of it, the lifted
+      # code and the host's build tools. The APK itself is built after the
+      # smoke test, so that it has the code the run found in it.
+      - name: The game's program (the disc, the analysis, the lifted code)
+        run: |
+          STAGES="${UP_STAGES% apk}"
+          [ -n "$STAGES" ] || STAGES="disc extract analyze lift host"
+          bash scripts/build_apk.sh --stage "$STAGES" --abi "$UP_ABI"
 
+      # The PC reference build and its headless run: it says how far the game
+      # gets, which is the porting work's measure. It fails on its own without
+      # stopping the run: the report is worth more than the build.
       - name: The PC reference build and a headless run (how far the game gets)
-        if: ${{ inputs.smoke == true }}
+        if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: bash scripts/smoke_test.sh
+
+      - name: Build the APK
+        if: ${{ env.UP_STAGES contains 'apk' }}
+        run: bash scripts/build_apk.sh --stage apk --abi "$UP_ABI"
+
+      - name: The APK
+        if: ${{ env.UP_STAGES contains 'apk' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: up-android-${{ inputs.abi || 'arm64-v8a' }}
+          path: build/up-android.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      # The game's own report and the pictures it drew: they are how far the
+      # port has come, and the log is not always readable from outside.
+      - name: The smoke test's report and pictures
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: up-smoke
+          path: |
+            games/up/build/smoke/summary.txt
+            games/up/build/smoke/frames
+            games/up/build/port/report.txt
+          if-no-files-found: ignore
+          retention-days: 30
 
       - name: How far the port has come
         if: always()
@@ -252,6 +293,20 @@ jobs:
           if [ -f games/up/build/functions.json ]; then
             python3 engine/tools/progress.py --game games/up --markdown >> "$GITHUB_STEP_SUMMARY" || true
           fi
+
+      - name: How far the game got
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        run: |
+          {
+            echo
+            echo "### The game's own report"
+            echo
+            if [ -f games/up/build/smoke/summary.txt ]; then
+              cat games/up/build/smoke/summary.txt
+            else
+              echo "the smoke test did not get to write its report"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY" 2>&1
 
       - name: What the machine looked like
         if: always()
@@ -270,14 +325,6 @@ jobs:
             free -g | head -2
             nproc
           } >> "$GITHUB_STEP_SUMMARY" 2>&1
-
-      - name: The APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: up-android-${{ inputs.abi || 'arm64-v8a' }}
-          path: build/up-android.apk
-          if-no-files-found: error
-          retention-days: 30
 
       - name: Publish the release
         if: ${{ inputs.publish == true }}
