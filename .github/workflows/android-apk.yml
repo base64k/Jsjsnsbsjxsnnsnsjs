@@ -56,6 +56,9 @@ jobs:
     name: Build the APK
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    # The release step writes to the repository; the rest only reads.
+    permissions:
+      contents: write
     concurrency:
       group: up-android-apk
       cancel-in-progress: true
@@ -209,8 +212,6 @@ jobs:
 
       - name: Publish the release
         if: ${{ inputs.publish == true }}
-        permissions:
-          contents: write
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
