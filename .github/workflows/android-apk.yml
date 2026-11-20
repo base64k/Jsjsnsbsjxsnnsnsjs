@@ -369,6 +369,7 @@ jobs:
       - name: The APK
         if: steps.apkc.outputs.cache-hit != 'true'
         run: |
+          set -o pipefail
           mkdir -p build/logs
           case " $UP_STAGES " in
             *" apk "*) bash scripts/build_apk.sh --stage apk --abi "$UP_ABI" 2>&1 | tee build/logs/apk.log ;;
