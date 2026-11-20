@@ -68,18 +68,18 @@ jobs:
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
     steps:
       - name: Check out the repository (with the engine)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 1
 
       - name: Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
       - name: The JDK (the APK's dex and its signing)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
@@ -97,26 +97,77 @@ jobs:
       - name: The Python packages (the icon, the Drive download)
         run: python -m pip install --disable-pip-version-check pillow gdown
 
-      - name: The Android SDK, the NDK and the build tools
-        uses: android-actions/setup-android@v3
-
-      - name: Install the NDK, the platform and the build tools
+      # The runner's own Android SDK, with the command line tools put in place
+      # if it has none. Every word of it goes into the job's summary: the log
+      # is not always readable from outside.
+      - name: The Android SDK
         run: |
-          yes | sdkmanager --licenses > /dev/null || true
+          set -o pipefail
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          {
+            echo "### The Android SDK"
+            echo
+            echo "ANDROID_HOME=$SDK"
+            ls -la "$SDK" || true
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          SDKMANAGER=""
+          for candidate in "$SDK/cmdline-tools/latest/bin/sdkmanager" "$SDK"/cmdline-tools/*/bin/sdkmanager; do
+            if [ -x "$candidate" ]; then SDKMANAGER="$candidate"; break; fi
+          done
+          if [ -z "$SDKMANAGER" ]; then
+            echo "no sdkmanager in the runner's SDK - installing the command line tools" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+            mkdir -p "$SDK/cmdline-tools"
+            cd /tmp
+            for build in 13114758 11076708 9477386; do
+              if curl -fsSL -o cmdline-tools.zip \
+                   "https://dl.google.com/android/repository/commandlinetools-linux-${build}_latest.zip"; then
+                break
+              fi
+            done
+            [ -s cmdline-tools.zip ] || { echo "the command line tools could not be downloaded"; exit 1; }
+            unzip -q -o cmdline-tools.zip -d "$SDK/cmdline-tools"
+            rm -rf "$SDK/cmdline-tools/latest"
+            mv "$SDK/cmdline-tools/cmdline-tools" "$SDK/cmdline-tools/latest"
+            SDKMANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          echo "the sdkmanager: $SDKMANAGER"
+          echo "$(dirname "$SDKMANAGER")" >> "$GITHUB_PATH"
+          export PATH="$(dirname "$SDKMANAGER"):$PATH"
+          export ANDROID_HOME="$SDK"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --version 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: The NDK, the platform and the build tools
+        run: |
+          set -o pipefail
+          SDKMANAGER="${ANDROID_HOME:-/usr/local/lib/android/sdk}/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKMANAGER" ] || SDKMANAGER="$(ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}"/cmdline-tools/*/bin/sdkmanager | head -1)"
+          export PATH="$(dirname "$SDKMANAGER"):$PATH"
           # The newest NDK available: its clang honours preserve_none (clang 19
           # and later), which the VU code's calling convention needs.
-          NDK_VERSION="$(sdkmanager --list 2>/dev/null | grep -oE 'ndk;[0-9]+\.[0-9]+\.[0-9]+' | sed 's/^ndk;//' | sort -V | tail -1 || true)"
+          NDK_VERSION="$("$SDKMANAGER" --list 2>/dev/null | grep -oE 'ndk;[0-9]+\.[0-9]+\.[0-9]+' | sed 's/^ndk;//' | sort -V | tail -1 || true)"
           if [ -z "$NDK_VERSION" ]; then
             for version in 28.1.13356709 27.2.12479018 27.0.12077973 26.1.10909125; do
-              if sdkmanager "ndk;$version" > /dev/null 2>&1; then NDK_VERSION="$version"; break; fi
+              if "$SDKMANAGER" "ndk;$version" > /dev/null 2>&1; then NDK_VERSION="$version"; break; fi
             done
           fi
           [ -n "$NDK_VERSION" ] || { echo "no NDK could be installed"; exit 1; }
-          echo "the NDK: $NDK_VERSION"
-          sdkmanager "ndk;$NDK_VERSION"
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          echo "the NDK: $NDK_VERSION" | tee -a "$GITHUB_STEP_SUMMARY"
+          if ! "$SDKMANAGER" "ndk;$NDK_VERSION" > /tmp/ndk.log 2>&1; then
+            { echo "the NDK could not be installed:"; tail -30 /tmp/ndk.log; } | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          tail -3 /tmp/ndk.log | tee -a "$GITHUB_STEP_SUMMARY"
+          if ! "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0" > /tmp/sdk.log 2>&1; then
+            { echo "the platform and the build tools could not be installed:"; tail -30 /tmp/sdk.log; } \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          tail -3 /tmp/sdk.log | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: The compiler for the PC reference build (clang 19 or later)
+        if: ${{ inputs.smoke == true }}
         run: |
           if ! clang++ --version 2>/dev/null | grep -qE 'clang version (19|2[0-9])'; then
             wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
@@ -135,7 +186,7 @@ jobs:
       # ------------------------------------------------------------------
       - name: The disc image - the cache
         if: ${{ inputs.cache != false }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: disc
           key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
@@ -155,7 +206,7 @@ jobs:
       # gigabyte away.
       - name: The disc image - keep it
         if: ${{ always() && inputs.cache != false }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         continue-on-error: true
         with:
           path: disc
@@ -167,7 +218,7 @@ jobs:
       # ------------------------------------------------------------------
       - name: The decompiled code - the cache
         if: ${{ inputs.cache != false }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             games/up/src
@@ -182,7 +233,7 @@ jobs:
       # a few minutes of compiling, worth keeping.
       - name: The host's build tools - the cache
         if: ${{ inputs.cache != false }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: games/up/build/port/cmake
           key: tools-${{ steps.engine.outputs.sha }}
@@ -202,8 +253,26 @@ jobs:
             python3 engine/tools/progress.py --game games/up --markdown >> "$GITHUB_STEP_SUMMARY" || true
           fi
 
+      - name: What the machine looked like
+        if: always()
+        run: |
+          {
+            echo
+            echo "### The machine"
+            echo
+            echo "ANDROID_HOME=${ANDROID_HOME:-unset}"
+            echo "JAVA_HOME=${JAVA_HOME:-unset}"
+            ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}" 2>&1 || true
+            ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}/ndk" 2>&1 || true
+            ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}/build-tools" 2>&1 || true
+            ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}/platforms" 2>&1 || true
+            df -h . | tail -2
+            free -g | head -2
+            nproc
+          } >> "$GITHUB_STEP_SUMMARY" 2>&1
+
       - name: The APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: up-android-${{ inputs.abi || 'arm64-v8a' }}
           path: build/up-android.apk
