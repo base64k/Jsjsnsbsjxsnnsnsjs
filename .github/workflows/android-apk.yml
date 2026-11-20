@@ -105,8 +105,7 @@ jobs:
             libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
             libxss-dev libxfixes-dev libxtst-dev libxinerama-dev libxkbcommon-dev \
             libwayland-dev wayland-protocols libdecor-0-dev libegl-dev libgl-dev \
-            libasound2-dev libpulse-dev libudev-dev libdbus-1-dev xvfb \
-            binutils-mips-linux-gnu
+            libasound2-dev libpulse-dev libudev-dev libdbus-1-dev xvfb
 
       - name: The Python packages (the icon, the Drive download)
         run: python -m pip install --disable-pip-version-check pillow gdown
@@ -449,6 +448,13 @@ jobs:
       # The sound driver's own code, disassembled: the report names the call
       # that polls, and the code says what it waits for. (The disc's file
       # comes out of the image with 7-Zip; the MIPS disassembler is binutils'.)
+      # A MIPS disassembler for the sound driver's code (optional: without it
+      # the code is not in the report, and nothing else changes).
+      - name: The MIPS disassembler (optional)
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: sudo apt-get install -y --no-install-recommends binutils-mips-linux-gnu
+
       - name: The sound driver's code, disassembled (for the poll)
         if: ${{ always() && env.UP_SMOKE == 'true' }}
         continue-on-error: true
