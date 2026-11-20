@@ -76,11 +76,18 @@ if [ -d "$HOST_BUILD/_deps/sdl3-src" ]; then
 fi
 
 build_reference() {
-    cmake -S "$GAME/port" -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \
+    mkdir -p "$GAME/build/smoke"
+    local log="$GAME/build/smoke/build.log"
+    if ! cmake -S "$GAME/port" -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" \
           -DPS2_GENERATED_DIR="$PWD/$GENERATED" -DPS2HOST_AVX2=OFF \
-          ${CACHE_ARGS[@]+"${CACHE_ARGS[@]}"} >/dev/null
-    cmake --build "$BUILD" -j "$JOBS" --target up
+          ${CACHE_ARGS[@]+"${CACHE_ARGS[@]}"} > "$log" 2>&1; then
+        return 1
+    fi
+    if ! cmake --build "$BUILD" -j "$JOBS" --target up >> "$log" 2>&1; then
+        return 1
+    fi
+    return 0
 }
 
 # The game's run: headless, with the pictures it draws.
@@ -107,7 +114,10 @@ for ROUND in $(seq 1 "$ROUNDS"); do
     if ! write_dispatch; then warn "the dispatch table could not be written"; break; fi
 
     log "round $ROUND of $ROUNDS: the PC reference build (clang, $JOBS jobs)"
-    if ! build_reference; then warn "the PC reference build failed"; break; fi
+    if ! build_reference; then
+        warn "the PC reference build failed (the log: $GAME/build/smoke/build.log)"
+        break
+    fi
 
     log "round $ROUND of $ROUNDS: the game, headless, for ${SECONDS_TO_RUN}s"
     run_game
@@ -129,9 +139,11 @@ SUMMARY="$GAME/build/smoke/summary.txt"
     echo
     if [ -f "$REPORT" ]; then
         sed -n '/=== host report ===/,$p' "$REPORT" | head -120
+    elif [ -f "$GAME/build/smoke/build.log" ]; then
+        echo "the game did not run: the build failed. Its log's end:"
+        tail -40 "$GAME/build/smoke/build.log"
     else
-        echo "no host report; the run's log:"
-        tail -60 "$REPORT" 2>/dev/null || true
+        echo "no host report and no build log"
     fi
     echo
     echo "the pictures: $(ls "$GAME/build/smoke/frames" 2>/dev/null | wc -l)"
