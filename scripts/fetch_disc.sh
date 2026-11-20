@@ -76,11 +76,14 @@ log "unpacking $(du -h "$ARCHIVE" | cut -f1)"
 UNPACKED="$DISC_DIR/unpacked"
 rm -rf "$UNPACKED"
 mkdir -p "$UNPACKED"
-case "$ARCHIVE" in
-    *.zip) unzip -q -o "$ARCHIVE" -d "$UNPACKED" ;;
-    *.7z)  7z x -y -o"$UNPACKED" "$ARCHIVE" >/dev/null ;;
-    *.rar) unrar x -o+ "$ARCHIVE" "$UNPACKED/" >/dev/null ;;
-    *)     cp "$ARCHIVE" "$UNPACKED/$IMAGE" ;;
+# What the download is, by its first bytes - not by its name (the name says
+# nothing: the Drive file is called "something.zip" whatever it holds).
+MAGIC="$(head -c 4 "$ARCHIVE" | od -An -tx1 | tr -d ' \n')"
+case "$MAGIC" in
+    504b0304*) unzip -q -o "$ARCHIVE" -d "$UNPACKED" ;;   # a zip
+    377abcaf*) 7z x -y -o"$UNPACKED" "$ARCHIVE" >/dev/null ;;  # a 7z
+    52617221*) unrar x -o+ "$ARCHIVE" "$UNPACKED/" >/dev/null ;;  # a rar
+    *) cp "$ARCHIVE" "$UNPACKED/$IMAGE" ;;   # the image itself
 esac
 
 # ------------------------------------------------------------- find the ISO ---
@@ -103,14 +106,22 @@ else
         log "joining the split image $(basename "$BASE").001 ..."
         cat "$BASE".* > "$DISC_DIR/$IMAGE"
     else
-        # A raw track: the .bin with its .cue (the host reads both).
-        BIN="$(find "$UNPACKED" -maxdepth 3 -type f -iname '*.bin' -size +100M | head -1 || true)"
+        # A raw track: the .cue sheet and the .bin it names.
         CUE="$(find "$UNPACKED" -maxdepth 3 -type f -iname '*.cue' | head -1 || true)"
+        BIN=""
+        if [ -n "$CUE" ]; then
+            BASE="$(basename "$CUE" .cue)"
+            BIN="$(find "$UNPACKED" -maxdepth 3 -type f -iname "$BASE.bin" | head -1 || true)"
+        fi
+        if [ -z "$BIN" ]; then
+            BIN="$(find "$UNPACKED" -maxdepth 3 -type f -iname '*.bin' -size +100M | head -1 || true)"
+        fi
         if [ -n "$BIN" ] && [ -n "$CUE" ]; then
             log "found a raw track: $(basename "$BIN") with $(basename "$CUE")"
-            mv "$BIN" "$DISC_DIR/up.bin"
-            mv "$CUE" "$DISC_DIR/up.cue"
-            rm -rf "$UNPACKED"
+            # Their names stay as they are: the cue sheet names its .bin.
+            mv "$BIN" "$DISC_DIR/"
+            mv "$CUE" "$DISC_DIR/"
+            rm -rf "$UNPACKED" "$ARCHIVE"
             exit 0
         fi
         die "no disc image inside the archive - it holds: $(find "$UNPACKED" -maxdepth 2 -type f | head -5 | tr '\n' ' ')"

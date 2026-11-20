@@ -52,6 +52,11 @@ EXECUTABLE="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["e
 if has disc; then
     bash scripts/fetch_disc.sh
 fi
+# A raw track (a .bin with its .cue) is an image too - the engine reads both.
+if [ ! -f "$ISO" ]; then
+    CUE="$(ls "${UP_DISC_DIR:-disc}"/*.cue 2>/dev/null | head -1 || true)"
+    if [ -n "$CUE" ]; then ISO="$CUE"; fi
+fi
 [ -f "$ISO" ] || die "no disc image at $ISO (run scripts/fetch_disc.sh)"
 
 log "the disc image: $ISO"
