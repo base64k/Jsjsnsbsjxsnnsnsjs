@@ -18,14 +18,16 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
 | Репозиторийдің құрылымы (`engine/`, `games/up/`, `scripts/`) | ✅ дайын |
 | `ps2-port-engine` (v0.9.0-дан кейінгі commit, Android қолдауы бар) | ✅ submodule-ке қосылған |
 | Ойынның конфигурациясы (`game.json`, иконка, `overrides.cpp`) | ✅ дайын |
-| CI: диск → декомпиляция → APK (`android-apk.yml`) | ✅ жазылған, **бірінші рет іске қосылмаған** |
-| Нақты APK (ойын ойнатылған күйі) | ⛔ әлі жоқ — төмендегі «Не қажет» бөлімін қараңыз |
+| CI: диск → декомпиляция → APK (`android-apk.yml`) | ✅ **жүріп шықты**: шынайы диск, декомпиляция, `arm64-v8a` APK |
+| Нақты APK (ойын ойнатылған күйі) | ✅ бар (артефакт, 36 МБ); ойын әлі толық істемейді |
 
-> Осы сәтте бұл репозиторийде диск образы **жоқ**, сондықтан декомпиляция мен
-> жинау **әлі бір рет тексерілмеген**. Бірінші CI жүрісі — шынайы сынақ. Оның
-> нәтижесінде қандай қадам қажет екені осында көрінеді.
+> Бұл репозиторийде диск образы **жоқ** — CI оны жүріс кезінде сіздің Drive
+> файлыңыздан алып, тек өз кэшінде ұстайды. Декомпиляция мен жинау сондықтан
+> тек CI-да тексеріледі. Бірінші толық жүріс (2026-11-20) сәтті аяқталды:
+> Android SDK, NDK, build-tools, **шынайы** диск, талдау, C++-қа айналдыру,
+> ARM64 жинауы және APK — бәрі өтті.
 
-### Не тексерілді (жергілікті, осы сессияда)
+### Не тексерілді
 
 | Тексеру | Нәтиже |
 |---|---|
@@ -33,8 +35,10 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
 | Түйіндік pipeline (синтетикалық ELF-мен): analyze → signatures → lift → dispatch table | ✅ бәрі жұмыс істейді |
 | Порттың CMake конфигурациясы (SDL3 + Vulkan + хост) | ✅ |
 | PC reference build (437 мақсат, `up` орындалады: «Up, version 0.1.0-alpha») | ✅ |
-| ISO-дан программаны шығару, Android/NDK жинауы, APK жинақтауы | ⛔ осында тексерілмеді (диск пен NDK жоқ) |
-| Ойынның өзі | ⛔ әлі бір кадр да көрінген жоқ |
+| CI: Android SDK, NDK, build-tools, платформа (35) | ✅ өтті |
+| CI: шынайы Drive дискін жүктеу, ашу, `SYSTEM.CNF`-тен программаны табу | ✅ өтті |
+| CI: шынайы ойын кодын C++-қа айналдыру және `arm64-v8a` APK жинау | ✅ өтті (36 МБ APK) |
+| Ойынның өзі (бірінші кадр) | ⛔ әлі жоқ — `smoke` жүрісінің хаты келесі қадамды көрсетеді |
 
 
 ---
@@ -48,9 +52,13 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
    - диск образын сіздің Google Drive файлыңыздан алады (`scripts/fetch_disc.sh`,
      ~1 ГБ, еште қолмен жүктеу қажет емес);
    - `SYSTEM.CNF`-тен ойынның программасын (`SLUS_218.64`) алып, ISO-дан шығарады;
-   - `analyze.py` → `signatures.py` → `derive.py` → `lift.py` арқылы ойынның
-     функцияларын C++-қа айналдырып, түпнұсқа кодпен салыстырып тексереді;
-   - `android.py` арқылы `arm64-v8a` кітапханасын жасап, APK-ны жинайды;
+   - `analyze.py` → `signatures.py` → `lift.py` арқылы ойынның функцияларын
+     C++-қа айналдырып, түпнұсқа кодпен салыстырып тексереді;
+   - **PC reference build** жасайды да, ойынды headless іске қосады: хаты
+     «ойын қай кезеңде тоқтайды» деп айтады, ал сызған кадрларын
+     `up-smoke` артефактына сақтайды;
+   - соңынан `android.py` арқылы `arm64-v8a` кітапханасын жасап, APK-ны жинайды
+     (жүріс кезінде табылған код та APK-да болады);
    - APK-ны **артефакт** ретінде береді (жүктеп алып телефонға орнатуға болады).
 
 Workflow-дың кіру параметрлері (`workflow_dispatch`):
@@ -60,7 +68,7 @@ Workflow-дың кіру параметрлері (`workflow_dispatch`):
 | `stages` | қай кезеңдерді орындау: `disc extract analyze derive lift host apk` |
 | `abi` | `arm64-v8a` (телефон) немесе `x86_64` (эмулятор) |
 | `cache` | диск образын және декомпиляция нәтижесін кэшта сақтау (әдепкі: қосулы) |
-| `smoke` | PC reference build + headless жүріс (ойын қаншалықты ашылады) |
+| `smoke` | PC reference build + headless жүріс (ойын қаншалықты ашылады); push-та әдепкі ол қосулы |
 | `publish` | APK-ны GitHub release-ке жариялау (prerelease) |
 
 **Экономия:** бір job, матрица жоқ, кэш бар жерде қарымды кезеңдер өткізіледі,
@@ -174,14 +182,17 @@ the `engine/` submodule.
 | Repository layout (`engine/`, `games/up/`, `scripts/`) | done |
 | `ps2-port-engine` pinned (a commit with the Android support) | done |
 | The game's configuration (`game.json`, icon, `overrides.cpp`) | done |
-| CI: disc → decompile → APK (`.github/workflows/android-apk.yml`) | written, **never run yet** |
-| A playable APK | not yet - see below |
+| CI: disc → decompile → APK (`.github/workflows/android-apk.yml`) | **passed**: the real disc, the decompilation, the `arm64-v8a` APK |
+| A real APK | yes (an artifact, 36 MB); the game itself does not run yet |
 
-The disc image is not in this repository, so the decompilation and the build
-have **not been exercised yet**. The first CI run is the real test, and its
-output says which step has to come next.
+The disc image is not in this repository: the CI fetches it from your Drive
+file at run time and keeps it in its own cache, so the decompilation and the
+build are only ever exercised there. The first complete run (2026-11-20)
+finished successfully: the Android SDK, the NDK, the build tools, the **real**
+disc, the analysis, the translation to C++, the ARM64 build and the APK
+packaging all passed.
 
-### What has been checked (locally, in this session)
+### What has been checked
 
 | Check | Result |
 |---|---|
@@ -189,21 +200,26 @@ output says which step has to come next.
 | The core pipeline on a synthetic ELF: analyze → signatures → lift → dispatch table | works |
 | The port's CMake configure (SDL3 + Vulkan + the host) | works |
 | The PC reference build (437 targets; `up` runs: "Up, version 0.1.0-alpha") | works |
-| Taking the program out of the ISO, the Android/NDK build, the APK packaging | **not checked here** (no disc, no NDK in this sandbox) |
-| The game itself | no frame yet |
+| CI: the Android SDK, the NDK, the platform and the build tools | passes |
+| CI: fetching and unpacking the real Drive disc, and finding the program in it | passes |
+| CI: decompiling the real game and building the `arm64-v8a` APK | passes (a 36 MB APK) |
+| The game itself (one frame) | not yet - the smoke run's report names the next step |
 
 ## Running it
 
 **GitHub Actions (the cheapest way).** Open the repository's Actions tab, run
 the *Android APK* workflow (or push to `main`). It fetches the disc image from
 your Google Drive file, takes the program out of it (`SLUS_218.64`), decompiles
-and verifies every function against the original machine code, and builds the
-`arm64-v8a` APK. The APK comes out as an artifact.
+and verifies every function against the original machine code, builds the PC
+reference and runs the game headless (its report says where the game stops,
+and the pictures it drew come out as the `up-smoke` artifact), and finally
+builds the `arm64-v8a` APK - with the code the run found in it. The APK comes
+out as an artifact.
 
 Inputs: `stages` (which stages to run), `abi` (`arm64-v8a` or `x86_64`),
 `cache` (keep the disc and the decompiled code in the runner's cache),
-`smoke` (also build the PC reference build and run the game headless),
-`publish` (attach the APK to a prerelease).
+`smoke` (the PC reference build and the headless run; on a push it is on by
+default), `publish` (attach the APK to a prerelease).
 
 **Locally:**
 
