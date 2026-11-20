@@ -99,3 +99,13 @@ The addresses `0x003E5778`, `0x003E5878 SetSyscall`, `0x003E5730 RFU083`,
 `0x003DC820 FlushCache` are the PS2 kernel's own (they are in the kernel's
 `0x003E0000` area, not in the game's code) - the EE's boot, before the
 game's own entry point runs.
+
+### The headless run's stop (CI report, commit 1d196a6)
+
+The PC reference run reaches the game's title code and stops in
+`sceSifCallRpc` on a thread that waits forever: the game binds IOP server
+`0x01000001` (not an SDK id: the game's own sound driver's, from ZNASND.IRX)
+and its calls (procedures 513, 768, 1797, 1808) were answered with zeros by
+the host, which the game never accepts. The fix is to run the game's own
+modules (`games/up/port/overrides.cpp`: ZNASND.IRX, LIBSD.IRX) in the IOP
+interpreter, so that the server is the game's and answers as the driver does.
