@@ -103,7 +103,7 @@ run_game() {
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
-            --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
+            --iop-trace --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
             > "$REPORT" 2>&1
     CODE=$?
     set -e

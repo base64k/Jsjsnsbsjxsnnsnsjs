@@ -476,7 +476,16 @@ jobs:
               return t[-tail:] if len(t) > tail else t
           summary = read("games/up/build/smoke/summary.txt", 20000)
           report = read("games/up/build/port/report.txt", 40000)
-          text = "## Summary\n```\n" + summary + "\n```\n## Report (end)\n```\n" + report + "\n```"
+          # The IOP's lines from the start of the run (the trace's): where it begins.
+          lines = pathlib.Path("games/up/build/port/report.txt").read_text(errors="replace").splitlines() if pathlib.Path("games/up/build/port/report.txt").exists() else []
+          picked = [l for l in lines if l.startswith("[iop]") or "[host] IOP" in l or "[host] SIF" in l]
+          seen, first = {}, []
+          for l in picked:
+              if seen.get(l, 0) < 2:
+                  seen[l] = seen.get(l, 0) + 1
+                  first.append(l)
+          text = ("## Summary\n```\n" + summary + "\n```\n## The IOP, from its start (each line at most twice)\n```\n"
+                  + "\n".join(first[:250]) + "\n```\n## Report (end)\n```\n" + report + "\n```")
           text = text[-65000:]
           body = {
               "name": "PC reference run (headless)",

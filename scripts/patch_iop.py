@@ -161,8 +161,12 @@ Outcome SifBindRpc(Vm& vm, Context& c) {
 Outcome SifCallRpc(Vm& vm, Context& c) {
     const u32 client = A(vm, c, 0), procedure = A(vm, c, 1);
     const u32 record = client ? vm.Read(client, 4) : 0;
-    Log("SIF: IOP calls procedure " + std::to_string(procedure) + " of a server the host does not run: answered with an error");
-    (void)record;
+    std::string sent;
+    const u32 send = A(vm, c, 3);
+    for (u32 i = 0; i < 8 && send; ++i) sent += " " + std::to_string(vm.Read(send + 4 * i, 4));
+    Log("SIF: IOP calls procedure " + std::to_string(procedure) + " of a server the host does not run (from " +
+        std::to_string(c.r[31]) + ", record " + std::to_string(record) + ", sends" + sent +
+        "): answered with an error");
     return Ret(c, u32(-1));
 }
 
