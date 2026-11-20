@@ -1,0 +1,13 @@
+{
+  "name": "Up (SLUS-21864)",
+  "title": "Up",
+  "version": "0.1.0-alpha",
+  "iso": "../../disc/up.iso",
+  "executable": "SLUS_218.64",
+  "android_package": "io.github.base64k.up",
+  "android_label": "Up (PS2)",
+  "release": {
+    "github": "base64k/Up-android_port",
+    "name": "Up-Android"
+  }
+}

@@ -1,0 +1,223 @@
+# Up (PS2) - the Android APK
+#
+# The port's build, on a GitHub runner: the player's own disc image is fetched
+# from their Google Drive file, the game's program is taken out of it and
+# decompiled to C++ (the engine's tools), and the result is compiled for
+# Android into an APK.
+#
+# Nothing of the game enters this repository: the disc image is fetched at
+# run time and lives in the runner's cache only, and the decompiled code is
+# regenerated there too (both caches can be switched off in the inputs).
+#
+# Kept cheap on purpose: one job, no matrix, the slow stages are skipped when
+# the cache has them, a new push cancels the run in flight, and the whole
+# thing stops at its timeout.
+
+name: Up (PS2) - Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      stages:
+        description: "Stages to run: disc extract analyze [derive] lift host apk - 'derive' is the slow, readable tier and is not needed for the APK"
+        default: "disc extract analyze lift host apk"
+        type: string
+      abi:
+        description: "The ABIs to build (arm64-v8a for phones, x86_64 for the emulator)"
+        default: "arm64-v8a"
+        type: string
+      cache:
+        description: "Keep the disc image and the decompiled code in the runner's cache (they never enter the repository)"
+        default: true
+        type: boolean
+      smoke:
+        description: "Also build the PC reference build and run the game headless (how far it boots)"
+        default: false
+        type: boolean
+      publish:
+        description: "Publish the APK as a prerelease (the tag: the version in game.json)"
+        default: false
+        type: boolean
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+
+permissions:
+  contents: read
+
+env:
+  # The player's own Drive file: the disc image, read with the link alone.
+  UP_DRIVE_FILE_ID: 1LIzZFzNoXUteK5fnJLT1P6vGoIxg1fDA
+
+jobs:
+  apk:
+    name: Build the APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    concurrency:
+      group: up-android-apk
+      cancel-in-progress: true
+    env:
+      UP_ABI: ${{ inputs.abi || 'arm64-v8a' }}
+      UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host apk' }}
+      UP_JOBS: ${{ github.runners.cpu_count || 2 }}
+    steps:
+      - name: Check out the repository (with the engine)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: The JDK (the APK's dex and its signing)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: The system packages SDL, the tools and the display need
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            unzip zip p7zip-full curl ca-certificates ninja-build pkg-config \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
+            libxss-dev libxfixes-dev libxtst-dev libxinerama-dev libxkbcommon-dev \
+            libwayland-dev wayland-protocols libdecor-0-dev libegl-dev libgl-dev \
+            libasound2-dev libpulse-dev libudev-dev libdbus-1-dev xvfb
+
+      - name: The Python packages (the icon, the Drive download)
+        run: python -m pip install --disable-pip-version-check pillow gdown
+
+      - name: The Android SDK, the NDK and the build tools
+        uses: android-actions/setup-android@v3
+
+      - name: Install the NDK, the platform and the build tools
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          # The newest NDK available: its clang honours preserve_none (clang 19
+          # and later), which the VU code's calling convention needs.
+          NDK_VERSION="$(sdkmanager --list 2>/dev/null | grep -oE 'ndk;[0-9]+\.[0-9]+\.[0-9]+' | sed 's/^ndk;//' | sort -V | tail -1 || true)"
+          if [ -z "$NDK_VERSION" ]; then
+            for version in 28.1.13356709 27.2.12479018 27.0.12077973 26.1.10909125; do
+              if sdkmanager "ndk;$version" > /dev/null 2>&1; then NDK_VERSION="$version"; break; fi
+            done
+          fi
+          [ -n "$NDK_VERSION" ] || { echo "no NDK could be installed"; exit 1; }
+          echo "the NDK: $NDK_VERSION"
+          sdkmanager "ndk;$NDK_VERSION"
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: The compiler for the PC reference build (clang 19 or later)
+        run: |
+          if ! clang++ --version 2>/dev/null | grep -qE 'clang version (19|2[0-9])'; then
+            wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
+            sudo bash /tmp/llvm.sh 19
+            sudo apt-get install -y --no-install-recommends clang-19
+          fi
+          (clang++-19 --version 2>/dev/null || clang++ --version) | head -1
+
+      - name: The engine's commit (the caches' key)
+        id: engine
+        run: echo "sha=$(git -C engine rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------------------------
+      # The disc image: the player's own file, fetched here and never
+      # committed. Cached, so that only the first run pays for it.
+      # ------------------------------------------------------------------
+      - name: The disc image - the cache
+        if: ${{ inputs.cache != false }}
+        uses: actions/cache@v4
+        with:
+          path: disc
+          key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
+
+      - name: The disc image (the player's own Drive file)
+        id: fetch
+        run: |
+          bash scripts/fetch_disc.sh
+          IMAGE="${UP_DISC_DIR:-disc}/up.iso"
+          if [ -f "$IMAGE" ]; then
+            echo "sha=$(sha256sum "$IMAGE" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=raw" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The image is kept right away: a later stage failing must not throw a
+      # gigabyte away.
+      - name: The disc image - keep it
+        if: ${{ always() && inputs.cache != false }}
+        uses: actions/cache/save@v4
+        continue-on-error: true
+        with:
+          path: disc
+          key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
+
+      # ------------------------------------------------------------------
+      # The decompiled code: the expensive part. Cached, so that only the
+      # first run (and a run after the engine changes) pays for it.
+      # ------------------------------------------------------------------
+      - name: The decompiled code - the cache
+        if: ${{ inputs.cache != false }}
+        uses: actions/cache@v4
+        with:
+          path: |
+            games/up/src
+            games/up/config
+            games/up/build/functions.json
+            games/up/build/verdicts.json
+            games/up/build/lift_outcomes.json
+            games/up/build/lift
+          key: derived-${{ steps.engine.outputs.sha }}-${{ steps.fetch.outputs.sha }}
+
+      # The host's build tools for the Android build (glslang, SDL's sources):
+      # a few minutes of compiling, worth keeping.
+      - name: The host's build tools - the cache
+        if: ${{ inputs.cache != false }}
+        uses: actions/cache@v4
+        with:
+          path: games/up/build/port/cmake
+          key: tools-${{ steps.engine.outputs.sha }}
+
+      - name: Build the APK
+        run: bash scripts/build_apk.sh --stage "$UP_STAGES" --abi "$UP_ABI"
+
+      - name: The PC reference build and a headless run (how far the game gets)
+        if: ${{ inputs.smoke == true }}
+        continue-on-error: true
+        run: bash scripts/smoke_test.sh
+
+      - name: How far the port has come
+        if: always()
+        run: |
+          if [ -f games/up/build/functions.json ]; then
+            python3 engine/tools/progress.py --game games/up --markdown >> "$GITHUB_STEP_SUMMARY" || true
+          fi
+
+      - name: The APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: up-android-${{ inputs.abi || 'arm64-v8a' }}
+          path: build/up-android.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish the release
+        if: ${{ inputs.publish == true }}
+        permissions:
+          contents: write
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(python3 -c 'import json; print(json.load(open("games/up/game.json"))["version"])')"
+          TAG="v$VERSION"
+          echo "the release: $TAG"
+          gh release create "$TAG" build/up-android.apk \
+            --title "Up (PS2) - Android $VERSION" \
+            --notes "An unofficial native port of Up (PS2, SLUS-21864) to Android. Bring your own disc image: the app asks for it on the first run. Alpha - expect bugs." \
+            --prerelease
