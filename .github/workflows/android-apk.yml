@@ -364,11 +364,14 @@ jobs:
 
       # The APK's stage, when it was asked for. (The check is in the shell:
       # GitHub's expressions have no way to ask whether a word is in a list.)
+      # What it says is kept in a file: the log of a run is not always
+      # readable from outside, but this one is.
       - name: The APK
         if: steps.apkc.outputs.cache-hit != 'true'
         run: |
+          mkdir -p build/logs
           case " $UP_STAGES " in
-            *" apk "*) bash scripts/build_apk.sh --stage apk --abi "$UP_ABI" ;;
+            *" apk "*) bash scripts/build_apk.sh --stage apk --abi "$UP_ABI" 2>&1 | tee build/logs/apk.log ;;
             *) echo "the APK's stage was not asked for: $UP_STAGES" ;;
           esac
 
@@ -421,6 +424,17 @@ jobs:
             games/up/build/smoke/summary.txt
             games/up/build/smoke/frames
             games/up/build/port/report.txt
+          if-no-files-found: ignore
+          retention-days: 30
+
+      # What the build said: the log of the APK's stage (the run's own log is
+      # not always readable from outside).
+      - name: The build's own words
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: up-build-log
+          path: build/logs
           if-no-files-found: ignore
           retention-days: 30
 
