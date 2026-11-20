@@ -322,14 +322,37 @@ jobs:
           path: games/up/build/port/android-arm64/libup.stripped.so
           key: lib-${{ steps.inputs.outputs.sha }}
 
+      # The package's own inputs: the library (the native code), the Java
+      # (the dex), the manifest's files. The same inputs mean the same APK,
+      # so a run whose package has not changed takes it from here.
+      - name: The package's own hash
+        id: package
+        run: echo "sha=$(bash scripts/apk_package_hash.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: The APK from the cache (nothing that goes into it has changed)
+        id: apkc
+        uses: actions/cache/restore@v6
+        with:
+          path: build/up-android.apk
+          key: apk-${{ steps.package.outputs.sha }}
+
       # The APK's stage, when it was asked for. (The check is in the shell:
       # GitHub's expressions have no way to ask whether a word is in a list.)
       - name: The APK
+        if: steps.apkc.outputs.cache-hit != 'true'
         run: |
           case " $UP_STAGES " in
             *" apk "*) bash scripts/build_apk.sh --stage apk --abi "$UP_ABI" ;;
             *) echo "the APK's stage was not asked for: $UP_STAGES" ;;
           esac
+
+      - name: The APK - keep it
+        if: always() && steps.apkc.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: build/up-android.apk
+          key: apk-${{ steps.package.outputs.sha }}
 
       - name: The APK
         if: ${{ steps.stages.outputs.apk == 'true' }}

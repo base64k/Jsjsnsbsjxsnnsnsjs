@@ -20,6 +20,7 @@ toolchain + нативты хост (EE ядросы, IOP, SPU2, GS/Vulkan, VU, 
 | Ойынның конфигурациясы (`game.json`, иконка, `overrides.cpp`) | ✅ дайын |
 | CI: диск → декомпиляция → APK (`android-apk.yml`) | ✅ **жүріп шықты**: шынайы диск, декомпиляция, `arm64-v8a` APK |
 | Нақты APK (ойын ойнатылған күйі) | ✅ бар (артефакт, 36 МБ); ойын әлі толық істемейді |
+| APK тілінің таңдауы (ағылшынша / орысша) | ✅ диалогтағы «Тіл» батырмасы; телефонның өз тілі — әдепкі |
 
 > Бұл репозиторийде диск образы **жоқ** — CI оны жүріс кезінде сіздің Drive
 > файлыңыздан алып, тек өз кэшінде ұстайды. Декомпиляция мен жинау сондықтан
@@ -51,6 +52,13 @@ APK іске қосылып, ойынның жүктелу экранын көр
 
 
 ---
+
+### Тіл
+
+APK-ның өз сөздері (терезелер, хабарламалар, экрандық түймелердің жазуы)
+ағылшынша немесе орысша: диск таңдау терезесіндегі «Тіл» батырмасы. Әдепкі
+жолы — телефонның өз тілі: телефон орыс тілінде болса, қосымша сұрамай-ақ
+орысша болады.
 
 ## Қалай іске қосу керек (GitHub Actions — ең арзан жол)
 
@@ -195,6 +203,7 @@ Android, а не эмулятор: код EE переписывается в C++
 | Конфигурация игры (`game.json`, иконка, `overrides.cpp`) | готово |
 | CI: диск → декомпиляция → APK (`android-apk.yml`) | **прошло**: настоящий диск, декомпиляция, APK для `arm64-v8a` |
 | Настоящий APK (в состоянии «играбельно») | есть (артефакт, 36 МБ); сама игра ещё не запускается |
+| Язык приложения (английский / русский) | есть: кнопка «Язык» в окне диска; язык телефона — по умолчанию |
 
 Образ диска в этом репозитории **отсутствует**: CI скачивает его во время
 запуска из вашего файла на Google Drive и держит только в своём кэше, поэтому
@@ -223,6 +232,13 @@ up.log». То есть игра сама копирует свой код в `0
 запуска, а эта копия ещё не переведена. Причина только в этом. Smoke-запуск
 находит её, переводит и запускает игру снова, а этап APK собирает таблицу
 вызовов уже с найденным кодом. Подробно: `games/up/docs/FINDINGS.md`.
+
+### Язык
+
+Слова самого приложения (окна, сообщения, надписи на экранных кнопках) — на
+английском или по-русски: в окне выбора диска есть кнопка «Язык». По умолчанию
+берётся язык телефона: телефон с русским языком получает русское приложение
+без лишних вопросов.
 
 ## Как запустить
 
@@ -305,6 +321,7 @@ the `engine/` submodule.
 | The game's configuration (`game.json`, icon, `overrides.cpp`) | done |
 | CI: disc → decompile → APK (`.github/workflows/android-apk.yml`) | **passed**: the real disc, the decompilation, the `arm64-v8a` APK |
 | A real APK | yes (an artifact, 36 MB); the game itself does not run yet |
+| The app's language (English / Russian) | yes: a «Language» button in the disc's dialog; the phone's own language is the default |
 
 The disc image is not in this repository: the CI fetches it from your Drive
 file at run time and keeps it in its own cache, so the decompilation and the
@@ -334,6 +351,13 @@ piece of its own code to `0x80076000` at run time, and that copy is not in the
 translated set yet. That is the whole reason. The smoke run finds it,
 translates it and runs the game again, and the APK's stage builds the dispatch
 table with what the runs found. The details: `games/up/docs/FINDINGS.md`.
+
+### The language
+
+The app's own words (the windows, the messages, the on-screen buttons' labels)
+are in English or in Russian: the disc's dialog has a «Language» button. The
+phone's own language is the default: a phone set to Russian gets a Russian app
+without asking anything.
 
 ## Running it
 

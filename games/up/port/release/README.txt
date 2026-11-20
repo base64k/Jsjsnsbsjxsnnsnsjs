@@ -39,6 +39,10 @@ Getting started
 4. The on-screen controls appear over the picture - a small button shows and
    hides them. A controller (a DualShock 2 or an Xbox pad over USB or
    Bluetooth) works too.
+5. The app's own words (the dialogs, the messages, the controls' labels) are
+   in English or in Russian: the disc's dialog has a "Language" button, and
+   the phone's own language is the default - a phone set to Russian gets a
+   Russian app without asking anything.
 
 
 Files beside the app
@@ -65,3 +69,53 @@ Licences
 
 The port's own code is under the MIT licence. The libraries built into the
 APK (SDL 3, volk, glslang, Vulkan-Headers) ship their own licences.
+
+
+Русский
+=======
+
+Это неофициальный порт игры Up (PS2) на Android, сделанный фанатами.
+Программа игры переведена на C++ и собрана для ARM64: она работает нативно
+на вашем телефоне, а не в эмуляторе.
+
+В сборке НЕТ содержимого игры. Нужна ваша собственная копия: образ диска
+Up (SLUS-21864) в виде .iso (или .bin с .cue). Все, что в игре, приходит с
+вашего образа; ничего не скачивается.
+
+Это АЛЬФА: ждите ошибок.
+
+Что нужно
+---------
+
+* Android 10 (API 29) или новее
+* 64-битный телефон (arm64-v8a) с Vulkan 1.1 или новее - почти у всех
+* Свой образ диска Up (SLUS-21864)
+
+Как начать
+----------
+
+1. Установите APK и запустите его. В первый раз приложение попросит образ
+   диска: выберите .iso через файловый выборщик системы. Он запоминается.
+2. Приложение также спросит доступ к общей памяти телефона (разрешение "все
+   файлы"). Это необязательно: выборщик выше работает и без него, но с ним
+   порт видит образ, который лежит в «Загрузках» или в любом другом месте.
+3. На картинке появятся экранные кнопки - маленькая кнопка их показывает и
+   прячет. Геймпад тоже работает.
+4. Слова самого приложения (окна, сообщения, надписи на кнопках) - на
+   английском или по-русски: в окне выбора диска есть кнопка "Язык". По
+   умолчанию язык берётся у телефона: телефон с русским языком сразу
+   получает русское приложение.
+
+Файлы рядом с приложением
+--------------------------
+
+Приложение хранит свои файлы в своей папке на телефоне
+(Android/data/io.github.base64k.up/files): pc_settings.ini, memcard/ (ваши
+сохранения) и *.log (что делал последний запуск - приложите их к отчёту об
+ошибке).
+
+Лицензии
+--------
+
+Код порта - под лицензией MIT. Библиотеки, вшитые в APK (SDL 3, volk,
+glslang, Vulkan-Headers), идут со своими лицензиями.

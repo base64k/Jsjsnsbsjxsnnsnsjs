@@ -176,15 +176,18 @@ fi
 
 if has lib; then
     log "building the library ($ABI)"
-    # The APK's own permissions: the shared storage, where the player's disc
-    # image is kept (the engine's build tree is patched, not the engine).
+    # The APK's own permissions (the shared storage, where the player's disc
+    # image is kept) and its own words in Russian: the engine's build tree is
+    # patched, not the engine.
     python3 scripts/patch_android.py
+    python3 scripts/patch_language.py
     python3 "$ENGINE/tools/android.py" --game "$GAME" build --abi "$ABI"
 fi
 
 if has apk; then
     log "the APK ($ABI)"
     python3 scripts/patch_android.py
+    python3 scripts/patch_language.py
     LIB="games/up/build/port/android-$([ "$ABI" = arm64-v8a ] && echo arm64 || echo "$ABI")/libup.stripped.so"
     if [ ! -f "$LIB" ]; then
         log "no library yet ($LIB): building it"
