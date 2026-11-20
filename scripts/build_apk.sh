@@ -170,6 +170,9 @@ fi
 
 if has apk; then
     log "building the APK ($ABI)"
+    # The APK's own permissions: the shared storage, where the player's disc
+    # image is kept (the engine's build tree is patched, not the engine).
+    python3 scripts/patch_android.py
     python3 "$ENGINE/tools/android.py" --game "$GAME" apk --abi "$ABI"
     APK="$(find "$GAME/build/android" -name '*.apk' | head -1)"
     [ -n "$APK" ] || die "no APK was built"
