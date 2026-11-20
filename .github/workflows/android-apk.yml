@@ -105,7 +105,8 @@ jobs:
             libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
             libxss-dev libxfixes-dev libxtst-dev libxinerama-dev libxkbcommon-dev \
             libwayland-dev wayland-protocols libdecor-0-dev libegl-dev libgl-dev \
-            libasound2-dev libpulse-dev libudev-dev libdbus-1-dev xvfb
+            libasound2-dev libpulse-dev libudev-dev libdbus-1-dev xvfb \
+            binutils-mips-linux-gnu
 
       - name: The Python packages (the icon, the Drive download)
         run: python -m pip install --disable-pip-version-check pillow gdown
@@ -445,6 +446,21 @@ jobs:
           path: games/up/build/port/discovered.txt
           key: discovered-v1-${{ steps.found.outputs.sha }}
 
+      # The sound driver's own code, disassembled: the report names the call
+      # that polls, and the code says what it waits for. (The disc's file
+      # comes out of the image with 7-Zip; the MIPS disassembler is binutils'.)
+      - name: The sound driver's code, disassembled (for the poll)
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          mkdir -p build/irx
+          7z x -y -obuild/irx disc/up.iso 'MODULES/ZNASND.IRX*' >/dev/null 2>&1 || true
+          f="$(find build/irx -iname 'ZNASND.IRX*' -type f | head -1)"
+          if [ -n "$f" ]; then
+            mips-linux-gnu-objdump -d "$f" > build/irx/disasm.txt 2>&1 || true
+          fi
+          ls -l build/irx || true
+
       # The game's own report and the pictures it drew: they are how far the
       # port has come, and the log is not always readable from outside.
       - name: The smoke test's report and pictures
@@ -486,6 +502,21 @@ jobs:
                   first.append(l)
           text = ("## Summary\n```\n" + summary + "\n```\n## The IOP, from its start (each line at most twice)\n```\n"
                   + "\n".join(first[:250]) + "\n```\n## Report (end)\n```\n" + report + "\n```")
+          # The disassembly around the bind (the IRX loads at 0x10000): the
+          # poll's own code, from the first line of its function to the call.
+          dis = pathlib.Path("build/irx/disasm.txt")
+          if dis.exists():
+              code = dis.read_text(errors="replace").splitlines()
+              window = []
+              for l in code:
+                  head = l.split(":")[0].strip()
+                  try:
+                      a = int(head, 16)
+                  except ValueError:
+                      continue
+                  if 0x700 <= a <= 0x7F0 or 0x10700 <= a <= 0x107F0:
+                      window.append(l)
+              text += "\n## The module's code around the bind (ELF addresses)\n```\n" + "\n".join(window[:140]) + "\n```"
           text = text[-65000:]
           body = {
               "name": "PC reference run (headless)",
