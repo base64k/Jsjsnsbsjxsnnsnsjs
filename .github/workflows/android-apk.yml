@@ -465,7 +465,14 @@ jobs:
           if [ -n "$f" ]; then
             mips-linux-gnu-objdump -d "$f" > build/irx/disasm.txt 2>&1 || true
           fi
-          ls -l build/irx || true
+          {
+            echo "objdump: $(command -v mips-linux-gnu-objdump || echo none)"
+            echo "image: $(ls -l disc/up.iso 2>&1 | head -1)"
+            echo "7z list (irx):"; 7z l disc/up.iso 2>&1 | grep -i 'irx' | head -20 || true
+            echo "extracted:"; find build/irx -type f | head -20
+            echo "disasm lines: $(wc -l < build/irx/disasm.txt 2>/dev/null || echo 0)"
+          } > build/irx/diag.txt 2>&1 || true
+          cat build/irx/diag.txt || true
 
       # The game's own report and the pictures it drew: they are how far the
       # port has come, and the log is not always readable from outside.
@@ -508,6 +515,9 @@ jobs:
                   first.append(l)
           text = ("## Summary\n```\n" + summary + "\n```\n## The IOP, from its start (each line at most twice)\n```\n"
                   + "\n".join(first[:250]) + "\n```\n## Report (end)\n```\n" + report + "\n```")
+          diag = pathlib.Path("build/irx/diag.txt")
+          if diag.exists():
+              text += "\n## The disassembly's own diagnostics\n```\n" + diag.read_text(errors="replace")[:3000] + "\n```"
           # The disassembly around the bind (the IRX loads at 0x10000): the
           # poll's own code, from the first line of its function to the call.
           dis = pathlib.Path("build/irx/disasm.txt")
