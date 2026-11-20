@@ -194,7 +194,8 @@ if has apk; then
         python3 "$ENGINE/tools/android.py" --game "$GAME" build --abi "$ABI"
     fi
     python3 scripts/package_apk.py "$ABI"
-    APK="$(find "$GAME/build/android" -name '*.apk' | head -1)"
+    # The newest one (the build's own name has the version in it).
+    APK="$(ls -t "$GAME/build/android"/*.apk 2>/dev/null | head -1 || true)"
     [ -n "$APK" ] || die "no APK was built"
     mkdir -p build
     cp "$APK" "build/up-android.apk"

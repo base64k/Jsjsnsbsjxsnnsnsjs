@@ -198,7 +198,7 @@ jobs:
       # ------------------------------------------------------------------
       - name: The disc image - the cache
         if: ${{ env.UP_CACHE == 'true' }}
-        uses: actions/cache@v6
+        uses: actions/cache/restore@v6
         with:
           path: disc
           key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
@@ -225,12 +225,14 @@ jobs:
           key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
 
       # ------------------------------------------------------------------
-      # The decompiled code: the expensive part. Cached, so that only the
-      # first run (and a run after the engine changes) pays for it.
+      # The decompiled code: the expensive part (an hour and more). Cached,
+      # so that only the first run (and a run after the engine changes) pays
+      # for it. It is put in the cache right after it is made, not at the
+      # end of the job: a run that fails later must not lose it.
       # ------------------------------------------------------------------
       - name: The decompiled code - the cache
         if: ${{ env.UP_CACHE == 'true' }}
-        uses: actions/cache@v6
+        uses: actions/cache/restore@v6
         with:
           path: |
             games/up/src
@@ -245,7 +247,7 @@ jobs:
       # a few minutes of compiling, worth keeping.
       - name: The host's build tools - the cache
         if: ${{ env.UP_CACHE == 'true' }}
-        uses: actions/cache@v6
+        uses: actions/cache/restore@v6
         with:
           path: games/up/build/port/cmake
           key: tools-${{ steps.engine.outputs.sha }}
@@ -254,7 +256,7 @@ jobs:
       # over the one the player already has.
       - name: The signing key - the cache
         if: ${{ env.UP_CACHE == 'true' }}
-        uses: actions/cache@v6
+        uses: actions/cache/restore@v6
         with:
           path: build/keys
           key: keystore-v1
@@ -287,6 +289,30 @@ jobs:
             *" apk "*) echo "apk=true" >> "$GITHUB_OUTPUT" ;;
             *) echo "apk=false" >> "$GITHUB_OUTPUT" ;;
           esac
+
+      # The code and the tools, kept now: they are the expensive part, and a
+      # run that fails later must not make them again.
+      - name: The decompiled code - keep it
+        if: ${{ always() && env.UP_CACHE == 'true' }}
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: |
+            games/up/src
+            games/up/config
+            games/up/build/functions.json
+            games/up/build/verdicts.json
+            games/up/build/lift_outcomes.json
+            games/up/build/lift
+          key: derived-${{ steps.engine.outputs.sha }}-${{ steps.fetch.outputs.sha }}
+
+      - name: The host's build tools - keep it
+        if: ${{ always() && env.UP_CACHE == 'true' }}
+        uses: actions/cache/save@v6
+        continue-on-error: true
+        with:
+          path: games/up/build/port/cmake
+          key: tools-${{ steps.engine.outputs.sha }}
 
       # The PC reference build and its headless run: it says how far the game
       # gets, which is the porting work's measure. It fails on its own without

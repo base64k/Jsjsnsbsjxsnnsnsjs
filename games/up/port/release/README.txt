@@ -27,8 +27,11 @@ What you need
 Getting started
 ---------------
 
-1. Install the APK (it is unsigned with the developer's key: Android may ask
-   you to allow installation from this source).
+1. Install the APK (it is signed with the port's key: Android may ask you to
+   allow installation from this source). If an older build of the port is on
+   the phone, uninstall it first (the CI's signing key changed with the
+   build's caches, and Android refuses to install over an app signed with
+   another key; your disc image and settings are picked again).
 2. Start it. The first time, the app asks for your disc image: pick the .iso
    with the system's file picker. It is remembered; you can change it in the
    app's settings.
@@ -94,8 +97,12 @@ Up (SLUS-21864) в виде .iso (или .bin с .cue). Все, что в игр
 Как начать
 ----------
 
-1. Установите APK и запустите его. В первый раз приложение попросит образ
-   диска: выберите .iso через файловый выборщик системы. Он запоминается.
+1. Установите APK и запустите его. Если на телефоне уже стоит прежняя сборка
+   порта - сначала удалите её: ключ подписи в CI сменился вместе с кэшами, а
+   Android не ставит приложение поверх подписанного другим ключом (образ
+   диска и настройки придётся выбрать заново). В первый раз приложение
+   попросит образ диска: выберите .iso через файловый выборщик системы. Он
+   запоминается.
 2. Приложение также спросит доступ к общей памяти телефона (разрешение "все
    файлы"). Это необязательно: выборщик выше работает и без него, но с ним
    порт видит образ, который лежит в «Загрузках» или в любом другом месте.

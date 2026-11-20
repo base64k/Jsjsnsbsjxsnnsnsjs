@@ -80,11 +80,19 @@ What the report says about the state of the port at that moment:
 | Kernel services used | `SetupThread`, `SetupHeap`, `CreateSema`, `kCopy`, `FlushCache`, `SetSyscall` and three the engine does not name yet (numbers 91, 131 and `?`) |
 | GS | 0 primitives, 0 pixels - the game has not drawn anything yet |
 | GPU | 1 submission, nothing drawn |
+| The copy | `kCopy` moved 0x740 bytes from 0x00714678 to 0x80076000 (the kernel's own segment) |
 
 The loading screen the player saw is the PS2's own (drawn by the kernel's
 overlay or by the game's first frame); the report counts no GS primitive, so
 what was on the screen came from the engine's own path, not from the game's
 graphics yet.
+
+The phone it ran on: a **Mali-G57** (Vulkan 1.3.225, driver 171966464; the
+renderer drew with Vulkan 1.3) - so the stop is not a driver or a GPU fault:
+the engine got a device, a swapchain and a frame rate (120 Hz) and was already
+presenting before the game stopped. The same code runs on Adreno and on the
+other makers' parts - the renderer asks the driver what it can do (the logic
+operations Mali does not have are asked for, not assumed).
 
 The addresses `0x003E5778`, `0x003E5878 SetSyscall`, `0x003E5730 RFU083`,
 `0x003E5D10 MachineType_or_rfu`, `0x003E5D58 GetMemorySize_or_rfu` and
