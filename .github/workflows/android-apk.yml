@@ -505,7 +505,7 @@ jobs:
           mkdir -p build
           : > build/ee_disasm.txt
           D="python3 engine/tools/disasm.py --game games/up"
-          for a in 0x0032DE80 0x0032DFA0 0x0030B9A0 0x0030CA70 0x003079C0 0x003078F0; do
+          for a in 0x004C49A0 0x0041B550 0x00356A60; do
             echo "== function $a" >> build/ee_disasm.txt
             $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done
