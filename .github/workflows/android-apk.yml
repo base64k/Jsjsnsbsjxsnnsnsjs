@@ -485,66 +485,26 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      # The EE's code where the game stopped, disassembled from the analysis
+      # (the functions of the stack and the last call): for reading the stop.
+      - name: The EE's code where the game stopped
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          mkdir -p build
+          : > build/ee_disasm.txt
+          for a in 0x00410F60 0x0032DFA0 0x003078A0 0x0032DE80 0x0032F1B0; do
+            echo "== $a" >> build/ee_disasm.txt
+            python3 engine/tools/disasm.py --game games/up --addr "$a" >> build/ee_disasm.txt 2>&1 || true
+          done
+
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.
       - name: The smoke test's report as a check run
         if: ${{ always() && env.UP_SMOKE == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PYEOF'
-          import json, os, pathlib, subprocess
-          def read(p, tail):
-              f = pathlib.Path(p)
-              if not f.exists():
-                  return "(missing: %s)" % p
-              t = f.read_text(errors="replace")
-              return t[-tail:] if len(t) > tail else t
-          summary = read("games/up/build/smoke/summary.txt", 20000)
-          report = read("games/up/build/port/report.txt", 40000)
-          # The IOP's lines from the start of the run (the trace's): where it begins.
-          lines = pathlib.Path("games/up/build/port/report.txt").read_text(errors="replace").splitlines() if pathlib.Path("games/up/build/port/report.txt").exists() else []
-          picked = [l for l in lines if l.startswith("[iop]") or "[host] IOP" in l or "[host] SIF" in l]
-          seen, first = {}, []
-          for l in picked:
-              if seen.get(l, 0) < 2:
-                  seen[l] = seen.get(l, 0) + 1
-                  first.append(l)
-          text = ("## Summary\n```\n" + summary + "\n```\n## The IOP, from its start (each line at most twice)\n```\n"
-                  + "\n".join(first[:250]) + "\n```\n## Report (end)\n```\n" + report + "\n```")
-          finds = pathlib.Path("build/irx/finds.txt")
-          if finds.exists():
-              text += "\n## Where the module writes the flag it waits for (-0x5108)\n```\n" + finds.read_text(errors="replace")[:9000] + "\n```"
-          diag = pathlib.Path("build/irx/diag.txt")
-          if diag.exists():
-              text += "\n## The disassembly's own diagnostics\n```\n" + diag.read_text(errors="replace")[:3000] + "\n```"
-          # The disassembly around the bind (the IRX loads at 0x10000): the
-          # poll's own code, from the first line of its function to the call.
-          dis = pathlib.Path("build/irx/disasm.txt")
-          if dis.exists():
-              code = dis.read_text(errors="replace").splitlines()
-              window = []
-              for l in code:
-                  head = l.split(":")[0].strip()
-                  try:
-                      a = int(head, 16)
-                  except ValueError:
-                      continue
-                  if 0x700 <= a <= 0x7F0 or 0x10700 <= a <= 0x107F0:
-                      window.append(l)
-              text += "\n## The module's code around the bind (ELF addresses)\n```\n" + "\n".join(window[:140]) + "\n```"
-          text = text[-65000:]
-          body = {
-              "name": "PC reference run (headless)",
-              "head_sha": os.environ.get("GITHUB_SHA"),
-              "status": "completed",
-              "conclusion": "neutral",
-              "output": {"title": "How far the game got", "summary": "See the text.", "text": text},
-          }
-          repo = os.environ["GITHUB_REPOSITORY"]
-          subprocess.run(["gh", "api", "-X", "POST", f"repos/{repo}/check-runs", "--input", "-"],
-                         input=json.dumps(body).encode(), check=False)
-          PYEOF
+        run: python3 scripts/check_report.py
 
       # What the build said: the log of the APK's stage (the run's own log is
       # not always readable from outside).
