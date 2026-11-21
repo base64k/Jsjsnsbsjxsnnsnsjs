@@ -349,3 +349,28 @@ produces it (the bank is decoded or assembled before this decoder runs), or the
 disc's copy is in another layout. The next step is to find where those bytes
 come from in RAM before the decoder: a `--watch-write` on the chunk's source
 across the earlier calls, not the disc.
+
+## The heap corruption behind the decoder's stop (runs 44952278921, 44954568442, 44956754279)
+
+- The run with `--virtual-time --watch-write 007BD3D4` stops at the same place as
+  before: a read at `0x1791918D` in the EE's `free` (`0x002DCC40`), called from
+  `0x0032DF60`, with `[0]` of the structure at `0x01FFFA80` already garbage.
+  The GS work is identical (306980 primitives, 438795267 pixels), so the stop is
+  deterministic.
+- `0x007BD3D4` is a countdown (`0xFFF` down to `0xFF1`) written by `0x0030B0D0`
+  (reached from `0x0030A330`). It is not the stored pointer.
+- `0x01FFFA80` is a scratch slot in the EE stack that many callees reuse, so
+  `--watch-write` on it lists unrelated writers. It does not name the writer
+  of the bad `[0]`.
+- `WaitSema` (IOP): the patch in `scripts/patch_iop.py` (commit `7e21e5f`) lets
+  the other threads run when a wait has no thread to block (a command handler).
+  It compiles against the engine (`65c46e9`) and does not change this stop, so
+  the EE heap problem is a separate bug.
+- The GoW port's `ps2recomp-iop-sound.patch` (KIexster/god-of-war-recomp) is
+  the same idea for a different engine, `ps2xIOP`. Its `WaitSema` change is
+  what the patch above copies.
+
+Next: find who writes the pointer that later reaches `free`. A `--watch-write`
+on the structure's `[0]` is noisy because the slot is reused. It needs the
+structure's address from the EE's own allocation (where `malloc` returned it),
+not the stack slot.
