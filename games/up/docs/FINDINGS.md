@@ -156,3 +156,14 @@ loaded...` and retries after a delay. No instruction in the module stores to
 that word by its literal address, so the handshake that sets it is not found
 yet. A stand-in is in patch_iop.py: the bind of 0x01000002 sets the word. This
 is a shim, not the driver's protocol; sound may stay silent until the protocol is known.
+
+### The next stop (CI report, commit 56d302d)
+
+With the stand-in, the sound driver's poll passes and the IOP runs its CD
+streaming threads (disc reads through sceCdSync/sceCdStatus). The EE then stops
+in its own code: `a write at 0x02000000, outside guest memory`, last EE call
+0x00410F60 (its names are not in this checkout: they come from the derive/analyze
+stage in CI). The likely cause is the EE expecting real answers from the sound
+driver's servers (0x01000001, 0x01000002) and getting zeros. Next: name the EE
+functions in the stack (the derive stage's names), and find what the EE reads
+from the driver's replies before it writes through them.
