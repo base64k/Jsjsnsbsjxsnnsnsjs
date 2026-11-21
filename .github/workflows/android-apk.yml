@@ -528,6 +528,18 @@ jobs:
               | tee -a games/up/build/port/report.txt
           fi
 
+      # The unpacker's chunk on the disc itself (its header and first control
+      # word), so the file it is in and the bytes around it are known.
+      - name: The unpacker's chunk on the disc
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          IMAGE="${UP_DISC_DIR:-disc}/up.iso"
+          if [ -f "$IMAGE" ] && [ -f games/up/build/port/report.txt ]; then
+            python3 scripts/find_chunk.py "$IMAGE" 00000800000002CE A7171050 \
+              | tee -a games/up/build/port/report.txt
+          fi
+
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.
       - name: The smoke test's report as a check run
