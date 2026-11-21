@@ -49,12 +49,14 @@ def main():
     report = read("games/up/build/port/report.txt")
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     text += section("The EE's code where it stopped (the functions' disassembly)",
-                    read("build/ee_disasm.txt"), 20000)
-    text += section("The whole EE functions that hold the call sites",
-                    read("build/ee_enclosing.txt"), 14000)
+                    read("build/ee_disasm.txt"), 12000)
+    text += section("The whole EE functions around the count's reader",
+                    read("build/ee_enclosing.txt"), 16000)
+    text += section("Who refers to the function that reads the count",
+                    read("build/ee_refs.txt"), 7000)
     text += section("The IOP, from its start (each line at most twice)",
-                    iop_first_lines(report), 8000)
-    text += section("Report (end)", report[-10000:] if report else None, 10000, keep="tail")
+                    iop_first_lines(report), 5000)
+    text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 3000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
