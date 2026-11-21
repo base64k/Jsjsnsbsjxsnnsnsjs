@@ -505,6 +505,9 @@ jobs:
           $D --range 0x00307A70 0x00307B00 >> build/ee_disasm.txt 2>&1 || true
           echo "== code around the call from 0x004C4BD0" >> build/ee_disasm.txt
           $D --range 0x004C4B90 0x004C4C00 >> build/ee_disasm.txt 2>&1 || true
+          # The whole functions that hold the call sites (where the size is set).
+          $D --all -o build/ee_all > build/ee_all.log 2>&1 || true
+          python3 scripts/enclosing.py build/ee_all 0x00410DC0 0x00307ACC 0x004C4BD0 > build/ee_enclosing.txt 2>&1 || true
 
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.

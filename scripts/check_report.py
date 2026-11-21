@@ -49,7 +49,9 @@ def main():
     report = read("games/up/build/port/report.txt")
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     text += section("The EE's code where it stopped (the functions' disassembly)",
-                    read("build/ee_disasm.txt"), 26000)
+                    read("build/ee_disasm.txt"), 20000)
+    text += section("The whole EE functions that hold the call sites",
+                    read("build/ee_enclosing.txt"), 14000)
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 8000)
     text += section("Report (end)", report[-10000:] if report else None, 10000, keep="tail")
