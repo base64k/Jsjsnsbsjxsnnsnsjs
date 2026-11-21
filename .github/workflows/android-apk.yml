@@ -472,6 +472,7 @@ jobs:
           f="$(find build/irx -iname 'ZNASND.IRX*' -type f | head -1)"
           if [ -n "$f" ]; then
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10528 0x10740 > build/irx/disasm.txt 2>&1 || true
+            build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10A00 0x10BC0 >> build/irx/disasm.txt 2>&1 || true
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" --find '-0x5108' > build/irx/finds.txt 2>&1 || true
           fi
           {

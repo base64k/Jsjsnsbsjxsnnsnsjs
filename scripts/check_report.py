@@ -95,9 +95,8 @@ def main():
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 3000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
-    text += section("The sound driver's RPC server (IOP 0x10528, the procedures' code)",
-                    "\n".join(l for l in (read("build/irx/disasm.txt") or "").splitlines()
-                              if _in_window(l)), 9000)
+    text += section("The sound driver's RPC server: the dispatcher (IOP 0x10528) and the procedures' code (0x10A00)",
+                    read("build/irx/disasm.txt"), 24000)
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
     body = {
