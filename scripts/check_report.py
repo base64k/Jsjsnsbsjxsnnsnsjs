@@ -95,9 +95,9 @@ def main():
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 3000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
-    text += section("The sound driver's code around the bind (ELF addresses)",
+    text += section("The sound driver's RPC server (IOP 0x10528, the procedures' code)",
                     "\n".join(l for l in (read("build/irx/disasm.txt") or "").splitlines()
-                              if _in_window(l)), 3000)
+                              if _in_window(l)), 9000)
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
     body = {
@@ -113,13 +113,13 @@ def main():
 
 
 def _in_window(line):
-    """The code in the poll's window: IOP 0x10700-0x107F0, ELF 0x700-0x7F0."""
+    """The code in the RPC server's window: IOP 0x10528-0x10740."""
     head = line.split(":")[0].strip()
     try:
         address = int(head, 16)
     except ValueError:
         return False
-    return 0x700 <= address <= 0x7F0 or 0x10700 <= address <= 0x107F0
+    return 0x10528 <= address <= 0x10740
 
 
 if __name__ == "__main__":
