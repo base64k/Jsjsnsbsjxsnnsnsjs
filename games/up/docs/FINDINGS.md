@@ -202,3 +202,28 @@ branch that writes a pointer into the count field. The port answers the
 driver's server 0x01000002 with the stand-in flag (patch_iop.py), so the replies
 the EE reads may be wrong. Next: log the replies the host sends to the EE's
 SifCallRpc for those servers, and check them against the driver's own code.
+
+### The sound driver's RPC protocol, as the run shows it (checks 28-32)
+
+The game's EE code calls its sound driver (IOP server 0x01000001, served by
+ZNASND.IRX in the IOP interpreter) with 32-byte RPCs. The trace (`[iop] RPC`,
+`[iop] RPC reply`, from `--iop-trace`) shows procedures 513, 768, 772, 1797,
+1805, 1808, 1809, 1810 and their replies. Most replies are zeros; procedure
+1808 answers 1. The dispatcher is a chain of compares at IOP 0x10528 (a0 =
+procedure). Its handlers:
+
+- 1808 (0x710) -> 0x10B0C: returns a sign-extended byte from helper 0x18F44.
+- 1809 (0x711) -> 0x10B24: helper 0x18FC0, returns 0.
+- 513 (0x201) -> 0x10768: prints a message (the driver's own text).
+
+Helper 0x18F44 reads and writes the driver's state byte at IOP 0xC5FC/0xC5FD
+(the stand-in flag, 0x1AEF8, is the same area): with the byte at 1 it clears
+it and calls 0x9354; otherwise it returns 1.
+
+Note for reading `disasm_irx.py` output: a `jal` target is printed relative to
+the module's ELF base (add 0x10000 for the IOP address); `beq`/`b` targets are
+already IOP addresses.
+
+Not resolved: what the EE does with the replies, and what the driver's real
+answers should be (its initialisation, which the stand-in skips). Without that,
+the replies are a guess, and the stream's sizes that come from them are wrong.
