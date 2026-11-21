@@ -248,3 +248,20 @@ size from the source, then allocates) → `0x0032DFA0`, an LZ-style decoder
 The next step: find where the caller `0x003079C0` (its argument struct `$s2`,
 the `4($s2)` field passed as `$a2`) gets the destination, and which value is
 wrong, with a `--watch` on that struct.
+
+### The unpacker's calls, watched (CI runs 44920190667 and 44922036428, commit 883c3ca)
+
+Run with `--watch 003079C0 --watch 003078A0 --watch 0032DE80 --watch 0032DFA0`
+and `--peek` on the struct and the source.
+
+- The unpacker is called many times in a row (each call one chunk of a bank):
+  every call writes to the same output `a2 = 0x01F78100`, and the source
+  `a1` moves on through the data (0x01F7EE20, 0x01F7F9DB, 0x01F7FCF3, ...).
+- The header's size (in the struct at `0x01FFFA80`) decides how far the copy
+  runs. The stop is the one call where that size is wrong and the copy goes
+  past the end of RAM at 0x02000000.
+- `0x003079C0`'s `a3` takes values such as 0x00BE4E20 and 0x00BE52A0 (pointers
+  into the bank's own table), while its `a2` (0x40, 0x0A, 0x04, 0x400, ...)
+  looks like a count. The next thing to check: what the caller reads from
+  `0x007BD3D0` (its `$s2` struct: `0x1000`, `0x0F29`, `0x007BDC50`, `0x007CDC60`,
+  `0x00BE4E20`, `0x00BE52A0`) to choose the source and the size of each chunk.
