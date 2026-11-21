@@ -516,6 +516,18 @@ jobs:
             $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done
 
+      # The unpacker's last call, run again in Python on the RAM the run left
+      # (when --dump-ram asked for the dump): the same bytes, the same
+      # arguments. Its answer goes to the end of the report.
+      - name: The unpacker's last call, in Python (on the RAM at the stop)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          if [ -f games/up/build/smoke/ram.bin ] && [ -f games/up/build/port/report.txt ]; then
+            python3 scripts/decode_check.py games/up/build/smoke/ram.bin games/up/build/port/report.txt \
+              | tee -a games/up/build/port/report.txt
+          fi
+
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.
       - name: The smoke test's report as a check run
