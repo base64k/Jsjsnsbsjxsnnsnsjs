@@ -462,7 +462,7 @@ jobs:
           f="$(find build/irx -iname 'ZNASND.IRX*' -type f | head -1)"
           if [ -n "$f" ]; then
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10600 0x10800 > build/irx/disasm.txt 2>&1 || true
-            build/irx/venv/bin/python scripts/disasm_irx.py "$f" --find '-0x5108(' > build/irx/finds.txt 2>&1 || true
+            build/irx/venv/bin/python scripts/disasm_irx.py "$f" --find '-0x5108' > build/irx/finds.txt 2>&1 || true
           fi
           {
             echo "module: ${f:-none}"
