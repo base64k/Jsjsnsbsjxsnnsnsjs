@@ -493,10 +493,18 @@ jobs:
         run: |
           mkdir -p build
           : > build/ee_disasm.txt
-          for a in 0x00410F60 0x00410E6C 0x00410EC4 0x002DCB70 0x002DCC10 0x00307ACC 0x004C4BD0 0x0032DE80 0x0032DFA0 0x003078A0 0x0032F1B0; do
-            echo "== $a" >> build/ee_disasm.txt
-            python3 engine/tools/disasm.py --game games/up --addr "$a" >> build/ee_disasm.txt 2>&1 || true
+          D="python3 engine/tools/disasm.py --game games/up"
+          for a in 0x00410F60 0x0032DE80 0x003078A0 0x0032F1B0; do
+            echo "== function $a" >> build/ee_disasm.txt
+            $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done
+          # The code around the calls (the callers of the allocation that failed).
+          echo "== code before the allocation's callers (0x00410DC0-0x00410F60)" >> build/ee_disasm.txt
+          $D --range 0x00410DC0 0x00410F60 >> build/ee_disasm.txt 2>&1 || true
+          echo "== code around the call from 0x00307ACC" >> build/ee_disasm.txt
+          $D --range 0x00307A70 0x00307B00 >> build/ee_disasm.txt 2>&1 || true
+          echo "== code around the call from 0x004C4BD0" >> build/ee_disasm.txt
+          $D --range 0x004C4B90 0x004C4C00 >> build/ee_disasm.txt 2>&1 || true
 
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.
