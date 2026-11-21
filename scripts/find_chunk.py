@@ -9,6 +9,7 @@ be read from the disc's own file system.
     python3 scripts/find_chunk.py disc/up.iso 00000800000002CE A7171050
 """
 
+import mmap
 import sys
 
 SECTOR = 2048
@@ -17,7 +18,12 @@ SECTOR = 2048
 def main():
     image = sys.argv[1]
     pattern = bytes.fromhex("".join(sys.argv[2:]))
-    data = open(image, "rb").read()
+    with open(image, "rb") as f:
+        data = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
+        search(data, pattern)
+
+
+def search(data, pattern):
     found, start = 0, 0
     print("find chunk: %d bytes of image, pattern %s" % (len(data), pattern.hex()))
     while found < 12:
