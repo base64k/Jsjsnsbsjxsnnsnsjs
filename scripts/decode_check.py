@@ -39,6 +39,9 @@ class Overflow(Exception):
     pass
 
 
+trace = []
+
+
 def decode(ram, a0, a1, a2):
     """The decoder's own loop, instruction by instruction (the MIPS listing)."""
     written = 0
@@ -60,12 +63,15 @@ def decode(ram, a0, a1, a2):
         written += 1
 
     flag = s32(ram[(a0 + 13) & 0x1FFFFFF])  # lb (signed)
+    out_start, src_start = a2, a1
+    trace.clear()
     steps = 0
     while True:
         steps += 1
         if steps > 50_000_000:
             return "step limit", written, a2, a3
         if state == "L000":
+            trace.append(("ctl", a1 - src_start, a2 - out_start))
             v1 = 0
             t5, t2, t1 = rd(a1 + 1), rd(a1 + 2), rd(a1 + 3)
             t0 = s32((((((t0 << 8) + t5) << 8) + t2) << 8) + t1)
@@ -90,6 +96,7 @@ def decode(ram, a0, a1, a2):
             if count == 0:
                 state = "L004"
                 continue
+            trace.append(("copy", count, t8, a2 - out_start, a1 - src_start, t0 & 0xFFFFFFFF))
             while True:  # L002
                 src = (a2 - t8) & 0xFFFFFFFF
                 byte = rd(src)
@@ -101,6 +108,7 @@ def decode(ram, a0, a1, a2):
                     break
             state = "L004"
         elif state == "L003":
+            trace.append(("lit", a2 - out_start, a1 - src_start))
             wr(a2, rd(a1))
             a1 += 1
             a2 += 1
@@ -143,6 +151,12 @@ def main():
               % (result, written, end, a3))
     except Overflow as over:
         print("decode check: the copy ran past the end of RAM, at 0x%08X" % over.args[0])
+    size = int.from_bytes(ram[(a0 + 4) & 0x1FFFFFF:(a0 + 8) & 0x1FFFFFF], "little")
+    print("decode check: the header's size %d (0x%X); the source bytes at a1+8: %s"
+          % (size, size, bytes(ram[(a1 + 8) & 0x1FFFFFF:(a1 + 8 + 24) & 0x1FFFFFF]).hex()))
+    print("decode check: the last operations (kind, ...):")
+    for op in trace[-14:]:
+        print("decode check:   " + " ".join(str(x) for x in op))
 
 
 if __name__ == "__main__":
