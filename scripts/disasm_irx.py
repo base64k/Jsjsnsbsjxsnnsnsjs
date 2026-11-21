@@ -36,13 +36,16 @@ def main():
                 continue
             address = segment["p_vaddr"] + offset
             data = segment.data()
-            for ins in md.disasm(data, address):
-                decoded += 1
-                if len(first) < 40:
-                    first.append("%08X: %-8s %s" % (ins.address, ins.mnemonic, ins.op_str))
-                if start <= ins.address <= end:
-                    shown += 1
-                    print("%08X: %-8s %s" % (ins.address, ins.mnemonic, ins.op_str))
+            # One word at a time: a word the decoder does not know (data, or an
+            # encoding it lacks) is skipped, not the rest of the segment.
+            for at in range(0, len(data) - 3, 4):
+                for ins in md.disasm(data[at:at + 4], address + at):
+                    decoded += 1
+                    if len(first) < 40:
+                        first.append("%08X: %-8s %s" % (ins.address, ins.mnemonic, ins.op_str))
+                    if start <= ins.address <= end:
+                        shown += 1
+                        print("%08X: %-8s %s" % (ins.address, ins.mnemonic, ins.op_str))
         print("decoded %d instructions, %d in the range" % (decoded, shown))
         if not shown:
             print("the first instructions decoded, for the layout:")
