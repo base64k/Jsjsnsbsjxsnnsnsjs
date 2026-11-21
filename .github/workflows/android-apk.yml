@@ -495,7 +495,6 @@ jobs:
             games/up/build/smoke/summary.txt
             games/up/build/smoke/frames
             games/up/build/port/report.txt
-            games/up/build/smoke/ram.bin
           if-no-files-found: ignore
           retention-days: 30
 
