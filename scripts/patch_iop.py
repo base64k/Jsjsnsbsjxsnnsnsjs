@@ -16,6 +16,8 @@ way the other patches do: idempotent, guarded by a marker per patch.
   sifcmd   sceSifBindRpc, sceSifCallRpc, for the IOP's own calls to a server:
            the bind and the call are logged, and a call to a server the host
            does not run answers with an error instead of blocking
+  WaitSema with no thread to block (a command handler): the other threads
+           run until the semaphore is given, instead of the call failing
 
 The engine is not changed upstream. Run it before any build of the PC
 reference or the Android library, and before the smoke test:
@@ -192,6 +194,37 @@ OTHER_REPLACEMENT = """    for (u32 i = 0; i < size; ++i) vm.Write(dest + i, u32
     }
     return Ret(c, 0);"""
 
+# WaitSema with no thread to block (a command handler, sceSifAddCmdHandler's,
+# runs as an interrupt with no current thread): the engine refused the wait
+# (KE_CAN_NOT_WAIT), so the caller took the lock without the other thread ever
+# giving it. Here the other threads run until the semaphore is given, as the
+# IOP does while a thread waits (the GoW port's fix, ps2recomp-iop-sound.patch).
+WAIT_ANCHOR = "    if (!vm.Block(c, Wait::Sema, found->first)) return Ret(c, u32(KE_CAN_NOT_WAIT));"
+WAIT_MARKER = "// port: WaitSema with no thread to block (scripts/patch_iop.py)"
+WAIT_REPLACEMENT = """    // port: WaitSema with no thread to block (scripts/patch_iop.py)
+    if (vm.in_interrupt || !vm.Current()) {
+        const u32 id = found->first;
+        for (int round = 0; round < 256; ++round) {
+            const auto now = vm.semaphores.find(id);
+            if (now == vm.semaphores.end()) return Ret(c, u32(KE_UNKNOWN_SEMID));
+            if (now->second.count > 0) {
+                --now->second.count;
+                now->second.taker = vm.current;
+                now->second.taker_ra = c.r[31];
+                now->second.taken_us = vm.NowUs();
+                return Ret(c, KE_OK);
+            }
+            iop::Run(20'000'000);              // the other threads, until one gives it
+        }
+        return Ret(c, u32(KE_SEMA_ZERO));
+    }
+    if (!vm.Block(c, Wait::Sema, found->first)) return Ret(c, u32(KE_CAN_NOT_WAIT));"""
+
+# WaitSema runs the other threads through iop::Run, declared in ps2host/iop_vm.h.
+INCLUDE_ANCHOR = '#include "ps2host/profile.h"\n'
+INCLUDE_MARKER = '#include "ps2host/iop_vm.h"'
+INCLUDE_REPLACEMENT = '#include "ps2host/profile.h"\n#include "ps2host/iop_vm.h"\n'
+
 TABLE_ANCHOR = "const Map& Table() {"
 
 ENTRIES_ANCHOR = '        {{"sifcmd", 23}, SifGetOtherData},\n'
@@ -220,6 +253,8 @@ def main():
         (TABLE_ANCHOR, FUNCTIONS + TABLE_ANCHOR, FUNCTIONS_MARKER),
         (ENTRIES_ANCHOR, ENTRIES, ENTRIES_MARKER),
         (OTHER_ANCHOR, OTHER_REPLACEMENT, OTHER_MARKER),
+        (WAIT_ANCHOR, WAIT_REPLACEMENT, WAIT_MARKER),
+        (INCLUDE_ANCHOR, INCLUDE_REPLACEMENT, INCLUDE_MARKER),
     ]
     changed = False
     for anchor, replacement, marker in edits:
