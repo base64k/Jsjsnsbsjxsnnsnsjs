@@ -466,6 +466,7 @@ jobs:
           {
             echo "module: ${f:-none}"
             echo "lines: $(wc -l < build/irx/disasm.txt 2>/dev/null || echo 0)"
+            head -c 1500 build/irx/disasm.txt 2>/dev/null || true
           } > build/irx/diag.txt 2>&1 || true
           cat build/irx/diag.txt || true
 
