@@ -279,3 +279,28 @@ the smoke artifact, but the sandbox cannot download artifacts (its network
 does not reach the Actions blob storage). So a test of the decoder on the real
 bytes has to run inside CI: a Python transcription of `0x0032DFA0`, fed with the
 dumped RAM, compared against what the engine did.
+
+### The decoder, checked in Python on the real RAM (CI runs 44934743109, 44936245837)
+
+`scripts/decode_check.py` runs a transcription of `0x0032DFA0` on the RAM the
+run left, with the arguments of its last call (from the watch).
+
+- Run 44934743109 (commit 271aafc): the Python copy overruns the RAM at exactly
+  `0x02000000`, as the engine did. The lifted code is therefore not the cause:
+  the engine and the listing agree, and the bytes or the arguments are wrong.
+- Run 44936245837 (commit 0746c40): the same check decoded a 4-byte chunk
+  cleanly, and the run stopped elsewhere (a read at `0x08C20FB0`), on a
+  different path (`0x3078F0`, `0x30A240`, `0x3097C0`).
+- So the runs differ from one to the next: the game's path depends on timing.
+
+The cause is probably the clock. The IOP's time is the host's clock
+(`engine/host/src/iop_vm.cpp`: `Vm::NowUs()` = wall-clock since start). The
+IOP's alarms, delays, hard timers and sound interrupts all compare with it,
+so the order in which the IOP and the EE run changes with the machine's speed.
+The sound driver's bank data is produced on that timeline, so a chunk can be
+read before it is complete (or with the wrong header).
+
+The fix is in the engine's IOP scheduler (`Run()`): a virtual clock from the
+IOP's instruction count (`vm.instructions`), advanced also when the IOP is idle
+(jump to the next alarm), so nothing waits forever. It changes the scheduler's
+timing, so it needs its own tests and a run before it is trusted.
