@@ -167,3 +167,38 @@ stage in CI). The likely cause is the EE expecting real answers from the sound
 driver's servers (0x01000001, 0x01000002) and getting zeros. Next: name the EE
 functions in the stack (the derive stage's names), and find what the EE reads
 from the driver's replies before it writes through them.
+
+### Where the 0x02000000 write comes from (runs 44892423771 .. 44898640089, checks 23-27)
+
+The PC reference run with one round (`smoke_rounds=1`) stops in the EE with
+`a write at 0x02000000, outside guest memory`. Traced with `--watch`,
+`--watch-write` (host options, `UP_HOST_ARGS`) and `scripts/patch_trace.py`
+(memory behind watched functions' pointers):
+
+- The count reader `func_00410C60` is called by `func_003079C0` (through
+  `func_00307AF0`'s caller chain). Its first calls read sane counts from the
+  stream (1, 2, 3, ...). It is not the source.
+- `func_003079C0` reads a 24-byte record header from the stream object `s2`
+  (`lw a1,0(a1)` = cursor, copied by `func_002E05B0`), gets a table index from
+  `func_0030B9A0`, then calls `func_0032DE80` with `a2 = s2[+4]` as the byte
+  count.
+- `func_0032DE80` is the `UnPack_Z.cpp` unpacker: it reads an 8-byte header
+  (two little-endian words: unpacked size, packed size); it allocates only when
+  `state[0] == 0`, then calls `func_0032DFA0` (the byte copy/decode loop) with
+  `state[0]` as the count.
+- The failing call has `s2[+4] = 0x01F78100`, a buffer base pointer, where a byte
+  count belongs. The copy then runs past the end of guest RAM at 0x02000000.
+- `s2[+4]` is written by `func_004C49A0` (`0x00AD753C <- 0x01F9F180`, then
+  `0x01F8F180`; the two differ by 0x10000, one 64 KB stream block). The value
+  comes from a table indexed by the slot at `s2+0x28`.
+- `func_004C49A0` is a state machine. It calls methods through the object at
+  `+0x154` (the sound driver's interface) and uses counters at `+0x2c`/`+0x30`.
+  Its caller chain (`0x0041B550`, `0x00356A60`, `0x00426E00`, `0x00426350`,
+  `0x0032EAA0`, `0x0032F1B0` "BSource User.tsc") is the sound/stream path.
+
+Not yet established: which sound-driver reply (servers 0x01000001 and
+0x01000002, procedures 513, 768, 1797, 1808) makes the state machine take the
+branch that writes a pointer into the count field. The port answers the
+driver's server 0x01000002 with the stand-in flag (patch_iop.py), so the replies
+the EE reads may be wrong. Next: log the replies the host sends to the EE's
+SifCallRpc for those servers, and check them against the driver's own code.
