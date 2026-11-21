@@ -265,3 +265,17 @@ and `--peek` on the struct and the source.
   looks like a count. The next thing to check: what the caller reads from
   `0x007BD3D0` (its `$s2` struct: `0x1000`, `0x0F29`, `0x007BDC50`, `0x007CDC60`,
   `0x00BE4E20`, `0x00BE52A0`) to choose the source and the size of each chunk.
+
+### The fast checks (no CI): the lifter's arithmetic for the decoder
+
+The unpacker's instructions were checked against the engine's translator
+(`engine/ps2decomp/lift.py`): `sll`/`srl`/`sra` (32-bit, sign-extended),
+`sllv`/`srlv`/`srav` (amount `& 31`), `addu`/`addiu`/`subu`, `movz`/`movn`,
+`sltu`, and `bgez` (tests the full 64-bit register, which is right for the
+R5900). All match the MIPS semantics, so the lifter is not the cause.
+
+The EE RAM dump (`--dump-ram`, commit a-series run 44926284513) is written to
+the smoke artifact, but the sandbox cannot download artifacts (its network
+does not reach the Actions blob storage). So a test of the decoder on the real
+bytes has to run inside CI: a Python transcription of `0x0032DFA0`, fed with the
+dumped RAM, compared against what the engine did.
