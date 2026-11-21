@@ -339,3 +339,13 @@ The engine already has a scripted mode, `--virtual-time`: the clock is virtual
 Next: find this chunk on the disc (the header `00000800 000002CE` and the
 control word `A7171050`), which tells the file, the neighbouring chunks and the
 window the decoder had. That needs a CI step that searches the disc image.
+
+### The chunk is not on the disc in that form (run 44947019649, commit 896ddd3)
+
+`scripts/find_chunk.py` searched the 1.44 GB image for the chunk's header and
+first control word (`00000800000002CE A7171050`): not found. So the chunk the
+decoder reads is not stored raw at that point on the disc: an earlier stage
+produces it (the bank is decoded or assembled before this decoder runs), or the
+disc's copy is in another layout. The next step is to find where those bytes
+come from in RAM before the decoder: a `--watch-write` on the chunk's source
+across the earlier calls, not the disc.
