@@ -304,3 +304,38 @@ The fix is in the engine's IOP scheduler (`Run()`): a virtual clock from the
 IOP's instruction count (`vm.instructions`), advanced also when the IOP is idle
 (jump to the next alarm), so nothing waits forever. It changes the scheduler's
 timing, so it needs its own tests and a run before it is trusted.
+
+### The virtual clock (commits e8ce2d0, CI 44941911192 and 44943455752)
+
+The engine already has a scripted mode, `--virtual-time`: the clock is virtual
+(`SetVirtualClock`, `AdvanceClock`), and so is the IOP's `NowUs` (it reads
+`ClockNs`). The smoke run did not use it, so its IOP ran on the host's clock.
+
+- With `--virtual-time` the run hung: "the host is in a loop of its own". The
+  cause: the IOP module loader waits with `while (NowUs() < deadline)`, and on
+  a virtual clock nothing moves `NowUs` during that wait.
+- `scripts/patch_iop_clock.py` fixes it: the loader's bound is the host's time
+  (steady clock), and each step of the wait moves the virtual clock by 1 ms.
+  Applied by the smoke test and the APK build, before the build.
+- With the patch, the run completes and stops at a read at `0x1791918D`.
+
+### The decoder's input is wrong, and its output overruns into its own input (run 44945634342)
+
+- The last call's source (`0x01F7FCF3`) was written by `0x0032DFA0` itself: the
+  decoder's output (`a2 = 0x01F78100`) runs on past its own input, which is
+  why it overran. The header is fine: size `0x800`, compressed `0x2CE`, then
+  the control word `0xA7171050`.
+- The decoder's first copy refers back 4097 bytes from the start of its output,
+  before the output begins. A stream written without a window cannot do that, so
+  either the copies reach into the previous chunks' output (a window the game
+  keeps around the output), or the format is read differently from the listing.
+- `scripts/decode_check.py` (in CI) now prints: the chunk's end (how much input
+  a chunk of this size uses, against the compressed size), the first operations,
+  and the 16 bytes before the output.
+- A search over the usual variants (byte order, format bits, the +1 distance,
+  the count) found no variant that decodes the 64 known bytes without a
+  reference before the output start. So the window is the likely missing piece.
+
+Next: find this chunk on the disc (the header `00000800 000002CE` and the
+control word `A7171050`), which tells the file, the neighbouring chunks and the
+window the decoder had. That needs a CI step that searches the disc image.
