@@ -508,7 +508,10 @@ jobs:
           mkdir -p build
           : > build/ee_disasm.txt
           D="python3 engine/tools/disasm.py --game games/up"
-          for a in 0x004C49A0 0x0041B550 0x00356A60; do
+          # The innermost frames of the stop's call stack come first: the
+          # fault is in the last of them, not in the functions named here.
+          STOP=$(python3 scripts/stop_functions.py games/up/build/smoke/summary.txt 4 || true)
+          for a in $STOP 0x004C49A0 0x0041B550 0x00356A60; do
             echo "== function $a" >> build/ee_disasm.txt
             $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done
