@@ -49,16 +49,16 @@ def main():
     report = read("games/up/build/port/report.txt")
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     text += section("The EE's code where it stopped (the functions' disassembly)",
-                    read("build/ee_disasm.txt"), 14000)
+                    read("build/ee_disasm.txt"), 26000)
     text += section("The IOP, from its start (each line at most twice)",
-                    iop_first_lines(report), 12000)
-    text += section("Report (end)", report[-14000:] if report else None, 14000, keep="tail")
+                    iop_first_lines(report), 8000)
+    text += section("Report (end)", report[-10000:] if report else None, 10000, keep="tail")
     text += section("Where the module writes the flag it waits for (-0x5108)",
-                    read("build/irx/finds.txt"), 4000)
-    text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1500)
+                    read("build/irx/finds.txt"), 3000)
+    text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
     text += section("The sound driver's code around the bind (ELF addresses)",
                     "\n".join(l for l in (read("build/irx/disasm.txt") or "").splitlines()
-                              if _in_window(l)), 6000)
+                              if _in_window(l)), 3000)
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
     body = {
