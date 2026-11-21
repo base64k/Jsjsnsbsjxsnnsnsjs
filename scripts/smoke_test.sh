@@ -79,6 +79,7 @@ build_reference() {
     # The engine's own patches for what the game's IOP modules import (the same
     # patch the APK's build makes, before it builds).
     python3 scripts/patch_iop.py >/dev/null || return 1
+    python3 scripts/patch_iop_clock.py >/dev/null || return 1
     # The trace of the watched functions' memory (--watch): only prints when asked.
     python3 scripts/patch_trace.py >/dev/null || return 1
     mkdir -p "$GAME/build/smoke"

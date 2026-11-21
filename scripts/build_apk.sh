@@ -182,6 +182,7 @@ if has lib; then
     python3 scripts/patch_android.py
     python3 scripts/patch_language.py
     python3 scripts/patch_iop.py
+    python3 scripts/patch_iop_clock.py
     python3 "$ENGINE/tools/android.py" --game "$GAME" build --abi "$ABI"
 fi
 
@@ -190,6 +191,7 @@ if has apk; then
     python3 scripts/patch_android.py
     python3 scripts/patch_language.py
     python3 scripts/patch_iop.py
+    python3 scripts/patch_iop_clock.py
     LIB="games/up/build/port/android-$([ "$ABI" = arm64-v8a ] && echo arm64 || echo "$ABI")/libup.stripped.so"
     if [ ! -f "$LIB" ]; then
         log "no library yet ($LIB): building it"
