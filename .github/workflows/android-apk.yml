@@ -507,7 +507,7 @@ jobs:
           $D --range 0x004C4B90 0x004C4C00 >> build/ee_disasm.txt 2>&1 || true
           # The whole functions that hold the call sites (where the size is set).
           $D --all -o build/ee_all > build/ee_all.log 2>&1 || true
-          python3 scripts/enclosing.py build/ee_all 0x002E05B0 0x00394F80 0x00410C50 > build/ee_enclosing.txt 2>&1 || true
+          python3 scripts/enclosing.py build/ee_all 0x00366900 > build/ee_enclosing.txt 2>&1 || true
           # Who refers to the function that reads the count (direct calls and table entries).
           { grep -rn -B14 -A2 "func_00410C60\|00410c60" build/ee_all || true; } | head -c 12000 > build/ee_refs.txt
 
