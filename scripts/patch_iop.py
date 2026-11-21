@@ -151,6 +151,11 @@ Outcome SifBindRpc(Vm& vm, Context& c) {
     const u32 client = A(vm, c, 0), server = A(vm, c, 1);
     const u32 record = vm.Allocate(64);
     if (client) vm.Write(client, record, 4);
+    // A stand-in, not the driver's own handshake (not found yet): ZNASND.IRX
+    // polls the word at 0x1AEF8 (its -0x5108 from 0x20000) after each bind,
+    // and nothing in the module stores to it; the bind of server 0x01000002
+    // sets it here so that the poll goes on. Revisit when the handshake is known.
+    if (server == 0x01000002u) vm.Write(0x0001AEF8u, 1, 4);
     if (!PortLoggedBinds[server]) {
         PortLoggedBinds[server] = true;
         Log("SIF: IOP binds the server " + std::to_string(server) + " (not run by the host: an empty record)");

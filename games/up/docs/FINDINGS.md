@@ -147,3 +147,12 @@ the driver prints `Check that ZnaSnd.irx have been loaded...` after each bind
 that answers 0. A bound server answers 1 (the SIF's answer), so the empty
 record now answers 1. The disc is read fine by then: the driver builds its
 file system from the disc's sectors (sceCdRead) before this check.
+
+### The poll's flag (CI report, commit 5e37510)
+
+ZNASND.IRX's poll (IOP 0x10768-0x107C8) binds server 0x01000002, then reads the
+word at 0x1AEF8 and, while it is zero, prints `Check that ZnaSnd.irx have been
+loaded...` and retries after a delay. No instruction in the module stores to
+that word by its literal address, so the handshake that sets it is not found
+yet. A stand-in is in patch_iop.py: the bind of 0x01000002 sets the word. This
+is a shim, not the driver's protocol; sound may stay silent until the protocol is known.
