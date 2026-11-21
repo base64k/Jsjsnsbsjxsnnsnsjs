@@ -32,6 +32,18 @@ def section(title, body, budget, keep="head"):
     return "\n## %s\n```\n%s\n```" % (title, body)
 
 
+def write_lines(report):
+    """The stores to the watched addresses, from the start of the run (each at most twice)."""
+    if report is None:
+        return None
+    seen, out = {}, []
+    for line in report.splitlines():
+        if line.startswith("[write]") and seen.get(line, 0) < 2:
+            seen[line] = seen.get(line, 0) + 1
+            out.append(line)
+    return "\n".join(out) if out else None
+
+
 def watch_lines(report):
     """The trace's lines (--watch), each at most three times, from the start of the run."""
     if report is None:
@@ -65,6 +77,8 @@ def main():
                     read("build/ee_disasm.txt"), 12000)
     text += section("The watched functions (--watch): their arguments and the memory behind them",
                     watch_lines(report), 14000, keep="tail")
+    text += section("The stores to the watched addresses (--watch-write): who fills them",
+                    write_lines(report), 9000)
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 5000)
     text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")
