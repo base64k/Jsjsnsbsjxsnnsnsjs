@@ -39,7 +39,39 @@ BLOCK = """    // port: the memory behind a watched function's pointers (scripts
 """
 
 
+# The reply of an RPC that a module served: its first words, traced (--iop-trace).
+IOP_VM = os.path.join(ROOT, "engine", "host", "src", "iop_vm.cpp")
+REPLY_ANCHOR = "            const u32 answer = best->c.r[2];\n"
+REPLY_MARKER = "// port: the words of an RPC reply (scripts/patch_trace.py)"
+REPLY_BLOCK = REPLY_ANCHOR + """            // port: the words of an RPC reply (scripts/patch_trace.py)
+            if (vm.trace) {
+                std::fprintf(stderr, "[iop] RPC reply 0x%08X procedure %u:", unsigned(vm.rpc_servers[best->serving.server].sid),
+                             unsigned(best->serving.procedure));
+                for (u32 i = 0; answer && i < 32 && i < best->serving.receive_size; i += 4)
+                    std::fprintf(stderr, " %08X", unsigned(vm.Read(answer + i, 4)));
+                std::fprintf(stderr, " (%u bytes out)\\n", unsigned(best->serving.receive_size));
+            }
+"""
+
+
+def patch_iop_vm():
+    if not os.path.isfile(IOP_VM):
+        sys.exit("patch_trace: %s is missing (the engine submodule?)" % IOP_VM)
+    with open(IOP_VM, encoding="utf-8") as handle:
+        text = handle.read()
+    if REPLY_MARKER in text:
+        print("patch_trace: iop_vm.cpp already patched")
+        return
+    if text.count(REPLY_ANCHOR) != 1:
+        sys.exit("patch_trace: %s: the reply's place is there %d times" % (IOP_VM, text.count(REPLY_ANCHOR)))
+    text = text.replace(REPLY_ANCHOR, REPLY_BLOCK, 1)
+    with open(IOP_VM, "w", encoding="utf-8") as handle:
+        handle.write(text)
+    print("patch_trace: iop_vm.cpp patched")
+
+
 def main():
+    patch_iop_vm()
     if not os.path.isfile(HOST):
         sys.exit("patch_trace: %s is missing (the engine submodule?)" % HOST)
     with open(HOST, encoding="utf-8") as handle:

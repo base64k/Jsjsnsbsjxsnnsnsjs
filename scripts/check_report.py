@@ -32,6 +32,14 @@ def section(title, body, budget, keep="head"):
     return "\n## %s\n```\n%s\n```" % (title, body)
 
 
+def rpc_lines(report):
+    """The RPC requests to the IOP's servers and their replies, from the start of the run."""
+    if report is None:
+        return None
+    out = [l for l in report.splitlines() if "RPC 0x" in l or "RPC reply" in l]
+    return "\n".join(out) if out else None
+
+
 def write_lines(report):
     """The stores to the watched addresses, from the start of the run (each at most twice)."""
     if report is None:
@@ -77,6 +85,8 @@ def main():
                     read("build/ee_disasm.txt"), 12000)
     text += section("The watched functions (--watch): their arguments and the memory behind them",
                     watch_lines(report), 14000, keep="tail")
+    text += section("The sound driver's RPC requests and replies (the words sent and answered)",
+                    rpc_lines(report), 7000)
     text += section("The stores to the watched addresses (--watch-write): who fills them",
                     write_lines(report), 9000)
     text += section("The IOP, from its start (each line at most twice)",
