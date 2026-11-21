@@ -227,3 +227,24 @@ already IOP addresses.
 Not resolved: what the EE does with the replies, and what the driver's real
 answers should be (its initialisation, which the stand-in skips). Without that,
 the replies are a guess, and the stream's sizes that come from them are wrong.
+
+### The unpacker the stop is in (CI report, commit c64f7eb, run 44917197356)
+
+The stop's call stack (innermost last): `0x004C49A0` → `0x003078A0` →
+`0x003079C0` → `0x0032DE80` («Anonymous Alloc» string hint: reads a 4-byte
+size from the source, then allocates) → `0x0032DFA0`, an LZ-style decoder
+(a 0x3FFF ring window, copies into the output with `sb ..., 0($a2)` until
+`a2 == a3`, where `a3 = a2 + size` from the header at `4($a0)`).
+
+- Commit c64f7eb: "a write at 0x02000000, outside guest memory". 0x02000000
+  is one past the end of the EE's 32 MB RAM, so the decoder ran its output off
+  the end of memory: the output pointer or the size it was given is wrong.
+- Commit 72bd0ff: "a read at 0x1B080809" with the stack ending in
+  `0x003079C0` (the decoder's caller). The same chain, so the same cause: the
+  caller hands the decoder a bad source or destination.
+- The two stops differ between runs of the same code: the run is not fully
+  deterministic (threads and timing), so both should be treated as one bug.
+
+The next step: find where the caller `0x003079C0` (its argument struct `$s2`,
+the `4($s2)` field passed as `$a2`) gets the destination, and which value is
+wrong, with a `--watch` on that struct.
