@@ -178,6 +178,20 @@ Outcome SifCallRpc(Vm& vm, Context& c) {
 
 '''
 
+# sceSifGetOtherData fills its SifRpcReceiveData_t (source, destination and size
+# at +0x10): the sound driver reads the bank it asked for from there. The engine
+# copies the bytes and leaves the record empty.
+OTHER_ANCHOR = "    for (u32 i = 0; i < size; ++i) vm.Write(dest + i, u32(ee.Read(source + i, 1)), 1);\n    return Ret(c, 0);"
+OTHER_MARKER = "// port: sceSifGetOtherData's receive data (scripts/patch_iop.py)"
+OTHER_REPLACEMENT = """    for (u32 i = 0; i < size; ++i) vm.Write(dest + i, u32(ee.Read(source + i, 1)), 1);
+    // port: sceSifGetOtherData's receive data (scripts/patch_iop.py)
+    if (const u32 rd = A(vm, c, 0)) {
+        vm.Write(rd + 0x10, source, 4);
+        vm.Write(rd + 0x14, dest, 4);
+        vm.Write(rd + 0x18, size, 4);
+    }
+    return Ret(c, 0);"""
+
 TABLE_ANCHOR = "const Map& Table() {"
 
 ENTRIES_ANCHOR = '        {{"sifcmd", 23}, SifGetOtherData},\n'
@@ -205,6 +219,7 @@ def main():
     edits = [
         (TABLE_ANCHOR, FUNCTIONS + TABLE_ANCHOR, FUNCTIONS_MARKER),
         (ENTRIES_ANCHOR, ENTRIES, ENTRIES_MARKER),
+        (OTHER_ANCHOR, OTHER_REPLACEMENT, OTHER_MARKER),
     ]
     changed = False
     for anchor, replacement, marker in edits:
