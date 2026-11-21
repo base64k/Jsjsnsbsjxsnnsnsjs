@@ -462,6 +462,7 @@ jobs:
           f="$(find build/irx -iname 'ZNASND.IRX*' -type f | head -1)"
           if [ -n "$f" ]; then
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10600 0x10800 > build/irx/disasm.txt 2>&1 || true
+            build/irx/venv/bin/python scripts/disasm_irx.py "$f" --find '-0x5108(' > build/irx/finds.txt 2>&1 || true
           fi
           {
             echo "module: ${f:-none}"
@@ -511,6 +512,9 @@ jobs:
                   first.append(l)
           text = ("## Summary\n```\n" + summary + "\n```\n## The IOP, from its start (each line at most twice)\n```\n"
                   + "\n".join(first[:250]) + "\n```\n## Report (end)\n```\n" + report + "\n```")
+          finds = pathlib.Path("build/irx/finds.txt")
+          if finds.exists():
+              text += "\\n## Where the module writes the flag it waits for (-0x5108)\\n```\\n" + finds.read_text(errors="replace")[:9000] + "\\n```"
           diag = pathlib.Path("build/irx/diag.txt")
           if diag.exists():
               text += "\n## The disassembly's own diagnostics\n```\n" + diag.read_text(errors="replace")[:3000] + "\n```"
