@@ -26,6 +26,14 @@ on:
         description: "The ABIs to build (arm64-v8a for phones, x86_64 for the emulator)"
         default: "arm64-v8a"
         type: string
+      smoke_rounds:
+        description: "The PC reference run's rounds (each one translates the code the run found, then runs again)"
+        default: "8"
+        type: string
+      host_args:
+        description: "Extra options for the PC reference run's host (a diagnosis, e.g. --watch 00410C60 --watch-write 0x...)"
+        default: ""
+        type: string
       cache:
         description: "Keep the disc image and the decompiled code in the runner's cache (they never enter the repository)"
         default: true
@@ -74,7 +82,7 @@ jobs:
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
       # The smoke test's rounds: each one translates the code the run found
       # copied at run time and runs the game again.
-      UP_SMOKE_ROUNDS: '8'
+      UP_SMOKE_ROUNDS: ${{ inputs.smoke_rounds || '8' }}
       UP_SMOKE_SECONDS: '60'
       # The signing key, in the workspace (the cache keeps it, so that a new
       # APK installs over the one the player already has).
@@ -337,6 +345,8 @@ jobs:
       - name: The PC reference build and a headless run (how far the game gets)
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
+        env:
+          UP_HOST_ARGS: ${{ inputs.host_args }}
         run: bash scripts/smoke_test.sh
 
       - name: The PC reference build - keep it
@@ -486,30 +496,19 @@ jobs:
           retention-days: 30
 
       # The EE's code where the game stopped, disassembled from the analysis
-      # (the functions of the stack and the last call): for reading the stop.
+      # (the functions the porting work is about). Only the functions named
+      # below are rendered: rendering them all takes minutes.
       - name: The EE's code where the game stopped
-        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: |
           mkdir -p build
           : > build/ee_disasm.txt
           D="python3 engine/tools/disasm.py --game games/up"
-          for a in 0x00410F60 0x0032DE80 0x003078A0 0x0032F1B0; do
+          for a in 0x00410F60 0x0032DE80 0x003078A0 0x0032F1B0 0x00366900 0x00410C60 0x002A64D0; do
             echo "== function $a" >> build/ee_disasm.txt
             $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done
-          # The code around the calls (the callers of the allocation that failed).
-          echo "== code before the allocation's callers (0x00410DC0-0x00410F60)" >> build/ee_disasm.txt
-          $D --range 0x00410DC0 0x00410F60 >> build/ee_disasm.txt 2>&1 || true
-          echo "== code around the call from 0x00307ACC" >> build/ee_disasm.txt
-          $D --range 0x00307A70 0x00307B00 >> build/ee_disasm.txt 2>&1 || true
-          echo "== code around the call from 0x004C4BD0" >> build/ee_disasm.txt
-          $D --range 0x004C4B90 0x004C4C00 >> build/ee_disasm.txt 2>&1 || true
-          # The whole functions that hold the call sites (where the size is set).
-          $D --all -o build/ee_all > build/ee_all.log 2>&1 || true
-          python3 scripts/enclosing.py build/ee_all 0x00366900 > build/ee_enclosing.txt 2>&1 || true
-          # Who refers to the function that reads the count (direct calls and table entries).
-          { grep -rn -B14 -A2 "func_00410C60\|00410c60" build/ee_all || true; } | head -c 12000 > build/ee_refs.txt
 
       # The same report as a check run on the commit: the artifact and the
       # logs are not always downloadable from outside, the API is.

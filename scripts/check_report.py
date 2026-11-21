@@ -32,6 +32,19 @@ def section(title, body, budget, keep="head"):
     return "\n## %s\n```\n%s\n```" % (title, body)
 
 
+def watch_lines(report):
+    """The trace's lines (--watch), each at most three times, from the start of the run."""
+    if report is None:
+        return None
+    seen, out = {}, []
+    for line in report.splitlines():
+        if line.startswith("[watch"):
+            if seen.get(line, 0) < 3:
+                seen[line] = seen.get(line, 0) + 1
+                out.append(line)
+    return "\n".join(out) if out else None
+
+
 def iop_first_lines(report):
     """The IOP's lines from the start of the run, each at most twice."""
     if report is None:
@@ -50,10 +63,8 @@ def main():
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     text += section("The EE's code where it stopped (the functions' disassembly)",
                     read("build/ee_disasm.txt"), 12000)
-    text += section("The whole EE functions around the count's reader",
-                    read("build/ee_enclosing.txt"), 16000)
-    text += section("Who refers to the function that reads the count",
-                    read("build/ee_refs.txt"), 7000)
+    text += section("The watched functions (--watch): their arguments and the memory behind them",
+                    watch_lines(report), 14000, keep="tail")
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 5000)
     text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")

@@ -79,6 +79,8 @@ build_reference() {
     # The engine's own patches for what the game's IOP modules import (the same
     # patch the APK's build makes, before it builds).
     python3 scripts/patch_iop.py >/dev/null || return 1
+    # The trace of the watched functions' memory (--watch): only prints when asked.
+    python3 scripts/patch_trace.py >/dev/null || return 1
     mkdir -p "$GAME/build/smoke"
     local log="$GAME/build/smoke/build.log"
     if ! cmake -S "$GAME/port" -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \
@@ -98,12 +100,16 @@ run_game() {
     mkdir -p "$GAME/build/smoke/frames" "$(dirname "$REPORT")" "$(dirname "$DISCOVERED")"
     local -a headless=()
     command -v xvfb-run >/dev/null 2>&1 && headless=(xvfb-run -a)
+    # Extra options for the host (UP_HOST_ARGS, e.g. "--watch 00410C60"): a diagnosis.
+    local -a extra=()
+    read -r -a extra <<< "${UP_HOST_ARGS:-}"
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
             --iop-trace --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
+            ${extra[@]+"${extra[@]}"} \
             > "$REPORT" 2>&1
     CODE=$?
     set -e
