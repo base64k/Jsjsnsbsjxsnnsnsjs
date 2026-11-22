@@ -551,6 +551,19 @@ jobs:
               | tee -a games/up/build/port/report.txt
           fi
 
+      # Stores into the last call's input from anywhere but the unpacker itself: a load
+      # of the input that happened between the earlier calls and the last one, or none.
+      - name: Stores into the unpacker's input, from other functions
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          if [ -f games/up/build/port/report.txt ]; then
+            { echo "decode src: stores into the watched input (from other than the unpacker)";
+              grep "^\[write\]" games/up/build/port/report.txt | grep -v " in 0x0032DFA0" | head -40;
+              echo "decode src: stores from the unpacker itself: $(grep "^\[write\]" games/up/build/port/report.txt | grep -c " in 0x0032DFA0")";
+            } | tee -a games/up/build/port/report.txt
+          fi
+
       # The unpacker's chunk on the disc itself (its header and first control
       # word), so the file it is in and the bytes around it are known.
       - name: The unpacker's chunk on the disc
