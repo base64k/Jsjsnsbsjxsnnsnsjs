@@ -89,7 +89,7 @@ def main():
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     # The unpacker's calls, decoded in Python from their own input (scripts/decode_src.py): first, they are short.
     text += section("The unpacker's calls, decoded in Python from their input (scripts/decode_src.py)",
-                    "\n".join(l for l in report.splitlines() if l.startswith("decode src")) if report else None, 6000)
+                    "\n".join(l for l in report.splitlines() if l.startswith("decode src")) if report else None, 9000)
     text += section("The EE's code where it stopped (the functions' disassembly)",
                     read("build/ee_disasm.txt"), 34000)
     text += section("The watched functions (--watch): their arguments and the memory behind them",

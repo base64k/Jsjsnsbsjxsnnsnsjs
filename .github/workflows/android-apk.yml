@@ -539,6 +539,18 @@ jobs:
               | tee -a games/up/build/port/report.txt
           fi
 
+      # The same calls run by the game's own machine code in the engine's R5900
+      # interpreter (scripts/emu_decode.py): the interpreter, Python and the engine
+      # compared, to say which of them is wrong.
+      - name: The unpacker's calls, run by the interpreter (the game's own code)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          if [ -f games/up/build/port/report.txt ] && [ -f games/up/extracted/*.* ] 2>/dev/null; then
+            timeout 1500 python3 scripts/emu_decode.py games/up/build/port/report.txt \
+              | tee -a games/up/build/port/report.txt
+          fi
+
       # The unpacker's chunk on the disc itself (its header and first control
       # word), so the file it is in and the bytes around it are known.
       - name: The unpacker's chunk on the disc

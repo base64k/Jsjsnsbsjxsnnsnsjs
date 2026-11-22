@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Run the game's own machine code for the unpacker (EE 0x0032DFA0) in the engine's R5900
+interpreter (engine/ps2decomp/emu.py), on the input each call saw in the run, and compare.
+
+Three answers for each call: the interpreter (the original code, executed), the Python
+transcription (scripts/decode_check.py), and the engine's translated run (the host's
+[watch-ret] and [watch-out] lines). The interpreter is independent of the translator, so:
+  - interpreter == Python, and the engine differs  -> the translator is wrong on that call;
+  - interpreter != Python                         -> the transcription is wrong;
+  - all three equal                               -> the code and the engine agree.
+
+    python3 scripts/emu_decode.py <report.txt>
+
+It reads the executable from games/up/game.json and games/up/extracted/. The lines it
+prints start with "decode src:" so the report shows them with the other decode lines.
+"""
+
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+sys.path.insert(0, os.path.join(ROOT, "engine"))
+sys.path.insert(0, HERE)
+
+import decode_src  # noqa: E402  (the parsers of the report's lines, and the Python decoder)
+
+from ps2decomp import elf as elf_mod  # noqa: E402
+from ps2decomp import emu, layout  # noqa: E402
+
+FUNCTION = 0x0032DFA0
+RAM_TOP = 0x02000000          # the memory the interpreter covers: all of EE RAM
+STACK_TOP = 0x01FF0000        # below the decoder's argument block at 0x01FFFA80
+OUTPUT_LIMIT = 0x800          # the output compared (the engine's [watch-out] holds this much)
+
+
+def executable():
+    game = json.load(open(os.path.join(ROOT, "games", "up", "game.json")))
+    return os.path.join(ROOT, "games", "up", "extracted", game["executable"])
+
+
+def machine(path):
+    layout.configure(stack_top=STACK_TOP)
+    ef = elf_mod.ElfFile.load(path)
+    section = ef.exec_sections[0]
+    data = ef.section_data(section)
+    return emu.Machine(section.addr, data, total_size=RAM_TOP - section.addr)
+
+
+def main():
+    text = open(sys.argv[1], errors="replace").read()
+    entries = decode_src.calls(text)
+    inputs = decode_src.sources(text)
+    ends = decode_src.returns(text)
+    outs = decode_src.outputs(text)
+    decoder = decode_src.load_decoder()
+    m = machine(executable())
+    print("decode src: the interpreter runs the game's code at 0x%08X, %d calls in the report"
+          % (FUNCTION, len(inputs)))
+    same_all = same_engine = differs = 0
+    shown = 0
+    for k, ((arg, src), entry) in enumerate(zip(inputs, entries)):
+        a0, a1, a2, a3 = entry
+        size = int.from_bytes(arg[4:8], "little")
+        if not (0 < size <= 0x10000):
+            continue
+        # The Python answer, from the same bytes.
+        ram = bytearray(decode_src.RAM_SIZE)
+        ram[a0:a0 + 64] = arg
+        ram[a1:a1 + len(src)] = src
+        copy = bytearray(ram)
+        _, _, _, py_end = decoder.decode(copy, a0, a1, a2)
+        py_out = bytes(copy[a2:a2 + min(size, OUTPUT_LIMIT)])
+        # The interpreter, on the same memory: the argument block, the input, a zeroed output.
+        m.memory.write(a0, arg)
+        m.memory.write(a1, src)
+        m.memory.write(a2, bytes(min(size, OUTPUT_LIMIT)))
+        m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
+        interp_end = m.get(6) & 0xFFFFFFFF
+        interp_out = bytes(m.memory.read(a2, min(size, OUTPUT_LIMIT)))
+        engine_end = ends[k] if k < len(ends) else None
+        engine_out = outs[k] if k < len(outs) and a2 == 0x01F78100 else None
+        interp_matches_python = interp_end == py_end and interp_out == py_out
+        if interp_matches_python:
+            same_all += 1
+        if engine_end is not None and engine_end == interp_end:
+            same_engine += 1
+        else:
+            differs += 1
+        if shown < 12 or not interp_matches_python or (engine_end is not None and engine_end != interp_end):
+            shown += 1
+            if shown <= 40:
+                first = next((i for i in range(len(py_out)) if interp_out[i] != py_out[i]), None)
+                print("decode src: interpreter call %d a2=0x%08X size %d: end 0x%08X (Python 0x%08X, engine %s)%s%s"
+                      % (k, a2, size, interp_end, py_end,
+                         "0x%08X" % engine_end if engine_end is not None else "-",
+                         "" if interp_matches_python else ", differs from Python at byte %s" % first,
+                         "" if engine_out is None or engine_out[:len(interp_out)] == interp_out[:len(engine_out)]
+                         else ", the engine's output differs from the interpreter's"))
+    print("decode src: interpreter and Python agree on %d call(s); the engine agrees with the interpreter on %d, "
+          "differs on %d" % (same_all, same_engine, differs))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:      # shown in the report, not lost to a silent step
+        import traceback
+        print("decode src: interpreter failed: %r" % (error,))
+        traceback.print_exc()
