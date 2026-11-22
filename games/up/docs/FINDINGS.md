@@ -419,3 +419,11 @@ not the stack slot.
 - The value `0xED178058` that `decode_check.py` printed is read from the RAM dump after the run ended. The struct had changed by then (its `+4` word is at `0x01FFFA84`, which no watch covers). So the "input size is about 4 GB" hypothesis is not confirmed. It was a post-mortem read.
 - Still open: the engine's decode of that chunk wrote 54779 bytes against a chunk size of 0x800 (`a2` ended at `0x01F856FB`). The decoder's exit condition at `0x0032DFA0` is what decides this. The report now includes that disassembly.
 - Action: `decode_check.py` should read the struct from the call time (watch-mem), not from the end dump, before it is used as evidence.
+
+## The decoder (0x0032DFA0): its code and the translator (run 45018620616)
+
+- The decoder is LZ-style: a control word (4 bytes, big-endian) per group, a match reads two bytes (`count = (x >> shift) + 3`, distance `(x & mask) + 1`), a literal copies one byte. Its window is 0x3FFF.
+- Its end test is `beq a3, a2` (exact equality, `a3 = a2 + size`). A match copy that jumps past `a3` never meets it, so the loop goes on. This fits the 54779-byte overrun, but it only happens if the input stream is read wrongly, since the game's own data must end exactly.
+- The sign of the control word decides literal (`bgez`) or match. The 32-bit ops before it (`sll`, `addu`, `srav`) sign-extend in the translator: `lifted::Sx32` in `ps2decomp/lift.py` of the engine at 65c46e9. So the sign test is not the cause.
+- The engine's `lb 0xd(a0)` flag guard (`a1 < a2` stop) is the other exit. Not yet checked on the input.
+- Next check: run the decoder in Python (scripts/decode_check.py) on the source bytes at the call time, not the end dump. That tells whether the stream itself decodes to exactly 0x800 bytes. If it does, the fault is in the engine's copy of the game's memory; if not, the input address is wrong.
