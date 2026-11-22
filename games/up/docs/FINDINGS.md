@@ -444,3 +444,12 @@ not the stack slot.
 - Output bytes of call 83 match Python's up to byte 1575. There the engine wrote `0x68`, and Python wrote `0x00` as a literal (an input byte). So the engine read a different input byte at that point, or its control flow left Python's earlier, on data that hides it (zeros). Not the window: the byte is a literal, not a copy.
 - The input snapshot is taken at the call's entry; nothing in the decoder calls out, and the output (`0x01F78100..0x01F78900`) does not overlap the input (`0x01F7FCF3..`). So the engine should see the same bytes.
 - Conclusion so far: the fault is the engine's execution of `0x0032DFA0` on that input (translation of an instruction on a specific bit pattern), not the game's data and not the stream. The next check: run the translated function alone on this input (a harness with the 2 KB input and the struct), and compare its output with Python's byte by byte, with an instruction trace on both sides.
+
+## Run 45055564461: the input of call 83 is overwritten by call 6's output
+
+- Call 6 writes its output at `0x01F78100`, size `0x8AAE` (35566), so it covers `0x01F78100..0x01F80BEE`.
+- Call 83's input starts at `0x01F7FCF3`, which is inside that range (31731 bytes into call 6's output).
+- The write watch over `0x01F7FCF3..0x01F7FDF2` shows stores into it only from the unpacker `0x0032DFA0` (4096 stores). Stores from other functions: none.
+- So the bytes call 83 reads at its call time are call 6's output, not a stream chunk. Interpreter, Python and engine all decode those bytes and all end wrong (the interpreter and engine end near `0x01FFFA90`, the stack).
+- Conclusion: the buffers overlap. Either the heap handed out overlapping blocks (the free-list "bad link" `0x0184xxxx` seen earlier fits this) or the stream for call 83 was placed at the wrong address. The translator and the interpreter both agree with each other, so the fault is in the data layout, not in the code.
+- Next: find the write that corrupts the allocator's free list before call 6, or the first allocation that returns a block overlapping a live block (watch the heap block headers near `0x01F78100`).
