@@ -51,7 +51,7 @@ def write_lines(report):
     lines = [l for l in report.splitlines() if l.startswith("[write]")]
     bad_value = BAD_VALUE_RE.search(read("games/up/build/smoke/summary.txt") or "")
     bad = [l for l in lines if bad_value and (" <- 0x%s " % bad_value.group(1)) in l][:20]
-    out = bad + [l for l in lines[-40:] if l not in bad]
+    out = bad[:8] + [l for l in lines[-25:] if l not in bad[:8]]
     return "\n".join(out) if out else None
 
 
@@ -91,7 +91,7 @@ def main():
     text += section("The sound driver's RPC requests and replies (the words sent and answered)",
                     rpc_lines(report), 3000)
     text += section("The stores to the watched addresses (--watch-write): who fills them",
-                    write_lines(report), 6000)
+                    write_lines(report), 9000)
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 3000)
     text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")
