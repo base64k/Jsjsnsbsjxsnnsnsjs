@@ -39,11 +39,14 @@ BLOCK = """    // port: the memory behind a watched function's pointers (scripts
         // (scripts/decode_src.py decodes them in Python).
         if (address == 0x0032DFA0u) {
             const u32 arg = u32(c.r[4]), src = u32(c.r[5]);
-            if (arg + 64 <= kRam && src + 0x400 <= kRam) {
+            // The input: the compressed size the block names (its word at +8) and its 8 header bytes, up to 64 KB.
+            const u32 comp = arg + 12 <= kRam ? u32(GuestMemory().Read(arg + 8, 4)) : 0;
+            const u32 n = (comp > 0 && comp < 0x10000) ? comp + 16 : 0x400;
+            if (arg + 64 <= kRam && src + n <= kRam) {
                 std::fprintf(stderr, "[watch-src] a0 %08X", unsigned(arg));
                 for (u32 i = 0; i < 64; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(arg + i, 1)));
                 std::fprintf(stderr, "\\n[watch-src] a1 %08X", unsigned(src));
-                for (u32 i = 0; i < 0x400; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(src + i, 1)));
+                for (u32 i = 0; i < n; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(src + i, 1)));
                 std::fprintf(stderr, "\\n");
             }
         }
