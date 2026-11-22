@@ -427,3 +427,11 @@ not the stack slot.
 - The sign of the control word decides literal (`bgez`) or match. The 32-bit ops before it (`sll`, `addu`, `srav`) sign-extend in the translator: `lifted::Sx32` in `ps2decomp/lift.py` of the engine at 65c46e9. So the sign test is not the cause.
 - The engine's `lb 0xd(a0)` flag guard (`a1 < a2` stop) is the other exit. Not yet checked on the input.
 - Next check: run the decoder in Python (scripts/decode_check.py) on the source bytes at the call time, not the end dump. That tells whether the stream itself decodes to exactly 0x800 bytes. If it does, the fault is in the engine's copy of the game's memory; if not, the input address is wrong.
+
+## The decoder overwrites its own input (run 45024682638)
+
+- `--watch-write 01F7F9DB` and `--watch-write 01F7FCF3`: the only stores are from the decoder `0x0032DFA0` (called from `0x0032DE80` < `0x003079C0`). No DMA, loader or other function writes there. So the decoder's output ran into the input of the chunk it was reading.
+- Call 1 (struct `0x01FFFA80`, size `0x400`, compressed `0x2A0`, output `0x01F78100`, input `0x01F7F9DB`): its first writes at `0x01F7F9DB` are about 30939 bytes past the output start. A correct decode of 0x400 bytes never gets there. So the first chunk already goes wrong, and the overrun is not a later accident.
+- The overrun cannot be stopped by the exit test alone. A match that jumps past `a3` makes `beq a3,a2` never true, so the loop runs on. The fault is an early wrong token, not the end test.
+- `scripts/find_chunk.py` searched the disc image for `00000800000002CE A7171050` and did not find it (image 1444151296 bytes, 2048-byte sectors). So the stream in RAM is not a verbatim copy of a disc chunk. Either a further packed layer comes first, or the bytes are changed on their way to RAM.
+- Next: find the first store that puts the stream's bytes at `0x01F7F9DB` (the writes before the decoder, through the DMA/copy path, which the watch does not show). Then check that the disc's bytes at that source match what the game reads.
