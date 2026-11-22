@@ -85,23 +85,21 @@ def main():
     report = read("games/up/build/port/report.txt")
     text = "## Summary\n```\n%s\n```" % (read("games/up/build/smoke/summary.txt") or "(no summary)")
     text += section("The EE's code where it stopped (the functions' disassembly)",
-                    read("build/ee_disasm.txt"), 22000)
+                    read("build/ee_disasm.txt"), 34000)
     text += section("The watched functions (--watch): their arguments and the memory behind them",
-                    watch_lines(report), 8000, keep="tail")
+                    watch_lines(report), 4000, keep="tail")
     text += section("The sound driver's RPC requests and replies (the words sent and answered)",
                     rpc_lines(report), 3000)
     text += section("The stores to the watched addresses (--watch-write): who fills them",
-                    write_lines(report), 9000)
+                    write_lines(report), 5000)
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 3000)
-    text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")
+    text += section("Report (end)", report[-4000:] if report else None, 4000, keep="tail")
     text += section("The game's SetupHeap calls (its heap's start and size)",
                     "\n".join(l for l in report.splitlines() if l.startswith("[heap]")) if report else None, 1500)
     text += section("Where the module writes the flag it waits for (-0x5108)",
-                    read("build/irx/finds.txt"), 3000)
+                    read("build/irx/finds.txt"), 1000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
-    text += section("The sound driver's RPC server: the dispatcher (IOP 0x10528) and the procedures' code (0x10A00)",
-                    read("build/irx/disasm.txt"), 3000)
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
     body = {
