@@ -51,7 +51,8 @@ def write_lines(report):
     lines = [l for l in report.splitlines() if l.startswith("[write]")]
     bad_value = BAD_VALUE_RE.search(read("games/up/build/smoke/summary.txt") or "")
     bad = [l for l in lines if bad_value and (" <- 0x%s " % bad_value.group(1)) in l][:20]
-    # The first stores: the ones that fill the address before the stop (a stream\n    # is written long before it is read). Then the last ones, where it stopped.
+    # The first stores: the ones that fill the address before the stop (a stream
+    # is written long before it is read). Then the last ones, where it stopped.
     first = lines[:30]
     out = bad[:8] + [l for l in first if l not in bad[:8]] + [l for l in lines[-10:] if l not in first and l not in bad[:8]]
     return "\n".join(out) if out else None
