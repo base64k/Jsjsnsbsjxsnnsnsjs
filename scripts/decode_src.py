@@ -41,6 +41,11 @@ def calls(text):
     return [tuple(int(v, 16) for v in m) for m in pattern.findall(text)]
 
 
+def returns(text):
+    """Each call's end pointer, as the engine's run left it (the [watch-ret] lines), in order."""
+    return [int(m, 16) for m in re.findall(r"\[watch-ret\] %s end=([0-9A-Fa-f]+)" % re.escape(FUNCTION), text)]
+
+
 def sources(text):
     """Each call's (a0 bytes, a1 bytes) from the [watch-src] lines, in order."""
     a0s, a1s = [], []
@@ -57,6 +62,9 @@ def main():
     decoder = load_decoder()
     entries = calls(text)
     inputs = sources(text)
+    ends = returns(text)
+    engine_match = engine_differ = 0
+    differ_shown = 0
     if not inputs:
         print("decode src: no [watch-src] lines in the report (the trace needs --watch %s)" % FUNCTION)
         return
@@ -84,6 +92,16 @@ def main():
         full, fwritten, fused, fend = decoder.decode(copy, a0, a1, a2)
         if fend != a2 + size:
             overran += 1
+        # The engine's run of the same call: where it left the output pointer.
+        if k < len(ends):
+            if ends[k] == fend:
+                engine_match += 1
+            else:
+                engine_differ += 1
+                if differ_shown < 5:
+                    differ_shown += 1
+                    print("decode src: call %d differs: the engine's end 0x%08X, Python's 0x%08X (size end 0x%08X), "
+                          "a2 0x%08X, input at 0x%08X" % (k, ends[k], fend, a2 + size, a2, a1))
         if shown < 30:
             shown += 1
             print("decode src: call %d a1=0x%08X a2=0x%08X size %d comp %d | to the end: %s, input %d/%d | "
@@ -91,6 +109,8 @@ def main():
                   % (k, a1, a2, size, comp, result, used, comp, full, fend - (a2 + size)))
     print("decode src: %d calls with a chunk header, %d skipped (not a header), %d reached their end exactly, "
           "%d ran past their end" % (plausible, skipped, reached, overran))
+    print("decode src: the engine's end pointer equals Python's for %d call(s), differs for %d"
+          % (engine_match, engine_differ))
     if shown == 0 and plausible:
         print("decode src: no call was shown")
 

@@ -54,6 +54,15 @@ BLOCK = """    // port: the memory behind a watched function's pointers (scripts
 """
 
 
+# The unpacker's end pointer at its return: where the engine's run stopped it.
+RET_ANCHOR = "    if (g_watching && std::find(g_watch.begin(), g_watch.end(), address) != g_watch.end())\n        std::fprintf(stderr, \"[watch] %s returned v0"
+RET_MARKER = "// port: the unpacker's end pointer at its return (scripts/patch_trace.py)"
+RET_BLOCK = """    // port: the unpacker's end pointer at its return (scripts/patch_trace.py)
+    if (g_watching && address == 0x0032DFA0u && std::find(g_watch.begin(), g_watch.end(), address) != g_watch.end())
+        std::fprintf(stderr, "[watch-ret] 0x0032DFA0 end=%08X\\n", unsigned(c.r[6]));
+"""
+
+
 # The reply of an RPC that a module served: its first words, traced (--iop-trace).
 IOP_VM = os.path.join(ROOT, "engine", "host", "src", "iop_vm.cpp")
 REPLY_ANCHOR = "            const u32 answer = best->c.r[2];\n"
@@ -93,16 +102,21 @@ def main():
         text = handle.read()
     if MARKER in text:
         print("patch_trace: host.cpp already patched")
-        return
-    if text.count(ANCHOR) != 1:
-        sys.exit("patch_trace: %s: the place to patch is there %d times (once it must be)"
-                 % (HOST, text.count(ANCHOR)))
-    text = text.replace(ANCHOR, BLOCK + ANCHOR, 1)
-    if text.count(MARKER) != 1:
-        sys.exit("patch_trace: the patch is not in the file exactly once")
+    else:
+        if text.count(ANCHOR) != 1:
+            sys.exit("patch_trace: %s: the place to patch is there %d times (once it must be)"
+                     % (HOST, text.count(ANCHOR)))
+        text = text.replace(ANCHOR, BLOCK + ANCHOR, 1)
+        if text.count(MARKER) != 1:
+            sys.exit("patch_trace: the patch is not in the file exactly once")
+        print("patch_trace: host.cpp patched")
+    if RET_MARKER not in text:
+        if text.count(RET_ANCHOR) != 1:
+            sys.exit("patch_trace: the return's place is there %d times (once it must be)" % text.count(RET_ANCHOR))
+        text = text.replace(RET_ANCHOR, RET_BLOCK + RET_ANCHOR, 1)
+        print("patch_trace: host.cpp return patched")
     with open(HOST, "w", encoding="utf-8") as handle:
         handle.write(text)
-    print("patch_trace: host.cpp patched")
 
 
 if __name__ == "__main__":
