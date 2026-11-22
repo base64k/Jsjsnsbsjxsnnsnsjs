@@ -51,7 +51,7 @@ def outputs(text):
     result = []
     for line in text.splitlines():
         if line.startswith("[watch-out] 0x0032DFA0 at 0x01F78100:"):
-            result.append(bytes(int(v, 16) for v in line.split()[3:]))
+            result.append(bytes(int(v, 16) for v in line.split()[4:]))
     return result
 
 
@@ -138,4 +138,7 @@ def main():
         print("decode src: no call was shown")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as error:      # shown in the report, not lost to a silent step
+        print("decode src: failed: %r" % (error,))
