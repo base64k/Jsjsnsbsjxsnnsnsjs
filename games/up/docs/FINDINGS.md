@@ -393,3 +393,8 @@ not the stack slot.
 - The decoder's back-reference that lands before the output start (earlier
   finding) is still possible, but the watched addresses show no decoder store
   there, so it is not confirmed.
+- The engine's `SetupHeap(start, size)` (`host/src/kernel.cpp`, syscall 0x3D)
+  sets the heap end to `start + size` and returns it, with no check against the
+  stack or the buffers. Next: a `--watch` on the game's `SetupHeap` caller to
+  read its `start` and `size`, and check that `0x01F78100` and `0x0184xxxx`
+  both lie inside that range.
