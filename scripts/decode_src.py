@@ -46,9 +46,9 @@ def sources(text):
     a0s, a1s = [], []
     for line in text.splitlines():
         if line.startswith("[watch-src] a0 "):
-            a0s.append(bytes(int(v, 16) for v in line.split()[4:]))
+            a0s.append(bytes(int(v, 16) for v in line.split()[3:]))
         elif line.startswith("[watch-src] a1 "):
-            a1s.append(bytes(int(v, 16) for v in line.split()[4:]))
+            a1s.append(bytes(int(v, 16) for v in line.split()[3:]))
     return list(zip(a0s, a1s))
 
 
