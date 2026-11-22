@@ -109,7 +109,18 @@ def main():
             python_out = bytes(copy[a2:a2 + n])
             first = next((i for i in range(n) if outs[k][i] != python_out[i]), None)
             if first is not None:
-                out_differ.append((k, first, outs[k][first], python_out[first], size))
+                # Python's operation that wrote the byte: a copy from `dist` back, or a literal.
+                # A copy longer than the output so far reads bytes before the output (the window).
+                op = None
+                for entry in decoder.trace:
+                    if entry[0] == "copy" and entry[3] <= first < entry[3] + entry[1]:
+                        op = "copy of %d from %d back (%s the output start)" % (
+                            entry[1], entry[2], "past" if entry[2] > entry[3] + (first - entry[3]) else "inside")
+                        break
+                    if entry[0] == "lit" and entry[1] == first:
+                        op = "literal"
+                        break
+                out_differ.append((k, first, outs[k][first], python_out[first], size, op))
         # The engine's run of the same call: where it left the output pointer.
         if k < len(ends):
             if ends[k] == fend:
@@ -129,9 +140,9 @@ def main():
           "%d ran past their end" % (plausible, skipped, reached, overran))
     print("decode src: the engine's end pointer equals Python's for %d call(s), differs for %d"
           % (engine_match, engine_differ))
-    for k, first, got, want, size in out_differ[:5]:
-        print("decode src: call %d output differs first at byte %d (of %d): the engine 0x%02X, Python 0x%02X"
-              % (k, first, size, got, want))
+    for k, first, got, want, size, op in out_differ[:5]:
+        print("decode src: call %d output differs first at byte %d (of %d): the engine 0x%02X, Python 0x%02X; "
+              "Python wrote it by %s" % (k, first, size, got, want, op))
     if not out_differ:
         print("decode src: the engine's first output bytes equal Python's for every call that wrote 0x01F78100")
     if shown == 0 and plausible:
