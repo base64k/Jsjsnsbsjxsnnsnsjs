@@ -11,11 +11,13 @@ start, the end of the game's report, and the sound driver's code.
 """
 
 import json
+import re
 import os
 import pathlib
 import subprocess
 
 LIMIT = 65000
+BAD_VALUE_RE = re.compile(r"read at 0x([0-9A-Fa-f]{8}), outside guest memory")
 
 
 def read(path):
@@ -41,14 +43,15 @@ def rpc_lines(report):
 
 
 def write_lines(report):
-    """The stores to the watched addresses, from the start of the run (each at most twice)."""
+    """The stores to the watched addresses: the ones that write the value the run
+    stopped on (its bad address, in the summary) first, then the last ones before
+    the stop. The start of the run is not what the stop needs."""
     if report is None:
         return None
-    seen, out = {}, []
-    for line in report.splitlines():
-        if line.startswith("[write]") and seen.get(line, 0) < 2:
-            seen[line] = seen.get(line, 0) + 1
-            out.append(line)
+    lines = [l for l in report.splitlines() if l.startswith("[write]")]
+    bad_value = BAD_VALUE_RE.search(read("games/up/build/smoke/summary.txt") or "")
+    bad = [l for l in lines if bad_value and (" <- 0x%s " % bad_value.group(1)) in l][:20]
+    out = bad + [l for l in lines[-40:] if l not in bad]
     return "\n".join(out) if out else None
 
 
