@@ -398,3 +398,17 @@ not the stack slot.
   stack or the buffers. Next: a `--watch` on the game's `SetupHeap` caller to
   read its `start` and `size`, and check that `0x01F78100` and `0x0184xxxx`
   both lie inside that range.
+
+## The heap's range is not the cause (run 45010320753)
+
+- The game's `SetupHeap(start=0x007AB390, size=0xFFFFFFFF)` makes the heap
+  `0x007AB390`-`0x01FA8800`; the end is the stack base. The decoder's buffer
+  (`0x01F78100`) and the bad link's region (`0x0184xxxx`) both lie inside it.
+- So the range check that `god-of-war-recomp` made (its `ps2recomp-heap.patch`:
+  the runtime's own allocations kept out of the game's heap) does not apply
+  here: nothing outside the game writes into this heap. The writes to the
+  block headers come from the game's own allocator `0x004B53F0`.
+- Bad pointer's cause: still open. Plausible: the decoder runs on a wrong input
+  (its size comes out as `0xED178058`, about 4 GB, which the game would never
+  decompress), so it writes outside its own buffer and into the allocator's
+  blocks. This ties the heap problem back to the unpacker's input.
