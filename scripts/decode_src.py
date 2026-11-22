@@ -61,31 +61,35 @@ def main():
         print("decode src: no [watch-src] lines in the report (the trace needs --watch %s)" % FUNCTION)
         return
     print("decode src: %d call(s) with their input in the report" % len(inputs))
-    for k, ((arg, src), entry) in enumerate(zip(inputs, entries or [None] * len(inputs))):
-        if entry is None:
-            print("decode src: call %d: no entry line" % k)
-            continue
+    plausible = skipped = reached = overran = 0
+    shown = 0
+    for k, ((arg, src), entry) in enumerate(zip(inputs, entries or [])):
         a0, a1, a2, a3 = entry
+        size = int.from_bytes(arg[4:8], "little")
+        comp = int.from_bytes(arg[8:12], "little")
+        # A chunk's header: a size up to 64 KB, a compressed size that fits the input.
+        if not (0 < size <= 0x10000 and 0 < comp <= len(src) - 8):
+            skipped += 1
+            continue
+        plausible += 1
         ram = bytearray(RAM_SIZE)
         ram[a0:a0 + 64] = arg
         ram[a1:a1 + len(src)] = src
-        size = int.from_bytes(arg[4:8], "little")
-        comp = int.from_bytes(arg[8:12], "little")
-        print("decode src: call %d: a0=0x%08X a1=0x%08X a2=0x%08X a3=0x%08X, size %d (0x%X), compressed %d (0x%X)"
-              % (k, a0, a1, a2, a3, size, size, comp, comp))
-        print("decode src:   header words at a1: %s" % " ".join("%08X" % int.from_bytes(src[i:i + 4], "little")
-                                                             for i in range(0, 16, 4)))
-        if a3 != (a2 + size) & 0xFFFFFFFF:
-            print("decode src:   note: a3 (0x%08X) is not a2 + size (0x%08X)" % (a3, (a2 + size) & 0xFFFFFFFF))
         copy = bytearray(ram)
         result, written, used, end = decoder.decode(copy, a0, a1, a2, limit=a2 + size)
-        print("decode src:   to the chunk's end (%d bytes): %s, %d written, input used %d of %d"
-              % (size, result, written, used, comp))
+        if result == "reached the chunk's end":
+            reached += 1
         copy = bytearray(ram)
-        result, written, used, end = decoder.decode(copy, a0, a1, a2)
-        print("decode src:   with no limit: %s, %d written, a2 ended at 0x%08X (%d past the output)"
-              % (result, written, end, end - a2 - size))
-
+        full, fwritten, fused, fend = decoder.decode(copy, a0, a1, a2)
+        if fend != a2 + size:
+            overran += 1
+        if shown < 30:
+            shown += 1
+            print("decode src: call %d a1=0x%08X a2=0x%08X size %d comp %d | to the end: %s, input %d/%d | "
+                  "no limit: %s, a2 ended %+d from the output end"
+                  % (k, a1, a2, size, comp, result, used, comp, full, fend - (a2 + size)))
+    print("decode src: %d calls with a chunk header, %d skipped (not a header), %d reached their end exactly, "
+          "%d ran past their end" % (plausible, skipped, reached, overran))
 
 if __name__ == "__main__":
     main()
