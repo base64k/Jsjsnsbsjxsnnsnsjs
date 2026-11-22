@@ -46,6 +46,15 @@ def returns(text):
     return [int(m, 16) for m in re.findall(r"\[watch-ret\] %s end=([0-9A-Fa-f]+)" % re.escape(FUNCTION), text)]
 
 
+def outputs(text):
+    """Each call's first 512 output bytes at 0x01F78100, as the engine's run left them, in order."""
+    result = []
+    for line in text.splitlines():
+        if line.startswith("[watch-out] 0x0032DFA0 at 0x01F78100:"):
+            result.append(bytes(int(v, 16) for v in line.split()[3:]))
+    return result
+
+
 def sources(text):
     """Each call's (a0 bytes, a1 bytes) from the [watch-src] lines, in order."""
     a0s, a1s = [], []
@@ -63,6 +72,8 @@ def main():
     entries = calls(text)
     inputs = sources(text)
     ends = returns(text)
+    outs = outputs(text)
+    out_differ = []
     engine_match = engine_differ = 0
     differ_shown = 0
     if not inputs:
@@ -92,6 +103,13 @@ def main():
         full, fwritten, fused, fend = decoder.decode(copy, a0, a1, a2)
         if fend != a2 + size:
             overran += 1
+        # The engine's output bytes for this call (when it wrote 0x01F78100) against Python's.
+        if k < len(outs) and a2 == 0x01F78100:
+            n = min(size, 0x200)
+            python_out = bytes(copy[a2:a2 + n])
+            first = next((i for i in range(n) if outs[k][i] != python_out[i]), None)
+            if first is not None:
+                out_differ.append((k, first, outs[k][first], python_out[first], size))
         # The engine's run of the same call: where it left the output pointer.
         if k < len(ends):
             if ends[k] == fend:
@@ -111,6 +129,11 @@ def main():
           "%d ran past their end" % (plausible, skipped, reached, overran))
     print("decode src: the engine's end pointer equals Python's for %d call(s), differs for %d"
           % (engine_match, engine_differ))
+    for k, first, got, want, size in out_differ[:5]:
+        print("decode src: call %d output differs first at byte %d (of %d): the engine 0x%02X, Python 0x%02X"
+              % (k, first, size, got, want))
+    if not out_differ:
+        print("decode src: the engine's first output bytes equal Python's for every call that wrote 0x01F78100")
     if shown == 0 and plausible:
         print("decode src: no call was shown")
 
