@@ -374,3 +374,22 @@ Next: find who writes the pointer that later reaches `free`. A `--watch-write`
 on the structure's `[0]` is noisy because the slot is reused. It needs the
 structure's address from the EE's own allocation (where `malloc` returned it),
 not the stack slot.
+
+## The bad pointer comes from the EE heap's free-list links (run 45008083289)
+
+- The stop: `free` (`0x004B66F0`, called as `0x002DCC40`) on `0x01F78100`, the
+  decoder's output buffer, reads the block header at `0x01F780F8`/`0x01F780FC`,
+  follows a link from it, and reads `0x1791918D`.
+- No watched store wrote `0x1791918D` to `0x01F780F8` or `0x01F780FC`. The header
+  words there are written only by the allocator's own function `0x004B53F0`
+  (called from `0x004B7310`, from `0x004B68C0`), with heap addresses such as
+  `0x01846xxx` and `0x01848D04`. These are free-list links into a region
+  `0x0184xxxx` that the game's own block (at `0x01F7xxxx`) does not belong to.
+- So the chain is broken earlier: a link points into a different heap region
+  than the one the block is in. Candidate causes, to check next: the heap base
+  and size that `SetupHeap` / `EndOfHeap` return to the game (the engine's
+  values), and `0x004B53F0`'s own arithmetic (its disassembly is not in the
+  report yet: the next report should include it).
+- The decoder's back-reference that lands before the output start (earlier
+  finding) is still possible, but the watched addresses show no decoder store
+  there, so it is not confirmed.
