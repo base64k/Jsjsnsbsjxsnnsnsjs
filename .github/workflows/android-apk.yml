@@ -528,6 +528,17 @@ jobs:
               | tee -a games/up/build/port/report.txt
           fi
 
+      # Every call of the unpacker, decoded in Python from the input the run
+      # saw at that call (the host's [watch-src] lines): does each stop at its size?
+      - name: The unpacker's calls, decoded in Python from their input
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          if [ -f games/up/build/port/report.txt ]; then
+            python3 scripts/decode_src.py games/up/build/port/report.txt \
+              | tee -a games/up/build/port/report.txt
+          fi
+
       # The unpacker's chunk on the disc itself (its header and first control
       # word), so the file it is in and the bytes around it are known.
       - name: The unpacker's chunk on the disc

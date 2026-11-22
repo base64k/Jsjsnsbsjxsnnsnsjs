@@ -35,6 +35,18 @@ BLOCK = """    // port: the memory behind a watched function's pointers (scripts
                 if (q < kRam && q + 64 <= kRam) dump(k ? "*a1" : "*a0", q);
             }
         }
+        // The unpacker's arguments and its whole input, as bytes, at each call
+        // (scripts/decode_src.py decodes them in Python).
+        if (address == 0x0032DFA0u) {
+            const u32 arg = u32(c.r[4]), src = u32(c.r[5]);
+            if (arg + 64 <= kRam && src + 0x400 <= kRam) {
+                std::fprintf(stderr, "[watch-src] a0 %08X", unsigned(arg));
+                for (u32 i = 0; i < 64; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(arg + i, 1)));
+                std::fprintf(stderr, "\\n[watch-src] a1 %08X", unsigned(src));
+                for (u32 i = 0; i < 0x400; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(src + i, 1)));
+                std::fprintf(stderr, "\\n");
+            }
+        }
     }
 """
 
