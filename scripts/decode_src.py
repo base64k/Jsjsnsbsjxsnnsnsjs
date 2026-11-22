@@ -67,8 +67,9 @@ def main():
         a0, a1, a2, a3 = entry
         size = int.from_bytes(arg[4:8], "little")
         comp = int.from_bytes(arg[8:12], "little")
-        # A chunk's header: a size up to 64 KB, a compressed size that fits the input.
-        if not (0 < size <= 0x10000 and 0 < comp <= len(src) - 8):
+        # The decoder reads only the size (a0+4) and the flag (a0+13), and the
+        # stream from a1+8. A size of 0 or past 64 KB is not a chunk to decode.
+        if not (0 < size <= 0x10000):
             skipped += 1
             continue
         plausible += 1
@@ -90,6 +91,8 @@ def main():
                   % (k, a1, a2, size, comp, result, used, comp, full, fend - (a2 + size)))
     print("decode src: %d calls with a chunk header, %d skipped (not a header), %d reached their end exactly, "
           "%d ran past their end" % (plausible, skipped, reached, overran))
+    if shown == 0 and plausible:
+        print("decode src: no call was shown")
 
 if __name__ == "__main__":
     main()
