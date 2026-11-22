@@ -95,6 +95,8 @@ def main():
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 3000)
     text += section("Report (end)", report[-6000:] if report else None, 6000, keep="tail")
+    text += section("The game's SetupHeap calls (its heap's start and size)",
+                    "\n".join(l for l in report.splitlines() if l.startswith("[heap]")) if report else None, 1500)
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 3000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
