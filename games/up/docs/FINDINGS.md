@@ -435,3 +435,12 @@ not the stack slot.
 - The overrun cannot be stopped by the exit test alone. A match that jumps past `a3` makes `beq a3,a2` never true, so the loop runs on. The fault is an early wrong token, not the end test.
 - `scripts/find_chunk.py` searched the disc image for `00000800000002CE A7171050` and did not find it (image 1444151296 bytes, 2048-byte sectors). So the stream in RAM is not a verbatim copy of a disc chunk. Either a further packed layer comes first, or the bytes are changed on their way to RAM.
 - Next: find the first store that puts the stream's bytes at `0x01F7F9DB` (the writes before the decoder, through the DMA/copy path, which the watch does not show). Then check that the disc's bytes at that source match what the game reads.
+
+## The unpacker, decoded in Python from the input the engine saw (run 45050059960)
+
+- The trace now dumps each call's whole input (`[watch-src]`, `comp + 16` bytes, up to 64 KB), its end pointer at return (`[watch-ret]`) and its first 2 KB of output (`[watch-out]`). `scripts/decode_src.py` decodes every call with the transcription of the MIPS listing.
+- Python: 83 calls with a chunk header. Each ends its output exactly at `a2 + size`, and uses exactly `comp - 8` input bytes. So the game's own data decodes with its own code, and the bytes are fine.
+- Engine vs Python, end pointer: equal for 82 calls, differs for 1 (call 83: input `0x01F7FCF3`, output `0x01F78100`, size `0x800`). The engine's end is `0x01FFFA8E` (it ran over the output and into the struct at `0x01FFFA80`). Python's end is `0x01F78900`.
+- Output bytes of call 83 match Python's up to byte 1575. There the engine wrote `0x68`, and Python wrote `0x00` as a literal (an input byte). So the engine read a different input byte at that point, or its control flow left Python's earlier, on data that hides it (zeros). Not the window: the byte is a literal, not a copy.
+- The input snapshot is taken at the call's entry; nothing in the decoder calls out, and the output (`0x01F78100..0x01F78900`) does not overlap the input (`0x01F7FCF3..`). So the engine should see the same bytes.
+- Conclusion so far: the fault is the engine's execution of `0x0032DFA0` on that input (translation of an instruction on a specific bit pattern), not the game's data and not the stream. The next check: run the translated function alone on this input (a harness with the 2 KB input and the struct), and compare its output with Python's byte by byte, with an instruction trace on both sides.
