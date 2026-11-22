@@ -44,14 +44,16 @@ def rpc_lines(report):
 
 def write_lines(report):
     """The stores to the watched addresses: the ones that write the value the run
-    stopped on (its bad address, in the summary) first, then the last ones before
-    the stop. The start of the run is not what the stop needs."""
+    stopped on first, then the first ones of the run (what fills an address before
+    it is read), then the last ones before the stop."""
     if report is None:
         return None
     lines = [l for l in report.splitlines() if l.startswith("[write]")]
     bad_value = BAD_VALUE_RE.search(read("games/up/build/smoke/summary.txt") or "")
     bad = [l for l in lines if bad_value and (" <- 0x%s " % bad_value.group(1)) in l][:20]
-    out = bad[:8] + [l for l in lines[-25:] if l not in bad[:8]]
+    # The first stores: the ones that fill the address before the stop (a stream\n    # is written long before it is read). Then the last ones, where it stopped.
+    first = lines[:30]
+    out = bad[:8] + [l for l in first if l not in bad[:8]] + [l for l in lines[-10:] if l not in first and l not in bad[:8]]
     return "\n".join(out) if out else None
 
 
@@ -91,7 +93,7 @@ def main():
     text += section("The sound driver's RPC requests and replies (the words sent and answered)",
                     rpc_lines(report), 3000)
     text += section("The stores to the watched addresses (--watch-write): who fills them",
-                    write_lines(report), 5000)
+                    write_lines(report), 9000)
     text += section("The IOP, from its start (each line at most twice)",
                     iop_first_lines(report), 3000)
     text += section("Report (end)", report[-4000:] if report else None, 4000, keep="tail")
