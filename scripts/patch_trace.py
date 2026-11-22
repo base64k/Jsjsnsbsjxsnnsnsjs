@@ -60,10 +60,10 @@ RET_MARKER = "// port: the unpacker's end pointer at its return (scripts/patch_t
 RET_BLOCK = """    // port: the unpacker's end pointer at its return (scripts/patch_trace.py)
     if (g_watching && address == 0x0032DFA0u && std::find(g_watch.begin(), g_watch.end(), address) != g_watch.end())
         std::fprintf(stderr, "[watch-ret] 0x0032DFA0 end=%08X\\n", unsigned(c.r[6]));
-    // port: the first 512 bytes of the output at its return (the first byte the engine and Python part on)
+    // port: the first 2 KB of the output at its return (where the engine and Python part, if they do)
     if (g_watching && address == 0x0032DFA0u && std::find(g_watch.begin(), g_watch.end(), address) != g_watch.end()) {
         std::fprintf(stderr, "[watch-out] 0x0032DFA0 at 0x01F78100:");
-        for (u32 i = 0; i < 0x200; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(0x01F78100u + i, 1)));
+        for (u32 i = 0; i < 0x800; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(0x01F78100u + i, 1)));
         std::fprintf(stderr, "\\n");
     }
 """

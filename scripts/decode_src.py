@@ -47,7 +47,7 @@ def returns(text):
 
 
 def outputs(text):
-    """Each call's first 512 output bytes at 0x01F78100, as the engine's run left them, in order."""
+    """Each call's first 2 KB of output at 0x01F78100, as the engine's run left them, in order."""
     result = []
     for line in text.splitlines():
         if line.startswith("[watch-out] 0x0032DFA0 at 0x01F78100:"):
@@ -105,7 +105,7 @@ def main():
             overran += 1
         # The engine's output bytes for this call (when it wrote 0x01F78100) against Python's.
         if k < len(outs) and a2 == 0x01F78100:
-            n = min(size, 0x200)
+            n = min(size, 0x800)
             python_out = bytes(copy[a2:a2 + n])
             first = next((i for i in range(n) if outs[k][i] != python_out[i]), None)
             if first is not None:
