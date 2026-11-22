@@ -511,7 +511,7 @@ jobs:
           # The innermost frames of the stop's call stack come first: the
           # fault is in the last of them, not in the functions named here.
           STOP=$(python3 scripts/stop_functions.py games/up/build/smoke/summary.txt 6 || true)
-          for a in $STOP 0x004C49A0 0x0041B550 0x00356A60 0x002E05B0 0x0030B9A0 0x0032DE80 0x003078F0; do
+          for a in $STOP 0x004C49A0 0x0041B550 0x00356A60 0x002E05B0 0x0030B9A0 0x0032DE80 0x003078F0 0x0032DFA0; do
             echo "== function $a" >> build/ee_disasm.txt
             $D --addr "$a" >> build/ee_disasm.txt 2>&1 || true
           done

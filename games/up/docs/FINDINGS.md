@@ -412,3 +412,10 @@ not the stack slot.
   (its size comes out as `0xED178058`, about 4 GB, which the game would never
   decompress), so it writes outside its own buffer and into the allocator's
   blocks. This ties the heap problem back to the unpacker's input.
+
+## Correction: the unpacker's size was right when it was called (run 45013505928)
+
+- At the call of the decoder `0x0032DFA0` (watch-mem), the struct at `a0` holds size `0x00000800` at `a0+4` and compressed size `0x000002CE` at `a0+8`. The chunk's source is at `0x01F7FCF3` and the output at `0x01F78100`, both correct.
+- The value `0xED178058` that `decode_check.py` printed is read from the RAM dump after the run ended. The struct had changed by then (its `+4` word is at `0x01FFFA84`, which no watch covers). So the "input size is about 4 GB" hypothesis is not confirmed. It was a post-mortem read.
+- Still open: the engine's decode of that chunk wrote 54779 bytes against a chunk size of 0x800 (`a2` ended at `0x01F856FB`). The decoder's exit condition at `0x0032DFA0` is what decides this. The report now includes that disassembly.
+- Action: `decode_check.py` should read the struct from the call time (watch-mem), not from the end dump, before it is used as evidence.
