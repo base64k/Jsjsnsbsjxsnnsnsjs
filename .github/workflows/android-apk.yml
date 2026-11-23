@@ -34,6 +34,10 @@ on:
         description: "Extra options for the PC reference run's host (a diagnosis, e.g. --watch 00410C60 --watch-write 0x...)"
         default: ""
         type: string
+      iop_watch:
+        description: "IOP stores to log, LO:HI (hex IOP addresses), e.g. 75000:76000; empty: none"
+        default: ""
+        type: string
       cache:
         description: "Keep the disc image and the decompiled code in the runner's cache (they never enter the repository)"
         default: true
@@ -82,6 +86,7 @@ jobs:
       UP_SMOKE: ${{ github.event_name == 'push' && 'true' || (inputs.smoke && 'true' || 'false') }}
       # The IOP's DMA into the EE (each transfer's destination): the lines are in the report (the decode section).
       PS2HOST_SIF_LOG: '1'
+      PS2HOST_IOP_WATCH: ${{ inputs.iop_watch }}
       UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host' }}
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
       # The smoke test's rounds: each one translates the code the run found
