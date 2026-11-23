@@ -41,7 +41,8 @@ BLOCK = """    // port: the memory behind a watched function's pointers (scripts
             const u32 arg = u32(c.r[4]), src = u32(c.r[5]);
             // The input: the compressed size the block names (its word at +8) and its 8 header bytes, up to 64 KB.
             const u32 comp = arg + 12 <= kRam ? u32(GuestMemory().Read(arg + 8, 4)) : 0;
-            const u32 n = (comp > 0 && comp < 0x10000) ? comp + 16 : 0x400;
+            // Past the block's end too: the decoder reads beyond the compressed size (call 83 read past comp+16).
+            const u32 n = (comp > 0 && comp < 0x10000) ? comp + 0x100 : 0x400;
             if (arg + 64 <= kRam && src + n <= kRam) {
                 std::fprintf(stderr, "[watch-src] a0 %08X", unsigned(arg));
                 for (u32 i = 0; i < 64; ++i) std::fprintf(stderr, " %02X", unsigned(GuestMemory().Read(arg + i, 1)));
