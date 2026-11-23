@@ -106,10 +106,6 @@ def main():
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 1000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
-    # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
-    iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
-    text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
-                    "\n".join(iop_stores[:120] + (["..."] if len(iop_stores) > 160 else []) + iop_stores[-40:]) if iop_stores else None, 9000)
     text += section("The sound driver's code (ZNASND, the IOP copy and poll regions)", read("build/irx/disasm.txt"), 9000)
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
