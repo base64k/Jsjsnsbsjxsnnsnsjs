@@ -121,6 +121,12 @@ def main():
     cd_lines = [l for l in (report or "").splitlines() if "CD: read" in l or "CD: N-command" in l]
     text += section("The CD server's reads (the EE's requests): %d in all, the first 60 and the last 20" % len(cd_lines),
                     "\n".join(cd_lines[:60] + (["..."] if len(cd_lines) > 80 else []) + cd_lines[-20:]) if cd_lines else None, 7000)
+    # The EE's data sent to IOP memory by SIF (the extra data, written by the host):
+    # the destinations, and the ones that land in the watched range.
+    sif_in = [l for l in (report or "").splitlines() if l.startswith("[sif] data")]
+    sif_watch = [l for l in sif_in if " to IOP 0x0007" in l or " to IOP 0x0006" in l or " to IOP 0x0008" in l]
+    text += section("The EE's data sent to IOP memory by SIF: %d in all, %d in 0x060000..0x08FFFF" % (len(sif_in), len(sif_watch)),
+                    "\n".join(sif_watch[:40] + sif_in[:20]) if sif_in else None, 6000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
