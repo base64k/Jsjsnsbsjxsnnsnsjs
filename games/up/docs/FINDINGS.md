@@ -480,3 +480,10 @@ not the stack slot.
   - `0x75180 -> 0x21F78900`, 59392 (contains call 6's input `0x01F81B7A` and call 83's input `0x01F7FCF3`); this chunk is DMA'd 4 times
 - Call 83 (`a2=0x01F78100`, size 2048) faults in the interpreter: `load of 1 byte(s) at unmapped 0x02000000`. A pointer inside its input is a garbage value with the `0x20000000` alias bit.
 - Open question: is the last `0x21F78900` DMA before call 83 the right data, and is its record at call 83's input position a valid header? Next step: dump the 59392-byte chunk from the IOP side (`0x75180`) and check the record headers at `0x01F7FCD7` (call 83's `a1 - 0x1C`).
+
+## Run 45192320138: deterministic (--virtual-time, --watch-write 0x01F7FCF3)
+
+- The run stopped at `a read at 0x1791918D, outside guest memory` (code 2). The guest stack: 0x00200008 <- 0x002DD240 <- 0x0032F1B0 <- 0x0032EAA0 <- 0x00426350. The game dereferenced a value that looks like data (0x17 91 91 8D), so the bad pointer comes from data already corrupted.
+- `--watch-write 0x01F7FCF3`: two byte stores, `<- 0xCF` then `<- 0x00`, both in 0x0032DFA0 (the unpacker, call 6's output loop). Call 83's input byte is overwritten by call 6's output. Call 6's output `0x01F78100..0x01F80BEE` covers `0x01F7FCF3`.
+- The SIF DMA into `0x21F78900` (59392 bytes) is not seen by --watch-write (DMA writes are host writes, not guest stores). Whether it lands after call 6 is still unknown.
+- Hypothesis to check: the stream buffer `0x01F78100` is reused per call (call 83 also writes `a2=0x01F78100`), so the chunk for call 83 must be DMA'd again after call 6. If the engine keeps the first copy, the input is call 6's output.
