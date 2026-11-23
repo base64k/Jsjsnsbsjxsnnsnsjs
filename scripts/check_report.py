@@ -106,6 +106,17 @@ def main():
     text += section("Where the module writes the flag it waits for (-0x5108)",
                     read("build/irx/finds.txt"), 1000)
     text += section("The disassembly's own diagnostics", read("build/irx/diag.txt"), 1000)
+    # Every disc read the IOP made (cdvdman's sceCdRead, from --iop-trace): how many,
+    # which buffers they fill, and the ones that do not fill the usual 0x28900.
+    import re as _re
+    from collections import Counter as _Counter
+    read_re = _re.compile(r"cdvdman#6 sceCdRead\(([0-9A-Fa-f]+), ([0-9A-Fa-f]+), ([0-9A-Fa-f]+), ([0-9A-Fa-f]+)\)")
+    reads = [m for m in (read_re.search(l) for l in (report or "").splitlines()) if m]
+    buffers = _Counter(m.group(3).upper() for m in reads)
+    unusual = [m.group(0) for m in reads if m.group(3).upper() != "00028900"]
+    summary = "reads: %d; buffers: %s" % (len(reads), ", ".join("%s x%d" % (b, n) for b, n in buffers.most_common(12)))
+    text += section("The disc reads the IOP made (sceCdRead): count and buffers, then the ones not into 0x28900",
+                    summary + "\n" + "\n".join(unusual[:80]) if reads else None, 6000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
