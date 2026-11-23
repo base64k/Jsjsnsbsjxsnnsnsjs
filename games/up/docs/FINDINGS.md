@@ -453,3 +453,11 @@ not the stack slot.
 - So the bytes call 83 reads at its call time are call 6's output, not a stream chunk. Interpreter, Python and engine all decode those bytes and all end wrong (the interpreter and engine end near `0x01FFFA90`, the stack).
 - Conclusion: the buffers overlap. Either the heap handed out overlapping blocks (the free-list "bad link" `0x0184xxxx` seen earlier fits this) or the stream for call 83 was placed at the wrong address. The translator and the interpreter both agree with each other, so the fault is in the data layout, not in the code.
 - Next: find the write that corrupts the allocator's free list before call 6, or the first allocation that returns a block overlapping a live block (watch the heap block headers near `0x01F78100`).
+
+## Run 45109538601 (correction): the interpreter agrees with Python on all 83 calls
+
+- The earlier "interpreter diverges on call 83" (run 45054039414) was a bug in `scripts/emu_decode.py`: one interpreter machine was reused for all calls, so a call's leftovers reached the next one. With a fresh machine per call, the game's own code (interpreter) and Python agree on all 83 calls, including call 83 (end `0x01F78900`).
+- The call 6 overlap (above) is real: call 83's input (`0x01F7FCF3`) lies inside call 6's output (`0x01F78100 + 31731`), and the bytes differ from that output. The overlap is not the cause by itself, because the interpreter, reading the same bytes, decodes call 83 exactly.
+- The engine (translated code) is the one that differs, on call 83 only. Its output for the 2 KB it records matches, but it does not stop at the output's end (`0x01F78900`): it returns with `a2 = 0x01FFFA8E`. So it writes past the output, through the argument block at `0x01FFFA80`, which is the most likely source of the later heap damage.
+- The loop's exit is `beq a3,a2` at `0x0032E060`. The copy loop (`0x0032E028..0x0032E040`) has no bound, and its length comes from `srav` in `0x0032DFE0..0x0032E020`. The engine's copy most likely runs one or more bytes past `a3` on the last copy, so `a2` never equals `a3` at the check.
+- Next: find the translator's lowering of that copy's length (`lift.py` `_word_shift` for `srav`, `daddu`/`bne` on the 64-bit copy), and compare with `emu.py` on the same instruction.
