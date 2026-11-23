@@ -130,9 +130,9 @@ def main():
     # One timeline: the disc reads and the SIF transfers out of IOP memory, in the order
     # the run made them (a transfer's data is what the last read left in its buffer).
     timeline = [l for l in (report or "").splitlines()
-                if "cdvdman#6 sceCdRead(" in l or l.startswith("[sif] IOP") or "[sif] data" in l]
-    text += section("The disc reads and the SIF transfers out of IOP memory, in the run's order: %d lines" % len(timeline),
-                    "\n".join(timeline[:150]) if timeline else None, 9000)
+                if (("cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l) or l.startswith("[sif] IOP"))]
+    text += section("The disc reads (not into 0x28900) and the SIF transfers out of IOP memory, in the run's order: %d lines" % len(timeline),
+                    "\n".join(timeline[:120]) if timeline else None, 9000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
