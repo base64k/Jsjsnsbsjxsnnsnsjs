@@ -133,6 +133,22 @@ def main():
                 if (("cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l) or l.startswith("[sif] IOP"))]
     text += section("The disc reads (not into 0x28900) and the SIF transfers out of IOP memory, in the run's order: %d lines" % len(timeline),
                     "\n".join(timeline[:120]) if timeline else None, 9000)
+    # The disc image itself, at the sectors the run read: the bytes the EE was sent
+    # must be these, if the engine reads the disc right.
+    iso_path = os.environ.get("UP_ISO", "disc/up.iso")
+    iso_lines = []
+    if os.path.exists(iso_path):
+        with open(iso_path, "rb") as f:
+            iso_size = os.fstat(f.fileno()).st_size
+            iso_lines.append("image %s: %d bytes" % (iso_path, iso_size))
+            for lsn in (0x382D9 + 57, 0x38312, 0x38399, 0x38459, 0x38459 + 1, 0x10):
+                f.seek(lsn * 2048)
+                first = f.read(32)
+                iso_lines.append("LSN 0x%X at %d: %s" % (lsn, lsn * 2048, " ".join("%08X" % int.from_bytes(first[i:i+4], "big") for i in range(0, len(first), 4))))
+    else:
+        iso_lines.append("no disc image at %s" % iso_path)
+    text += section("The disc image's own sectors (the first 32 bytes, as words), at the LSNs the stream reads",
+                    "\n".join(iso_lines), 2000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
