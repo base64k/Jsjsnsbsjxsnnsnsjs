@@ -494,3 +494,11 @@ not the stack slot.
 - `host/src/iop_libs.cpp` cdvdman exports implemented: 4 (Succeed), 6 (CdRead), 8, 11, 12, 13. Streaming exports (sceCdStRead and the rest) are not in the table.
 - `host/src/iop_vm.cpp`: a library import the host lacks is a Stop with `is not implemented`, unless a module exports it. The run 45192320138 report has no `imports ... which the host lacks` line, so the game's IOP modules (SIO2MAN, PADMAN, MCMAN, MCSERV, LIBSD, ZNASND) import nothing missing.
 - Consequence: the 59392-byte stream (IOP 0x75180) is not written by a streaming call. It is written by the IOP code (ZNASND or a copy loop) from sectors read into 0x28900. Next check: watch the IOP side for stores to 0x75180 (IOP trace), or the source of the copy.
+
+## Where the 59392-byte stream comes from (runs 45231550492 - 45249569218)
+
+- The IOP has one game module, ZNASND.IRX, loaded at 0x10000 (92256 bytes). The other modules are the host's ("its services are the host's"), so no other module image is in IOP memory.
+- The EE's stream chunk `[sif] IOP 0x00075180 -> EE 0x21F78900, 59392` is disc data: `sceCdRead(0x00038399, 0xC0, 0x00058980)` reads 192 sectors into 0x58980..0xB8980, and 0x75180 - 0x58980 = 0x1C800 = 57 sectors into that read.
+- The copy into 0x58980 is a `memcpy` inside `CdRead` (iop_libs.cpp), so the IOP-store watch (PS2HOST_IOP_WATCH) never sees it. Zero IOP stores in 0x70000..0x7A000 in 60 s is correct, not a fault of the watch.
+- Other host writers into IOP memory: SIF extra data (`WriteBytes`, iop.cpp:245), SifGetOtherData (`vm.Write`), N-command 13 (`WriteBytes`). None of them writes 0x75180 in these runs.
+- Hypothesis to test next: a later `sceCdRead` into 0x58980 (0x63 sectors at 0x38459) overwrites 0x75180 before the EE's DMA reads it. Real hardware completes the read asynchronously, and the engine completes it at call time, so the EE may see the data of a later read. The merged timeline section of the check run shows the order.
