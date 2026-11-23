@@ -551,6 +551,19 @@ jobs:
               | tee -a games/up/build/port/report.txt
           fi
 
+      # The unpacker's translated C (the engine's code for 0x0032DFA0), so the copy loop's
+      # lowering can be read next to the interpreter's run of the same instructions.
+      - name: The unpacker's translated code
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          F=$(grep -rl "func_0032DFA0" games/up/build/port --include=*.cpp --include=*.h --include=*.hpp 2>/dev/null | head -1)
+          if [ -n "$F" ] && [ -f games/up/build/port/report.txt ]; then
+            { echo "decode src: the translated code of 0x0032DFA0 in $F";
+              awk '/func_0032DFA0\(/{on=1} on{print; n++} on && /^}/{exit} n>400{exit}' "$F";
+            } | tee -a games/up/build/port/report.txt
+          fi
+
       # Stores into the last call's input from anywhere but the unpacker itself: a load
       # of the input that happened between the earlier calls and the last one, or none.
       - name: Stores into the unpacker's input, from other functions
