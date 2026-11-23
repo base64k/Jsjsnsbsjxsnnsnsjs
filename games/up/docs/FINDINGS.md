@@ -487,3 +487,10 @@ not the stack slot.
 - `--watch-write 0x01F7FCF3`: two byte stores, `<- 0xCF` then `<- 0x00`, both in 0x0032DFA0 (the unpacker, call 6's output loop). Call 83's input byte is overwritten by call 6's output. Call 6's output `0x01F78100..0x01F80BEE` covers `0x01F7FCF3`.
 - The SIF DMA into `0x21F78900` (59392 bytes) is not seen by --watch-write (DMA writes are host writes, not guest stores). Whether it lands after call 6 is still unknown.
 - Hypothesis to check: the stream buffer `0x01F78100` is reused per call (call 83 also writes `a2=0x01F78100`), so the chunk for call 83 must be DMA'd again after call 6. If the engine keeps the first copy, the input is call 6's output.
+
+## What the engine's CD path does (checked in ps2-port-engine 65c46e9)
+
+- `host/src/cdvd.cpp` N-commands: procedure 1 (sceCdRead, to EE memory) and 13 (sceCdReadIOPMem, to IOP memory) read real sectors. Procedure 14 answers 2. Every other N-command answers zeros (`CD: N-command N (answered with zeros)`).
+- `host/src/iop_libs.cpp` cdvdman exports implemented: 4 (Succeed), 6 (CdRead), 8, 11, 12, 13. Streaming exports (sceCdStRead and the rest) are not in the table.
+- `host/src/iop_vm.cpp`: a library import the host lacks is a Stop with `is not implemented`, unless a module exports it. The run 45192320138 report has no `imports ... which the host lacks` line, so the game's IOP modules (SIO2MAN, PADMAN, MCMAN, MCSERV, LIBSD, ZNASND) import nothing missing.
+- Consequence: the 59392-byte stream (IOP 0x75180) is not written by a streaming call. It is written by the IOP code (ZNASND or a copy loop) from sectors read into 0x28900. Next check: watch the IOP side for stores to 0x75180 (IOP trace), or the source of the copy.
