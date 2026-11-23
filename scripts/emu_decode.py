@@ -60,7 +60,7 @@ def main():
           % (FUNCTION, len(inputs)))
     same_all = same_engine = differs = 0
     shown = 0
-    py_outputs = []              # (call, a2, Python's output) for the nesting test below
+    py_outputs = []              # (call, a2, size, Python's output) for the nesting test below
     for k, ((arg, src), entry) in enumerate(zip(inputs, entries)):
         a0, a1, a2, a3 = entry
         size = int.from_bytes(arg[4:8], "little")
@@ -73,18 +73,25 @@ def main():
         copy = bytearray(ram)
         _, _, _, py_end = decoder.decode(copy, a0, a1, a2)
         py_out = bytes(copy[a2:a2 + min(size, OUTPUT_LIMIT)])
-        # Does this call's input begin inside an earlier call's output? (a nested stream)
-        head = bytes(src[:32])
-        for j, pa2, pout in py_outputs:
-            at = pout.find(head) if len(head) == 32 else -1
-            if at >= 0:
-                print("decode src: call %d's input begins inside call %d's output (0x%08X + %d)" % (k, j, pa2, at))
-        py_outputs.append((k, a2, py_out))
+        # Does this call's input lie inside an earlier call's output range (a nested stream, or a clash)?
+        for j, ja2, jsize, jout in py_outputs:
+            if ja2 <= a1 < ja2 + jsize:
+                at = a1 - ja2
+                same = jout[at:at + 16] == src[:16]
+                print("decode src: call %d's input (0x%08X) lies in call %d's output (0x%08X + %d), the bytes %s"
+                      % (k, a1, j, ja2, at, "equal to the output there" if same else "different from the output there"))
+        py_outputs.append((k, a2, size, py_out))
         # The interpreter, on the same memory: the argument block, the input, a zeroed output.
+        m = machine(executable())    # a fresh interpreter: a call's leftovers must not reach the next
         m.memory.write(a0, arg)
         m.memory.write(a1, src)
         m.memory.write(a2, bytes(min(size, OUTPUT_LIMIT)))
-        m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
+        try:
+            m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
+        except Exception as error:      # the interpreter's fault on this call: shown, the rest go on
+            print("decode src: interpreter call %d (a2=0x%08X, size %d) faulted: %r" % (k, a2, size, error))
+            differs += 1
+            continue
         interp_end = m.get(6) & 0xFFFFFFFF
         interp_out = bytes(m.memory.read(a2, min(size, OUTPUT_LIMIT)))
         engine_end = ends[k] if k < len(ends) else None
