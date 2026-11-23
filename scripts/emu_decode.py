@@ -137,7 +137,7 @@ def main():
         m.memory.write(a0, arg)
         m.memory.write(a1, src)
         m.memory.write(a2, bytes(min(size, OUTPUT_LIMIT)))
-        ticks = loop_trace(m, size) if (a2 == 0x01F78100 and size == 0x800) else None
+        ticks = loop_trace(m, size) if a1 == 0x01F7FCF3 else None     # call 83 (its input)
         try:
             m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
         except Exception as error:      # the interpreter's fault on this call: shown, the rest go on

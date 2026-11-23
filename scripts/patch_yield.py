@@ -33,7 +33,9 @@ SUPPORT_BLOCK = SUPPORT_ANCHOR + (
 LIFTED_ANCHOR = "inline void Tick(Context& c, u32 address) {\n"
 LIFTED_BLOCK = LIFTED_ANCHOR + (
     "    " + TICK_MARKER + "\n"
-    "    if (address >= 0x0032DF00u && address < 0x0032E100u && c.r[7] == 0x01F78900ull)\n"
+    "    static u32 ticks_printed = 0;\n"
+    "    if (address >= 0x0032DF00u && address < 0x0032E100u && c.r[7] == 0x01F78900ull &&\n"
+    "        c.r[5] >= 0x01F7FCF3ull && c.r[5] < 0x01F81B7Aull && ++ticks_printed <= 4000)\n"
     "        std::fprintf(stderr, \"[tick] 0x%08X a1=%08X a2=%08X a3=%08X t0=%08X t5=%08X t8=%08X\\n\", unsigned(address),\n"
     "                     unsigned(c.r[5]), unsigned(c.r[6]), unsigned(c.r[7]), unsigned(c.r[8]), unsigned(c.r[13]),\n"
     "                     unsigned(c.r[24]));\n"
