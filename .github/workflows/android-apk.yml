@@ -562,6 +562,8 @@ jobs:
             ls games/up/build/lift 2>/dev/null | head -20;
             echo "decode src: the files that name 0x0032DFA0 (any spelling)";
             grep -rilE "0x?0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | head -10;
+            echo "decode src: the disc reads (CD notes) with their destination, the first 40:";
+            grep -i "CD: read\|cdvd\|CdRead\|sceCdRead" games/up/build/port/report.txt 2>/dev/null | head -40 | sed 's/^/decode src: /';
             echo "decode src: the yields inside the unpacker (its loop heads, where other threads may run): $(grep -c '^\[yield\]' games/up/build/port/report.txt 2>/dev/null)";
             grep '^\[yield\]' games/up/build/port/report.txt 2>/dev/null | head -40;
             F=$(grep -rilE "func_0?0*32DFA0|0x0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | grep -E "\.(c|cc|cpp|h|hpp)$" | head -1);
