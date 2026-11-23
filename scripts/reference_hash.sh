@@ -20,6 +20,8 @@ cd "$REPO_ROOT"
     git -C engine rev-parse HEAD 2>/dev/null || echo "no engine"
     # The patches that change the engine's build tree (scripts/patch_*.py).
     sha256sum scripts/patch_*.py 2>/dev/null || true
+    # The debugging patches applied to the engine (scripts/engine_*.patch).
+    sha256sum scripts/engine_*.patch 2>/dev/null || true
     sha256sum games/up/port/CMakeLists.txt games/up/port/overrides.cpp \
               games/up/game.json 2>/dev/null || true
     # The compiler (clang 19 or later: the VU code's calling convention).
