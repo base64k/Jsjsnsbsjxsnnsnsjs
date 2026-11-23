@@ -48,6 +48,25 @@ def machine(path):
     return emu.Machine(section.addr, data, total_size=RAM_TOP - section.addr)
 
 
+def store_pcs(a0, arg, a1, src, a2, size, a3, target):
+    """The PCs of the stores to `target` in a fresh interpreter run of this call (the instruction that wrote it)."""
+    m = machine(executable())
+    m.memory.write(a0, arg)
+    m.memory.write(a1, src)
+    m.memory.write(a2, bytes(min(size, OUTPUT_LIMIT)))
+    hits = []
+    real = m.memory.write_int
+
+    def watch(addr, value, width):
+        if addr <= target < addr + width:
+            hits.append((m.pc, value, width))
+        real(addr, value, width)
+
+    m.memory.write_int = watch
+    m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
+    return hits
+
+
 def main():
     text = open(sys.argv[1], errors="replace").read()
     entries = decode_src.calls(text)
@@ -103,6 +122,12 @@ def main():
             same_engine += 1
         else:
             differs += 1
+            # Where the engine's output first leaves the interpreter's: the instruction that wrote that byte.
+            if engine_out is not None and engine_out[:len(interp_out)] != interp_out[:len(engine_out)]:
+                d = next(i for i in range(min(len(engine_out), len(interp_out))) if engine_out[i] != interp_out[i])
+                for pc, value, width in store_pcs(a0, arg, a1, src, a2, size, a3, a2 + d)[-3:]:
+                    print("decode src: call %d, output byte %d (0x%08X): the interpreter's store at pc 0x%08X (value 0x%X, %d bytes); the engine wrote 0x%02X, the interpreter 0x%02X"
+                          % (k, d, a2 + d, pc, value, width, engine_out[d], interp_out[d]))
         if shown < 12 or not interp_matches_python or (engine_end is not None and engine_end != interp_end):
             shown += 1
             if shown <= 40:
