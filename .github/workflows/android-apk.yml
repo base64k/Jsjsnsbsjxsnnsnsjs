@@ -565,9 +565,11 @@ jobs:
             F=$(grep -rilE "func_0?0*32DFA0|0x0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | grep -E "\.(c|cc|cpp|h|hpp)$" | head -1);
             if [ -n "$F" ]; then
               echo "decode src: the translated code around 0x0032DFA0 in $F";
-              grep -n -i "32dfe0\|32e028\|32e03c" "$F" | head -8;
-              M=$(grep -n -i "32dfe0" "$F" | head -1 | cut -d: -f1);
-              [ -n "$M" ] && sed -n "$((M-30)),$((M+70))p" "$F" | cut -c1-200;
+              for L in L_0032DFB8 L_0032E028 L_0032E060; do
+                N=$(grep -n "^$L:" "$F" | head -1 | cut -d: -f1);
+                echo "decode src: the translated lines of $L (from line $N)";
+                [ -n "$N" ] && sed -n "$((N-2)),$((N+26))p" "$F" | cut -c1-220;
+              done;
             fi;
           } | tee -a games/up/build/port/report.txt
 
