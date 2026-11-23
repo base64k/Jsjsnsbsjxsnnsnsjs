@@ -201,9 +201,15 @@ jobs:
           fi
           (clang++-19 --version 2>/dev/null || clang++ --version) | head -1
 
+      # The engine's commit, plus the debugging patches this repository carries
+      # for it (scripts/engine_*.patch): the caches are keyed on both.
       - name: The engine's commit (the caches' key)
         id: engine
-        run: echo "sha=$(git -C engine rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        run: |
+          for patch in scripts/engine_*.patch; do
+            [ -f "$patch" ] && git -C engine apply --whitespace=nowarn "$GITHUB_WORKSPACE/$patch"
+          done
+          echo "sha=$(git -C engine rev-parse HEAD)-$(cat scripts/engine_*.patch 2>/dev/null | sha256sum | cut -c1-8)" >> "$GITHUB_OUTPUT"
 
       # ------------------------------------------------------------------
       # The disc image: the player's own file, fetched here and never

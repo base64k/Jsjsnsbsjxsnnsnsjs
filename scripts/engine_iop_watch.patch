@@ -1,0 +1,25 @@
+diff --git a/host/src/iop_vm_internal.h b/host/src/iop_vm_internal.h
+index 643a5e4..9f207a8 100644
+--- a/host/src/iop_vm_internal.h
++++ b/host/src/iop_vm_internal.h
+@@ -7,6 +7,8 @@
+ #define PS2HOST_IOP_VM_INTERNAL_H
+ 
+ #include <cstdint>
++#include <cstdio>
++#include <cstdlib>
+ #include <cstring>
+ #include <deque>
+ #include <functional>
+@@ -171,6 +173,11 @@ struct Vm {
+         return value;
+     }
+     void Write(u32 address, u32 value, u32 size) {
++        // Debug: PS2HOST_IOP_WATCH=LO:HI (hex, IOP addresses) prints every guest store in that range.
++        static const u32 watch_lo = [] { const char* t = std::getenv("PS2HOST_IOP_WATCH"); return t ? u32(std::strtoul(t, nullptr, 16)) : 0u; }();
++        static const u32 watch_hi = [] { const char* t = std::getenv("PS2HOST_IOP_WATCH"); const char* c = t ? std::strchr(t, ':') : nullptr; return c ? u32(std::strtoul(c + 1, nullptr, 16)) : 0u; }();
++        if (watch_hi && address < watch_hi && address + size > watch_lo)
++            std::fprintf(stderr, "[iop-write] %08X <- %08X (%u bytes) by IOP pc %08X\n", address, value, size, executing);
+         u8* p = At(address, size);
+         if (!p) WriteFault(address, value);
+         if (size == 4) std::memcpy(p, &value, 4);
