@@ -117,6 +117,10 @@ def main():
     summary = "reads: %d; buffers: %s" % (len(reads), ", ".join("%s x%d" % (b, n) for b, n in buffers.most_common(12)))
     text += section("The disc reads the IOP made (sceCdRead): count and buffers, then the ones not into 0x28900",
                     summary + "\n" + "\n".join(unusual[:80]) if reads else None, 6000)
+    # The CD server's own reads (N-commands: into EE or IOP memory, from the EE's requests).
+    cd_lines = [l for l in (report or "").splitlines() if "CD: read" in l or "CD: N-command" in l]
+    text += section("The CD server's reads (the EE's requests): %d in all, the first 60 and the last 20" % len(cd_lines),
+                    "\n".join(cd_lines[:60] + (["..."] if len(cd_lines) > 80 else []) + cd_lines[-20:]) if cd_lines else None, 7000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),
