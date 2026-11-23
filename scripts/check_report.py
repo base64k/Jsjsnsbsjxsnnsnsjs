@@ -117,6 +117,15 @@ def main():
         "output": {"title": "How far the game got", "summary": "See the text.", "text": text},
     }
     repo = os.environ["GITHUB_REPOSITORY"]
+    # The sound driver module itself, base64 (one check run of its own), so that
+    # its code can be read outside the run.
+    b64 = read("build/irx/znasnd.b64")
+    if b64:
+        body2 = {"name": "ZNASND.IRX (base64)", "head_sha": os.environ.get("GITHUB_SHA"),
+                 "status": "completed", "conclusion": "neutral",
+                 "output": {"title": "ZNASND.IRX", "summary": "base64 of the module", "text": b64[:65000]}}
+        subprocess.run(["gh", "api", "-X", "POST", "repos/%s/check-runs" % repo, "--input", "-"],
+                       input=json.dumps(body2).encode(), check=False)
     subprocess.run(["gh", "api", "-X", "POST", "repos/%s/check-runs" % repo, "--input", "-"],
                    input=json.dumps(body).encode(), check=False)
 

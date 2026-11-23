@@ -480,6 +480,7 @@ jobs:
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x10740 0x10800 >> build/irx/disasm.txt 2>&1 || true
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" 0x18F40 0x19040 >> build/irx/disasm.txt 2>&1 || true
             build/irx/venv/bin/python scripts/disasm_irx.py "$f" --find '-0x5108' > build/irx/finds.txt 2>&1 || true
+            base64 -w0 "$f" > build/irx/znasnd.b64 || true
           fi
           {
             echo "module: ${f:-none}"
