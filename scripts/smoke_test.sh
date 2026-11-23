@@ -84,6 +84,8 @@ build_reference() {
     python3 scripts/patch_trace.py >/dev/null || return 1
     # The game's SetupHeap ranges (the heap's start and size, for a bad pointer).
     python3 scripts/patch_heap.py >/dev/null || return 1
+    # The yields inside the unpacker (the loop heads where other threads may run).
+    python3 scripts/patch_yield.py >/dev/null || return 1
     mkdir -p "$GAME/build/smoke"
     local log="$GAME/build/smoke/build.log"
     if ! cmake -S "$GAME/port" -B "$BUILD" -G Ninja -DCMAKE_BUILD_TYPE=Release \
