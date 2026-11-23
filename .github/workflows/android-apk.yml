@@ -557,7 +557,7 @@ jobs:
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: |
-          F=$(grep -rl "func_0032DFA0" games/up/build/port --include=*.cpp --include=*.h --include=*.hpp 2>/dev/null | head -1)
+          F=$(grep -rl "func_0032DFA0" games/up/build/lift games/up/build/port 2>/dev/null | grep -v "/cmake/" | head -1)
           if [ -n "$F" ] && [ -f games/up/build/port/report.txt ]; then
             { echo "decode src: the translated code of 0x0032DFA0 in $F";
               awk '/func_0032DFA0\(/{on=1} on{print; n++} on && /^}/{exit} n>400{exit}' "$F";
