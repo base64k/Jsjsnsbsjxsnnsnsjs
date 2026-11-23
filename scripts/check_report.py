@@ -114,7 +114,7 @@ def main():
     text = text[-LIMIT:] if len(text) > LIMIT else text
 
     body = {
-        "name": "PC reference run (headless)",
+        "name": "PC reference run (headless) #%s" % os.environ.get("GITHUB_RUN_ID", ""),
         "head_sha": os.environ.get("GITHUB_SHA"),
         "status": "completed",
         "conclusion": "neutral",
@@ -125,7 +125,7 @@ def main():
     # its code can be read outside the run.
     b64 = read("build/irx/znasnd.b64")
     if b64:
-        body2 = {"name": "ZNASND.IRX (base64)", "head_sha": os.environ.get("GITHUB_SHA"),
+        body2 = {"name": "ZNASND.IRX (base64) #%s" % os.environ.get("GITHUB_RUN_ID", ""), "head_sha": os.environ.get("GITHUB_SHA"),
                  "status": "completed", "conclusion": "neutral",
                  "output": {"title": "ZNASND.IRX", "summary": "base64 of the module", "text": b64[:65000]}}
         subprocess.run(["gh", "api", "-X", "POST", "repos/%s/check-runs" % repo, "--input", "-"],
