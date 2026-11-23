@@ -68,9 +68,11 @@ jobs:
     permissions:
       contents: write
       checks: write
+    # A push replaces the run in flight; each manual dispatch is its own run,
+    # so several diagnoses can run side by side.
     concurrency:
-      group: up-android-apk
-      cancel-in-progress: true
+      group: ${{ github.event_name == 'workflow_dispatch' && format('up-dispatch-{0}', github.run_id) || 'up-android-apk' }}
+      cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
     env:
       UP_ABI: ${{ inputs.abi || 'arm64-v8a' }}
       # 'true' unless the run says otherwise: a push has no inputs at all.
