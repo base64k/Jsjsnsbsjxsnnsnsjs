@@ -78,6 +78,8 @@ jobs:
       # The PC reference build and its headless run: on a push it runs too (it
       # is what says how far the game gets), but it can be switched off.
       UP_SMOKE: ${{ github.event_name == 'push' && 'true' || (inputs.smoke && 'true' || 'false') }}
+      # The IOP's DMA into the EE (each transfer's destination): the lines are in the report (the decode section).
+      PS2HOST_SIF_LOG: '1'
       UP_STAGES: ${{ inputs.stages || 'disc extract analyze lift host' }}
       UP_JOBS: ${{ github.runners.cpu_count || 2 }}
       # The smoke test's rounds: each one translates the code the run found
@@ -562,6 +564,8 @@ jobs:
             ls games/up/build/lift 2>/dev/null | head -20;
             echo "decode src: the files that name 0x0032DFA0 (any spelling)";
             grep -rilE "0x?0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | head -10;
+            echo "decode src: the IOP's DMA into the EE in the unpacker's stream area (0x01F7xxxx..0x01F8xxxx), the first 60:";
+            grep "^\[sif\] IOP" games/up/build/port/report.txt 2>/dev/null | grep -E "EE 0x01F[78]" | head -60 | sed 's/^/decode src: /';
             echo "decode src: the disc reads (CD notes) with their destination, the first 40:";
             grep -i "CD: read\|cdvd\|CdRead\|sceCdRead" games/up/build/port/report.txt 2>/dev/null | head -40 | sed 's/^/decode src: /';
             echo "decode src: the yields inside the unpacker (its loop heads, where other threads may run): $(grep -c '^\[yield\]' games/up/build/port/report.txt 2>/dev/null)";
