@@ -502,3 +502,13 @@ not the stack slot.
 - The copy into 0x58980 is a `memcpy` inside `CdRead` (iop_libs.cpp), so the IOP-store watch (PS2HOST_IOP_WATCH) never sees it. Zero IOP stores in 0x70000..0x7A000 in 60 s is correct, not a fault of the watch.
 - Other host writers into IOP memory: SIF extra data (`WriteBytes`, iop.cpp:245), SifGetOtherData (`vm.Write`), N-command 13 (`WriteBytes`). None of them writes 0x75180 in these runs.
 - Hypothesis to test next: a later `sceCdRead` into 0x58980 (0x63 sectors at 0x38459) overwrites 0x75180 before the EE's DMA reads it. Real hardware completes the read asynchronously, and the engine completes it at call time, so the EE may see the data of a later read. The merged timeline section of the check run shows the order.
+
+## The disc reads are exact (run 45255579092)
+
+- The EE's stream bytes equal the disc image's own sectors (compared word by word, little-endian in the engine's print):
+  - LSN 0x38312 (the 59392-byte chunk from 0x75180): ISO `18000000 04000000 14000000 00000000`, the EE got `00000018 00000004 00000014 00000000`.
+  - LSN 0x38399: ISO `E9689681 6B802F6E`, the EE got `819668E9 6E2F806B`.
+  - LSN 0x38459: ISO `EC95A2EE` repeated, the EE got `EEA295EC` repeated. The repetition is on the disc.
+- So the engine reads and transfers the disc correctly. The problem is not in the disc path.
+- Timeline (run 45253935577): the 59392-byte transfer from 0x75180 follows read 0x382D9 and comes before read 0x38399, which refills 0x58980. The transfers and reads are in the order the IOP made them.
+- Remaining suspects: (1) the EE does not ask the IOP for each chunk (the engine's IOP sends every chunk at once, the real IOP waits for the EE's flow control); (2) the unpacker's output (call 6 at 0x01F78100..0x01F80BEE) overlaps the next chunk's place, and in the real run the chunk is DMA'd after the unpacker consumed the previous one.
