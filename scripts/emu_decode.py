@@ -47,6 +47,36 @@ def machine(path):
     data = ef.section_data(section)
     return emu.Machine(section.addr, data, total_size=RAM_TOP - section.addr)
 
+LOOP_HEADS = (0x0032DFB8, 0x0032DFF0, 0x0032E028)     # the unpacker's loop heads (the engine's [tick] lines)
+
+
+def loop_trace(m, size):
+    """Record the loop heads' registers of this call's run (the engine prints the same from its loop heads)."""
+    trace = []
+    step = m.step
+
+    def traced():
+        if m.pc in LOOP_HEADS:
+            trace.append("[tick] 0x%08X a1=%08X a2=%08X a3=%08X t0=%08X t5=%08X t8=%08X"
+                         % (m.pc, m.get32(5), m.get32(6), m.get32(7), m.get32(8), m.get32(13), m.get32(24)))
+        step()
+
+    m.step = traced
+    return trace
+
+
+def compare_ticks(interp, engine):
+    """The first loop head where the engine's registers differ from the interpreter's, with the lines around it."""
+    print("decode src: loop heads: the interpreter %d, the engine %d" % (len(interp), len(engine)))
+    for i in range(min(len(interp), len(engine))):
+        if interp[i] != engine[i]:
+            print("decode src: the first difference at loop head %d:" % i)
+            for j in range(max(0, i - 3), min(len(interp), len(engine), i + 3)):
+                print("decode src:   interpreter %s" % interp[j])
+                print("decode src:   engine      %s" % engine[j])
+            return
+    print("decode src: the loop heads agree on the %d they share" % min(len(interp), len(engine)))
+
 
 def store_pcs(a0, arg, a1, src, a2, size, a3, target):
     """The PCs of the stores to `target` in a fresh interpreter run of this call (the instruction that wrote it)."""
@@ -105,6 +135,7 @@ def main():
         m.memory.write(a0, arg)
         m.memory.write(a1, src)
         m.memory.write(a2, bytes(min(size, OUTPUT_LIMIT)))
+        ticks = loop_trace(m, size) if (a2 == 0x01F78100 and size == 0x800) else None
         try:
             m.call(FUNCTION, args=(a0, a1, a2, a3), max_instructions=200_000_000)
         except Exception as error:      # the interpreter's fault on this call: shown, the rest go on
@@ -112,6 +143,8 @@ def main():
             differs += 1
             continue
         interp_end = m.get(6) & 0xFFFFFFFF
+        if ticks is not None:
+            compare_ticks(ticks, [l for l in text.splitlines() if l.startswith("[tick] ")])
         interp_out = bytes(m.memory.read(a2, min(size, OUTPUT_LIMIT)))
         engine_end = ends[k] if k < len(ends) else None
         engine_out = outs[k] if k < len(outs) and a2 == 0x01F78100 else None
