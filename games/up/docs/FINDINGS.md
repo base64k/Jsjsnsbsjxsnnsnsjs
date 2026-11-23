@@ -469,3 +469,14 @@ not the stack slot.
 - So the engine's translation is not what differs on call 83. The input the game's code sees for call 83 is not a valid chunk: the decoder's stream for call 83 is not where the game put it. Earlier writes show no non-decoder store into `0x01F7FCF3..0x01F7FDF2`, so no read filled that buffer; the decoder's own outputs (call 6 and others) cover it.
 - Next: find the read that filled the compressed stream of calls 82 and 83 (`0x01F7F9DB`, `0x01F7FCF3`), its destination and length, and whether the game's buffers for that stream overlap decoder outputs. Use `--watch-write` over `0x01F7F000..0x01F80000` with the CD read notes on.
 - Run with `--notes` (the last one): the disc reads happen. The IOP's `sceCdRead` calls (1 sector each, IOP buffer `0x00028900`) run with LSNs such as `0x10`, `0x101`, `0x105`..`0x10A`, `0x11F`. So the stream does come from the disc. What is not known yet is the EE address each sector is DMA'd to, which is the next thing to watch (the EE range that holds the stream for calls 82 and 83).
+
+## Run 45158304752: the IOP's DMA into the EE (where the disc sectors land)
+
+- The report's `[sif]` lines are not in the artifact or the job log (both unreachable from outside). They are in the PC reference check run's text: `gh api repos/base64k/Up-android_port/check-runs/137643863890 --jq .output.text`. Use that, not `gh run view --log`.
+- The EE addresses of SIF DMAs carry the uncached alias: `0x21F78900` is the EE address `0x01F78900`. A grep for `EE 0x01F[78]` misses them. Grep `EE 0x21F[78]` instead.
+- Stream-area DMAs, in time order (IOP -> EE, bytes):
+  - `0x59180 -> 0x21F9F180`, 36864 (call 0's input `0x01F9F19C` sits at +0x1C of this chunk; header `00000045 00000004 000000AC 00000041` = size 172, comp 65 of call 0)
+  - `0x59180 -> 0x21F88180`, 114688 (call 3's input `0x01F88262`)
+  - `0x75180 -> 0x21F78900`, 59392 (contains call 6's input `0x01F81B7A` and call 83's input `0x01F7FCF3`); this chunk is DMA'd 4 times
+- Call 83 (`a2=0x01F78100`, size 2048) faults in the interpreter: `load of 1 byte(s) at unmapped 0x02000000`. A pointer inside its input is a garbage value with the `0x20000000` alias bit.
+- Open question: is the last `0x21F78900` DMA before call 83 the right data, and is its record at call 83's input position a valid header? Next step: dump the 59392-byte chunk from the IOP side (`0x75180`) and check the record headers at `0x01F7FCD7` (call 83's `a1 - 0x1C`).
