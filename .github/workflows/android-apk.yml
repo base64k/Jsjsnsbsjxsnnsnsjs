@@ -557,12 +557,18 @@ jobs:
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         run: |
-          F=$(grep -rl "func_0032DFA0" games/up/build/lift games/up/build/port 2>/dev/null | grep -v "/cmake/" | head -1)
-          if [ -n "$F" ] && [ -f games/up/build/port/report.txt ]; then
-            { echo "decode src: the translated code of 0x0032DFA0 in $F";
-              awk '/func_0032DFA0\(/{on=1} on{print; n++} on && /^}/{exit} n>400{exit}' "$F";
-            } | tee -a games/up/build/port/report.txt
-          fi
+          { echo "decode src: the files in games/up/build (the translated code's place)";
+            ls games/up/build 2>/dev/null | head -20;
+            ls games/up/build/lift 2>/dev/null | head -20;
+            echo "decode src: the files that name 0x0032DFA0 (any spelling)";
+            grep -rilE "0x?0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | head -10;
+            F=$(grep -rilE "func_0?0*32DFA0|0x0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | grep -E "\.(c|cc|cpp|h|hpp)$" | head -1);
+            if [ -n "$F" ]; then
+              echo "decode src: the translated code of 0x0032DFA0 in $F";
+              grep -niE "0x0*32dfa0|func_0*32DFA0" "$F" | head -3;
+              awk 'BEGIN{IGNORECASE=1} /func_?0*32dfa0/{on=1} on{print; n++} on && /^}/{exit} n>400{exit}' "$F";
+            fi;
+          } | tee -a games/up/build/port/report.txt
 
       # Stores into the last call's input from anywhere but the unpacker itself: a load
       # of the input that happened between the earlier calls and the last one, or none.
