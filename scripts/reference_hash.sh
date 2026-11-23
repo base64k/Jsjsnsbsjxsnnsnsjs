@@ -24,6 +24,8 @@ cd "$REPO_ROOT"
     sha256sum scripts/engine_*.patch 2>/dev/null || true
     sha256sum games/up/port/CMakeLists.txt games/up/port/overrides.cpp \
               games/up/game.json 2>/dev/null || true
+    # The place the repository is in: the build's cache holds absolute paths (CMakeCache).
+    echo "$REPO_ROOT"
     # The compiler (clang 19 or later: the VU code's calling convention).
     ( clang++ --version 2>/dev/null || clang++-19 --version 2>/dev/null || true ) | head -1
 } | sha256sum | cut -d' ' -f1
