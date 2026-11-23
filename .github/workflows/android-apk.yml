@@ -566,6 +566,9 @@ jobs:
             grep -rilE "0x?0*32dfa0" games/up/build --exclude-dir=cmake 2>/dev/null | head -10;
             echo "decode src: the IOP's DMA into the EE in the unpacker's stream area (0x01F7xxxx..0x01F8xxxx), the first 60:";
             grep "^\[sif\] IOP" games/up/build/port/report.txt 2>/dev/null | grep -E "EE 0x01F[78]" | head -60 | sed 's/^/decode src: /';
+            echo "decode src: the IOP's DMA lines in the report: $(grep -c "^\[sif\] IOP" games/up/build/port/report.txt 2>/dev/null); the first 5, and the destinations (top 12):";
+            grep "^\[sif\] IOP" games/up/build/port/report.txt 2>/dev/null | head -5 | sed 's/^/decode src: /';
+            grep -o "EE 0x[0-9A-Fa-f]*" games/up/build/port/report.txt 2>/dev/null | sort | uniq -c | sort -rn | head -12 | sed 's/^/decode src: /';
             echo "decode src: the disc reads (CD notes) with their destination, the first 40:";
             grep -i "CD: read\|cdvd\|CdRead\|sceCdRead" games/up/build/port/report.txt 2>/dev/null | head -40 | sed 's/^/decode src: /';
             echo "decode src: the yields inside the unpacker (its loop heads, where other threads may run): $(grep -c '^\[yield\]' games/up/build/port/report.txt 2>/dev/null)";
