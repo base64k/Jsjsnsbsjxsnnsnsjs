@@ -68,8 +68,10 @@ def loop_trace(m, size):
 def compare_ticks(interp, engine):
     """The first loop head where the engine's registers differ from the interpreter's, with the lines around it."""
     print("decode src: loop heads: the interpreter %d, the engine %d" % (len(interp), len(engine)))
+    # t5 and t8 are not compared: a loop head reads them only after its own writes (before the first one they are the caller's).
+    key = lambda line: line.split(" t5=")[0]
     for i in range(min(len(interp), len(engine))):
-        if interp[i] != engine[i]:
+        if key(interp[i]) != key(engine[i]):
             print("decode src: the first difference at loop head %d:" % i)
             for j in range(max(0, i - 3), min(len(interp), len(engine), i + 3)):
                 print("decode src:   interpreter %s" % interp[j])
