@@ -110,6 +110,7 @@ def main():
     same_all = same_engine = differs = 0
     shown = 0
     py_outputs = []              # (call, a2, size, Python's output) for the nesting test below
+    lies_shown = 0               # the nesting lines are capped (the report's section has a size limit)
     for k, ((arg, src), entry) in enumerate(zip(inputs, entries)):
         a0, a1, a2, a3 = entry
         size = int.from_bytes(arg[4:8], "little")
@@ -124,7 +125,8 @@ def main():
         py_out = bytes(copy[a2:a2 + min(size, OUTPUT_LIMIT)])
         # Does this call's input lie inside an earlier call's output range (a nested stream, or a clash)?
         for j, ja2, jsize, jout in py_outputs:
-            if ja2 <= a1 < ja2 + jsize:
+            if ja2 <= a1 < ja2 + jsize and lies_shown < 12:
+                lies_shown += 1
                 at = a1 - ja2
                 same = jout[at:at + 16] == src[:16]
                 print("decode src: call %d's input (0x%08X) lies in call %d's output (0x%08X + %d), the bytes %s"
