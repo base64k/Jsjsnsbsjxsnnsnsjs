@@ -32,7 +32,7 @@ from ps2decomp import emu, layout  # noqa: E402
 FUNCTION = 0x0032DFA0
 RAM_TOP = 0x02000000          # the memory the interpreter covers: all of EE RAM
 STACK_TOP = 0x01FF0000        # below the decoder's argument block at 0x01FFFA80
-OUTPUT_LIMIT = 0x800          # the output compared (the engine's [watch-out] holds this much)
+OUTPUT_LIMIT = 0x10000        # the output compared, whole (the engine's [watch-out] holds only the first 2 KB)
 
 
 def executable():
@@ -60,6 +60,7 @@ def main():
           % (FUNCTION, len(inputs)))
     same_all = same_engine = differs = 0
     shown = 0
+    py_outputs = []              # (call, a2, Python's output) for the nesting test below
     for k, ((arg, src), entry) in enumerate(zip(inputs, entries)):
         a0, a1, a2, a3 = entry
         size = int.from_bytes(arg[4:8], "little")
@@ -72,6 +73,13 @@ def main():
         copy = bytearray(ram)
         _, _, _, py_end = decoder.decode(copy, a0, a1, a2)
         py_out = bytes(copy[a2:a2 + min(size, OUTPUT_LIMIT)])
+        # Does this call's input begin inside an earlier call's output? (a nested stream)
+        head = bytes(src[:32])
+        for j, pa2, pout in py_outputs:
+            at = pout.find(head) if len(head) == 32 else -1
+            if at >= 0:
+                print("decode src: call %d's input begins inside call %d's output (0x%08X + %d)" % (k, j, pa2, at))
+        py_outputs.append((k, a2, py_out))
         # The interpreter, on the same memory: the argument block, the input, a zeroed output.
         m.memory.write(a0, arg)
         m.memory.write(a1, src)
