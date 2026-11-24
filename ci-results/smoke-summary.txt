@@ -2,124 +2,124 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: IOP: a write of 0xBF900000 to 0xBF801404 (IOP hardware or unmapped), by the instruction at 0x00011574 (IOP thread 1, $ra 0x000100F0)
-functions executed: 404 distinct
+stopped: the time limit, in the loop at 0x0044AA50
+functions executed: 1864 distinct
 guest call stack where it stopped (innermost last):
   0x00200008
   0x002DD240
-  0x002DD6B0
-  0x003E46F8
-  0x003E44D0
-  0x003DF968 sceSifCallRpc
-  0x003DED88
-  0x003DEC50
-  0x003DC960 SifSetDma
+  0x0032F1B0
+  0x0032EAA0
+  0x00399160
+  0x00397AA0
+  0x002F6970
+  0x0044A7A0
 threads:
-  thread 1: running, priority 1, entry 0x00200008, ran 18 times
+  thread 1: running, priority 10, entry 0x00200008, ran 107 times
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
       0x003DD2A0 
       0x003DC5E0 WaitSema
-  IOP calls, most frequent:
-    0x000147A0 x1 (from 0x000100CC)
-    0x0001476C x1 (from 0x000100D8)
-    0x00014764 x1 (from 0x000100BC)
-    0x00011550 x1 (from 0x000100E8)
-  IOP thread 1: ready, priority 8, entry 0x000100B0, at 0x00011578
-VIF1 commands: STCYCL 1 OFFSET 1 BASE 1 ITOP 1 STMOD 1 MSKPATH3 1 STMASK 1; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
-GS: 0 primitives, 0 pixels written
-GIF tags: PATH1 0, PATH2 0, PATH3 65; image 4160 quadwords; register writes: 18:61 1A:61 40:61 45:61 46:61 47:61 4C:61 4E:61 50:2 51:2 52:2 53:2
-time: 1.6 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.0%, SPU2 0.0%, waiting for the GS thread 0.1%
+  thread 3: sleeping, priority 4, entry 0x0044D4A0, ran 1 times
+      0x0044D4A0 
+      0x003E0050 
+      0x003DC4C0 SleepThread
+VIF1 commands: NOP 1972731 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 39346 FLUSH 67441 FLUSHA 22480 STMASK 3 DIRECT 123645; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
+GS: 3383802 primitives, 4836323418 pixels written
+GIF tags: PATH1 0, PATH2 241685, PATH3 22605; image 6478400 quadwords; register writes: 00:129282 01:11242 03:224800 04:22480 05:3822204 06:5621 07:5621 08:11241 09:5621 14:5621 15:11241 16:1 17:1 18:39466 19:22482 1A:28226 1B:22483 34:1 35:5621 36:1 37:5621 3B:11242 3D:1 3F:11241 40:50706 41:22482 42:5621 43:5621 44:5621 45:16985 46:122 47:50706 48:22482 49:1 4A:1 4B:1 4C:39466 4D:22482 4E:39466 4F:22482 50:16862 51:3 52:16862 53:16862 7F:22480
+time: 122.3 s; GS drawing 97.6%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.0%, waiting for the GS thread 97.3%
 kernel services used:
-  -120  SifSetDChain             x16
-   -67  iSignalSema              x16
-     2  ?                        x1
-    16  AddIntcHandler           x1
-    18  AddDmacHandler           x2
+  -120  SifSetDChain             x8537
+   -67  iSignalSema              x2916
+     2  ?                        x2
+    16  AddIntcHandler           x3
+    18  AddDmacHandler           x4
     19  RemoveDmacHandler        x1
-    20  _EnableIntc              x1
-    22  _EnableDmac              x2
+    20  _EnableIntc              x3
+    22  _EnableDmac              x4
     23  _DisableDmac             x1
-    32  CreateThread             x1
-    34  StartThread              x1
-    41  ChangeThreadPriority     x1
-    47  GetThreadId              x7
+    32  CreateThread             x2
+    34  StartThread              x2
+    41  ChangeThreadPriority     x2
+    47  GetThreadId              x10
     48  ReferThreadStatus        x1
+    50  SleepThread              x1
     60  SetupThread              x1
     61  SetupHeap                x1
     62  EndOfHeap                x2
-    64  CreateSema               x29
-    65  DeleteSema               x17
-    66  SignalSema               x9
-    68  WaitSema                 x26
-    69  PollSema                 x1
+    64  CreateSema               x162
+    65  DeleteSema               x149
+    66  SignalSema               x2949
+    68  WaitSema                 x287
+    69  PollSema                 x5624
     74  SetOsdConfigParam        x2
-    75  GetOsdConfigParam        x4
+    75  GetOsdConfigParam        x7
     90  kCopy                    x3
     91  ?                        x12
-   100  FlushCache               x218
+   100  FlushCache               x22851
    107  ?                        x1
-   113  GsPutIMR                 x1
+   113  GsPutIMR                 x2
    116  SetSyscall               x18
-   119  SifSetDma                x20
+   118  SifDmaStat               x5623
+   119  SifSetDma                x14163
    120  SifSetDChain             x2
    121  SifSetReg                x5
    122  SifGetReg                x6
-   124  Deci2Call                x16
+   124  Deci2Call                x40
    131  ?                        x2
 most called:
-  0x003F0E68                               x2
-  0x003DC650 GetOsdConfigParam             x2
-  0x0030CCA0                               x2
-  0x00200E68                               x2
-  0x80076000 copy of 0x00714678            x1
-  0x80075000 copy of 0x00713840            x1
-  0x0075D430                               x1
-  0x0075D3D0                               x1
-  0x0075D370                               x1
-  0x0075D350                               x1
-  0x0075D2F0                               x1
-  0x0075D290                               x1
-  0x0075D230                               x1
-  0x0075D1D0                               x1
-  0x0075D170                               x1
-  0x0075CEE0                               x1
-  0x0075CCA0                               x1
-  0x0075CC50                               x1
-  0x0075CC00                               x1
-  0x0075CB50                               x1
-  0x0075CAF0                               x1
-  0x00756800                               x1
-  0x007560B0                               x1
-  0x00755A90                               x1
-  0x00755820                               x1
-  0x007556D0                               x1
-  0x00755670                               x1
-  0x00755610                               x1
-  0x007555B0                               x1
-  0x00755550                               x1
-  0x007554F0                               x1
-  0x00755490                               x1
-  0x007545B0                               x1
-  0x00754550                               x1
-  0x00754470                               x1
-  0x00754410                               x1
-  0x007543B0                               x1
-  0x00754350                               x1
-  0x007542F0                               x1
-  0x00754170                               x1
-device registers read: 29
-  0x10001000 x39
-  0x10001010 x54
+  0x004E6340                               x5621
+  0x004C49A0                               x5621
+  0x0045B7F0                               x5621
+  0x00456970                               x5621
+  0x003AB7F0                               x5621
+  0x002F6970                               x5621
+  0x002F6340                               x5621
+  0x002F49A0                               x5620
+  0x002F0CC0                               x5620
+  0x00240CC0                               x5620
+  0x00426870                               x27
+  0x00356870                               x27
+  0x004B68C0                               x23
+  0x004268C0                               x22
+  0x004B8E60                               x17
+  0x00202C50                               x17
+  0x00308E60                               x16
+  0x00212C50                               x16
+  0x004B7A60                               x10
+  0x00397A60                               x8
+  0x0044F020                               x6
+  0x0041F020                               x6
+  0x003DC960 SifSetDma                     x5
+  0x002E7990                               x5
+  0x003DC5E0 WaitSema                      x4
+  0x00367990                               x4
+  0x0030CCA0                               x4
+  0x002DC960                               x4
+  0x004B8140                               x3
+  0x003F1590                               x3
+  0x003D9AB0                               x3
+  0x0039CCB0                               x3
+  0x0035C5E0                               x3
+  0x0031F020                               x3
+  0x002DCC10                               x3
+  0x00540EA0                               x2
+  0x004D80E0                               x2
+  0x004B8AE0                               x2
+  0x004B80E0                               x2
+  0x004B7310                               x2
+device registers read: 39
+  0x10000000 x50604
+  0x10001000 x273
+  0x10001010 x366
   0x10001810 x1
+  0x10003020 x1
   0x10008000 x4
   0x10008010 x2
   0x10008020 x2
   0x10008030 x3
   0x10008040 x1
   0x10008050 x1
-  0x1000A000 x208
-  0x1000A010 x137
-  0x1000A020 x137
-  0x1000A030 x208
+  0x10009000 x22487
+  0x10009010 x11244
+  0x10009020 x11244
 
 the pictures: 22
