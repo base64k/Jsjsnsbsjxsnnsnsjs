@@ -23,6 +23,14 @@
  *   - Handler implemented in iop_servers.cpp (ZnasndRpcHandler). Currently
  *     logs calls and returns zeros; needs proper responses from --iop-trace.
  *
+ *   IOP module loading via RunModule:
+ *   - Disabled for now: loading LIBSD.IRX via RunModule causes the IOP to
+ *     crash on a write to IOP hardware 0xBF801404 (SPU2 register) at
+ *     0x00011574, before the menu appears. The game runs fine without
+ *     RunModule - it loads its own IOP modules via sceSifLoadModule from
+ *     the disc (we saw LIBSD.IRX loaded as module 5 in the first CI run).
+ *   - Re-enable once the IOP hardware write to 0xBF801404 is handled.
+ *
  * Known from the engine source:
  *   - libsd (iop_libs.cpp) implements all 32 exports: sceSdInit, SetParam,
  *     BlockTrans, VoiceTrans, ProcBatch, callbacks, IRQ handlers.
@@ -36,21 +44,23 @@
  */
 
 #include "ps2host/host.h"
-#include "ps2host/iop_vm.h"
 #include "ps2host/run.h"
 
 void RegisterIopSoundServers();
 
 void RegisterGameOverrides() {
-    // Name the IOP sound modules to run from the disc. Confirmed from CI:
-    // LIBSD.IRX (module 5) and ZNASND.IRX (module 6) are loaded from
-    // cdrom0:\MODULES\IOPRP280.IMG. The interpreter loads each one when the
-    // game's code asks for it (sceSifLoadModule), relocates it, and binds its
-    // imports to the host's IOP library HLE (iop_libs.cpp).
-    ps2host::iop::RunModule("LIBSD.IRX");   // Sound Library (627 exports)
-    ps2host::iop::RunModule("ZNASND.IRX");  // The game's sound driver
-    // CRI_ADXI.IRX may also be present - uncomment if found on the disc.
-    // ps2host::iop::RunModule("CRI_ADXI.IRX"); // CRI ADX streamed audio
+    // Name the IOP sound modules to run from the disc. Disabled for now:
+    // loading LIBSD.IRX via RunModule causes the IOP to crash on a write to
+    // IOP hardware 0xBF801404 (SPU2 register) at 0x00011574, before the menu
+    // appears. The game runs fine without RunModule - it loads its own IOP
+    // modules via sceSifLoadModule from the disc.
+    //
+    // Re-enable once the IOP hardware write to 0xBF801404 is handled (either
+    // by implementing SPU2 register HLE in iop_vm.cpp, or by running ZNASND
+    // which should own that register).
+    //
+    // ps2host::iop::RunModule("LIBSD.IRX");   // Sound Library (627 exports)
+    // ps2host::iop::RunModule("ZNASND.IRX");  // The game's sound driver
 
     // Register host RPC servers for IOP sound modules (LIBSD, ZNASND).
     // Called once at startup, before the IOP runs. Keep this minimal.
