@@ -40,5 +40,4 @@ ps2_add_port(up
     GAME ${CMAKE_CURRENT_LIST_DIR}/..
     GENERATED ${PS2_GENERATED_DIR}
     TRANSLATED ${CMAKE_CURRENT_LIST_DIR}/../src/lifted
-    SOURCES ${CMAKE_CURRENT_LIST_DIR}/overrides.cpp
-            ${CMAKE_CURRENT_LIST_DIR}/iop_servers.cpp)
+    SOURCES ${CMAKE_CURRENT_LIST_DIR}/overrides.cpp)

@@ -181,6 +181,19 @@ jobs:
           fi
           (clang++-19 --version 2>/dev/null || clang++ --version) | head -1
 
+      # The engine's patches for this game (games/up/engine-patches): what the
+      # engine lacks for the game yet, until it is in the engine's own
+      # repository. They go onto the checkout only; the submodule's commit is
+      # never changed.
+      - name: The engine's patches for this game
+        run: |
+          set -e
+          for patch in "$GITHUB_WORKSPACE"/games/up/engine-patches/*.patch; do
+            [ -f "$patch" ] || continue
+            echo "applying $(basename "$patch")"
+            git -C engine apply --verbose "$patch"
+          done
+
       - name: The engine's commit (the caches' key)
         id: engine
         run: echo "sha=$(git -C engine rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -337,7 +350,19 @@ jobs:
         run: |
           mkdir -p ci-results
           cp games/up/build/smoke/summary.txt ci-results/smoke-summary.txt 2>/dev/null || true
-          cp games/up/build/port/report.txt ci-results/port-report.txt 2>/dev/null || true
+          # The report, cut to its head and tail (a trace of a whole run is
+          # big); the full one is in the smoke test's artifact.
+          if [ -f games/up/build/port/report.txt ]; then
+            LINES=$(wc -l < games/up/build/port/report.txt)
+            if [ "$LINES" -gt 9000 ]; then
+              { head -n 4500 games/up/build/port/report.txt
+                echo "... $((LINES - 9000)) lines left out (the full report is in the up-smoke artifact) ..."
+                tail -n 4500 games/up/build/port/report.txt; } > ci-results/port-report.txt
+            else
+              cp games/up/build/port/report.txt ci-results/port-report.txt
+            fi
+            grep "^\[iop\]" games/up/build/port/report.txt | head -n 20000 > ci-results/iop-trace.txt || true
+          fi
           if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
             git config user.email "agent@arena.ai"
             git config user.name "Arena Agent"

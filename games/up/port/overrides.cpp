@@ -3,89 +3,54 @@
  *
  * An override replaces the translated function at its address: the way a port
  * redirects code that drives hardware the host provides differently, and the
- * way the PC features hook in (a settings menu in the game's own menus,
- * widescreen, the mouse's targets). Register them here with
+ * way the PC features hook in. Register them here with
  * ps2host::Override(address, function, "why"); the original stays callable as
  * F_<ADDRESS>(c). See the engine's docs/PORTING.md and the ps2-port skill.
  *
  * Override as little as possible: the game's own code is the point.
  *
- * Sound driver handshake - CONFIRMED from CI smoke test (run 45338174585):
- *   - ZNASND.IRX is loaded as IOP module 6 (the game's sound driver,
- *     NOT SDRDRV as previously guessed). LIBSD.IRX is module 5.
- *   - The game runs full 120s without crashing, draws pictures (562 GS
- *     primitives, 860160 pixels), but is stuck in an idle loop at
- *     0x0044E068 calling SifSetDChain ~45M times.
- *   - The EE calls RPC server 0x01000001 with procedures 513, 768, 1797,
- *     1808 (32 bytes each) via sceSifCallRpc -> SifSetDma.
- *   - Previously answered with zeros (no host implementation) - ZNASND
- *     never starts streaming, flag 0x1AEF8 never set.
- *   - Handler implemented in iop_servers.cpp (ZnasndRpcHandler). Currently
- *     logs calls and returns zeros; needs proper responses from --iop-trace.
+ * Sound driver: ZNASND.IRX is the game's own sound driver (IOP module 6). It
+ * runs for real in the IOP interpreter (RunModule below), with the sound
+ * library's imports bound to the host's libsd. Its IOP hardware accesses
+ * (0xBF80xxxx) need the engine's IOP hardware registers, which are in
+ * games/up/engine-patches/0001-iop-hardware-registers.patch and applied to
+ * the engine checkout before every build.
  *
- *   IOP module loading via RunModule:
- *   - Disabled for now: loading LIBSD.IRX via RunModule causes the IOP to
- *     crash on a write to IOP hardware 0xBF801404 (SPU2 register) at
- *     0x00011574, before the menu appears. The game runs fine without
- *     RunModule - it loads its own IOP modules via sceSifLoadModule from
- *     the disc (we saw LIBSD.IRX loaded as module 5 in the first CI run).
- *   - Re-enable once the IOP hardware write to 0xBF801404 is handled.
- *
- * Known from the engine source:
- *   - libsd (iop_libs.cpp) implements all 32 exports: sceSdInit, SetParam,
- *     BlockTrans, VoiceTrans, ProcBatch, callbacks, IRQ handlers.
- *   - SPU2 (spu2.cpp) fully decodes/mixes ADPCM at 48 kHz; output wired via
- *     EnableSound() -> AudioFrames() when --audio is given.
- *   - SoundInterrupts() runs in the IOP scheduler loop (iop_vm.cpp:396).
- *
- * Reference (DQ8-Recompiled PR #1): run IOP sound modules unmodified on the
- * emulated IOP; the game's own sound code talks to them over SIF; keep
- * sceSifCallRpc bound to the runtime, not stubbed.
+ * Earlier attempts that are NOT here any more (see git history and
+ * docs/FINDINGS.md): answering ZNASND's RPC server 0x01000001 with guessed
+ * replies (iop_servers.cpp), which never unblocked the game.
  */
 
 #include "ps2host/host.h"
+#include "ps2host/iop_vm.h"
 #include "ps2host/run.h"
+#include "ps2host/settings.h"
 
-void RegisterIopSoundServers();
+#include "gpu_pipelines.h"
 
 void RegisterGameOverrides() {
-    // Name the IOP sound modules to run from the disc. Disabled for now:
-    // loading LIBSD.IRX via RunModule causes the IOP to crash on a write to
-    // IOP hardware 0xBF801404 (SPU2 register) at 0x00011574, before the menu
-    // appears. The game runs fine without RunModule - it loads its own IOP
-    // modules via sceSifLoadModule from the disc.
-    //
-    // Re-enable once the IOP hardware write to 0xBF801404 is handled (either
-    // by implementing SPU2 register HLE in iop_vm.cpp, or by running ZNASND
-    // which should own that register).
-    //
-    // ps2host::iop::RunModule("LIBSD.IRX");   // Sound Library (627 exports)
-    // ps2host::iop::RunModule("ZNASND.IRX");  // The game's sound driver
+    // The game's own sound driver, from the disc, in the IOP interpreter. The
+    // sound library (LIBSD.IRX) stays the host's: its exports are the host's
+    // libsd, which ZNASND imports.
+    ps2host::iop::RunModule("ZNASND.IRX");
 
-    // Register host RPC servers for IOP sound modules (LIBSD, ZNASND).
-    // Called once at startup, before the IOP runs. Keep this minimal.
-    RegisterIopSoundServers();
+    // The GPU pipelines this game draws with (scripted runs, the engine's own
+    // keys): made in the background from the start, so the first race or menu
+    // makes none in the middle of it. Regenerate with
+    // engine/tools/make_pipeline_hints.py when the engine's pipeline keys change.
+    ps2host::SetGpuPipelineHints(kGpuPipelineHints, sizeof(kGpuPipelineHints) / sizeof(kGpuPipelineHints[0]));
 
-    // Name the wait loops the game spins in while waiting for the sound
-    // driver to respond. The host skips virtual time in these loops so the
-    // game can move past them instead of burning real time. Addresses seen
-    // in CI smoke runs: 0x0044AA50, 0x00356AF0, 0x0030CCB4, 0x0045A738,
-    // 0x003F4674 (after StringCopy - loading menu/UI strings).
+    // The FPS counter on by default (F1 turns it off, and the choice is kept in
+    // the settings file). On a phone: the frame rate in the corner of the screen.
+    if (ps2host::Setting("fps_counter", "").empty()) ps2host::RunSetting("fps_counter", "on");
+
+    // Name the wait loops the game spins in while it waits for something the
+    // host answers late (the sound driver's status, text loading). The host
+    // skips virtual time in these loops so the game moves past them instead of
+    // burning real time. Addresses seen in CI smoke runs.
     ps2host::AddIdleLoop(0x0044AA50u);
     ps2host::AddIdleLoop(0x00356AF0u);
     ps2host::AddIdleLoop(0x0030CCB4u);
     ps2host::AddIdleLoop(0x0045A738u);
     ps2host::AddIdleLoop(0x003F4674u);
-
-    // TODO: once --iop-trace reveals correct ZNASND RPC responses, refine
-    // ZnasndRpcHandler in iop_servers.cpp. Also add function overrides here
-    // for any EE functions that need host redirection.
-    //
-    // Expected overrides:
-    //   - The EE function that writes IOP flag 0x1AEF8 (hook if the game's
-    //     own write is wrong - address from the analysis).
-    //   - Any function that the host needs to redirect for sound/hardware
-    //     differences between PS2 and PC.
-    //
-    // Keep this minimal: the game's own code is the point.
 }

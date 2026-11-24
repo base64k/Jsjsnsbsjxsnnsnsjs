@@ -95,11 +95,15 @@ run_game() {
     mkdir -p "$GAME/build/smoke/frames" "$(dirname "$REPORT")" "$(dirname "$DISCOVERED")"
     local -a headless=()
     command -v xvfb-run >/dev/null 2>&1 && headless=(xvfb-run -a)
+    # The IOP's trace: every library call the game's own IOP modules make (the
+    # sound driver's, what it asks of the host). On by default; UP_SMOKE_IOP_TRACE=0 turns it off.
+    local -a iop_trace=()
+    [ "${UP_SMOKE_IOP_TRACE:-1}" = "1" ] && iop_trace=(--iop-trace)
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
-            --audio \
+            --audio ${iop_trace[@]+"${iop_trace[@]}"} \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
             --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
             > "$REPORT" 2>&1
