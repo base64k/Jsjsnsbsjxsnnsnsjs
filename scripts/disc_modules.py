@@ -26,6 +26,61 @@ def say(text=""):
     lines.append(text)
 
 
+REG = ["zero", "at", "v0", "v1", "a0", "a1", "a2", "a3", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
+       "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "t8", "t9", "k0", "k1", "gp", "sp", "fp", "ra"]
+IMM_OPS = {0x08: "addi", 0x09: "addiu", 0x0A: "slti", 0x0B: "sltiu", 0x0C: "andi", 0x0D: "ori",
+           0x0E: "xori", 0x20: "lb", 0x21: "lh", 0x23: "lw", 0x24: "lbu", 0x25: "lhu", 0x28: "sb",
+           0x29: "sh", 0x2B: "sw"}
+
+
+def mips_text(word, address):
+    """One R3000 instruction as text (the common ones; the rest as .word)."""
+    op = word >> 26
+    rs, rt, rd = (word >> 21) & 31, (word >> 16) & 31, (word >> 11) & 31
+    sa, funct = (word >> 6) & 31, word & 63
+    imm = word & 0xFFFF
+    simm = imm - 0x10000 if imm & 0x8000 else imm
+    if word == 0:
+        return "nop"
+    if op == 0:
+        names = {0x21: "addu", 0x23: "subu", 0x25: "or", 0x24: "and", 0x26: "xor", 0x2A: "slt", 0x2B: "sltu"}
+        if funct in names:
+            return "%s %s,%s,%s" % (names[funct], REG[rd], REG[rs], REG[rt])
+        if funct == 0x00:
+            return "sll %s,%s,%d" % (REG[rd], REG[rt], sa)
+        if funct == 0x02:
+            return "srl %s,%s,%d" % (REG[rd], REG[rt], sa)
+        if funct == 0x08:
+            return "jr %s" % REG[rs]
+        if funct == 0x09:
+            return "jalr %s" % REG[rs]
+        return ".word 0x%08X" % word
+    if op in (0x02, 0x03):
+        target = ((address + 4) & 0xF0000000) | ((word & 0x3FFFFFF) << 2)
+        return ("j" if op == 0x02 else "jal") + " 0x%08X" % target
+    if op == 0x0F:
+        return "lui %s,0x%04X" % (REG[rt], imm)
+    if op in (0x04, 0x05):
+        target = address + 4 + (simm << 2)
+        return ("beq" if op == 0x04 else "bne") + " %s,%s,0x%08X" % (REG[rs], REG[rt], target)
+    if op in IMM_OPS:
+        if op in (0x20, 0x21, 0x23, 0x24, 0x25, 0x28, 0x29, 0x2B):
+            return "%s %s,%d(%s)" % (IMM_OPS[op], REG[rt], simm, REG[rs])
+        return "%s %s,%s,%d" % (IMM_OPS[op], REG[rt], REG[rs], simm)
+    return ".word 0x%08X" % word
+
+
+def disasm_around(data, offset, before=8, after=4):
+    """Lines of code around a file offset (aligned), with the address as the file gives it."""
+    start = max(0, offset - 4 * before) & ~3
+    out = []
+    for at in range(start, min(len(data) - 3, offset + 4 * after + 4), 4):
+        word = struct.unpack_from("<I", data, at)[0]
+        mark = "  <- 0x01000002" if at <= offset < at + 4 else ""
+        out.append("    0x%06X: %08X  %s%s" % (at, word, mips_text(word, at), mark))
+    return out
+
+
 def lui_ori_sites(data, hi, lo):
     """Offsets where MIPS code builds the word `hi<<16 | lo` with lui + ori/addiu
     (how a literal id reaches a register; a literal word in the code is rare)."""
@@ -82,6 +137,10 @@ def scan(path, label):
                 near = min(names_at, key=lambda t: abs(t[0] - h))[1].strip() if names_at else "?"
                 where.append("0x%X (near %s)" % (h, near))
             say("  word %s (LE): %d times, first at %s" % (label_sid, total, ", ".join(where)))
+            if label_sid == "0x01000002" and "MODULES" in label:
+                for h in hits[:3]:
+                    say("  code around 0x%X:" % h)
+                    lines.extend(disasm_around(data, h))
 
 
 def walk(folder):
