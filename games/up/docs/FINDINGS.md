@@ -397,14 +397,43 @@ for `0x01000002` at 0x820; the call sites differ by the same amount). So
 ZNASND registers its own server, `0x01000001`, and binds to `0x01000002`,
 which another side must register.
 
-**The disc does not hold server `0x01000002` as data or as a literal.** The
-scan finds no aligned word `0x01000002` in any module or in the EE program,
-and the only `lui`+`ori` that builds it is ZNASND's bind. The new scan also
-lists every `lui 0x0100` followed by an `addiu`/`ori` of 1 or 2 within 12
-words (`lui 0x0100 ... addiu/ori ... sites`). Its result is in
-`ci-results/disc-modules.txt`. A zero there means the id is not built from
-constants at all, so it comes from the console's own boot image or from a
-computed value at run time.
+**The EE registers server `0x01000002` (run 45467618323, `disc-modules.txt`).**
+No module on the disc holds the id as data. The EE program does build it, in
+code, at program address `0x24D5BC`:
+`lui v0,0x0100; ori a1,v0,2; jal 0x003DFC38` with `a0`=sp+48 (the server
+data), `a2`=0x0044D3A0 (a function), `a3`=0x007A8400 (a buffer), `t0`=`t1`=0,
+and the queue on the stack. That is the seven arguments of
+`sceSifRegisterRpc(sd, sid, func, buff, cfunc, cbuff, qd)`. So the EE serves
+`0x01000002`, and ZNASND's bind for it is a client bind to the EE. The other
+`lui 0x0100` hits in the EE program (0xE7634, 0xE7B48, 0xEE9A4, 0x261A6C) use
+other constants (`0x101`, `0x6000_0002`) and are not this id.
+The EE also binds `0x01000001` (ZNASND's own server) at `0x24CEE4`:
+`lui v0,0x0100; ori a1,v0,1; jal 0x003DF798`, `a0`=0x007A7BC0, `a2`=0, which is
+`sceSifBindRpc(sd, 0x01000001, 0)`.
+
+**Why the port never gets there.** The EE binds only the `0x8000xxxx` IOP
+servers in the port (`[host] SIF: bound to IOP server …` lines of
+`port-report.txt`). It never binds `0x01000001`, so it never reaches `0x24CEE4`
+or `0x24D5BC`. Its thread 1 waits in `sceSifCallRpc` → `WaitSema` (the
+smoke summary), a call that is not to an unimplemented server (no `SIF: call
+… no host implementation` line). So the stall is in an earlier EE call. The
+IOP side's loop (`sceSifBindRpc(0x01000002)`) is the ZNASND's poll for the EE
+server, which the EE would register only after that call returns.
+
+**The EE's server table is not the IOP's.** The port's IOP bind
+(`SifBindRpcClient` in `iop_libs.cpp`, patch 0005) looks only in the IOP's
+`rpc_servers` and the host's table. An EE-registered server (`sceSifRegisterRpc`
+on the EE) is in EE memory and never reaches it, so the IOP's bind returns 0
+even once the EE has registered `0x01000002`. Patch 0005 needs a second look-up
+into the EE's registrations (the EE's `sceSifRegisterRpc` call, `0x003DFC38`
+in this program) when the EE is up; without it the EE registration does not
+serve the IOP.
+
+**Earlier reading of the same scan (corrected).** The first reading counted the
+bytes `02 00 00 01` wherever they occur (LIBSD, SDRDRV, the EE program). Every
+such hit is at an unaligned offset, so they are bytes across instruction
+boundaries, not literals. No aligned `0x01000002` word exists in any disc module
+or in the EE program.
 
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
@@ -417,14 +446,13 @@ computed value at run time.
   in the settings file). `fps_detail` in the engine adds CPU.
 
 **Next steps:**
-1. Read the "lui 0x0100 ... sites" lines in `ci-results/disc-modules.txt`.
-   If there are sites in the EE program or in a module, the code around them
-   says which register holds the id and where it goes (`sceSifRegisterRpc`
-   or a bind).
-2. If there are none: the server comes from the console's boot image or is
-   computed at run time. The next run should trace the `sceSifRegisterRpc`
-   calls on the EE side (`[host] SIF:` lines in `port-report.txt`).
-3. Patches 0005 and 0006 are in place; their effect is in the trace's
-   `ioman` lines and the bind loop. The trace is capped at 20,000 lines, so
-   the stop is seen only at its end.
+1. Find the EE call the EE waits on before `0x24CEE4`: log each EE
+   `sceSifCallRpc` with its server id, procedure, and the EE's caller (the host
+   note for the kRpcCall case in `iop.cpp` logs only unimplemented servers).
+   That call's reply is what stops the EE and so the registration.
+2. Make the IOP's `sceSifBindRpc` see the EE's registered servers (the EE's
+   `sceSifRegisterRpc` for `0x01000002` in the program's `0x003DFC38`), so the
+   IOP's bind returns the server once the EE has registered it.
+3. Patches 0005 and 0006 are in place; their effect is in the trace's `ioman`
+   lines and the bind loop. The trace is capped at 20,000 lines.
 4. Do not publish the APK until the menu appears (the user's condition).
