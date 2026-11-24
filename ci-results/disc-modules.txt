@@ -18,34 +18,43 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: sifcmd
   string: Warning cdvdfsv.irx: Unload function can't be used.
   string: sifcmd
-  word 0x01000001 (LE): 2 times, first at 0x2AFCE, 0x329EB
-  word 0x01000002 (LE): 7 times, first at 0xA13F, 0xC66F, 0x11C93, 0x32A4F, 0x32B37, 0x356AB, 0x3E701
-  word 0x80000001 (LE): 1 times, first at 0x76D3
+  module names: PsIIsysmem  2800 at 0x12A8; PsIIloadcore2800 at 0x3838; PsIIsifcmd  2800 at 0x5EC0; PsIIsifman  2800@ at 0x7BE0; PsIIthreadma2800 at 0xF2D8; PsIIioman   2800invalid lseek arg at 0x13B78; PsIImodload 2800 at 0x18458; PsIIfileio  2800 at 0x1C340; PsIIcdvdman 2800 at 0x2ABE0; PsIIcdvdfsv 2800PJ at 0x36880; PsIIloadfile2800` at 0x3B0E0; PsIItimemani2800 at 0x3CC50; PsIIromdrv  2800l at 0x3DDA8; PsIIeesync  2800 at 0x3E6F0; PsIIsysclib 2800 at 0x40528; PsIIstdio   2800 at 0x41928
+  word 0x01000001 (LE): 2 times, first at 0x2AFCE (near PsIIcdvdman 2800), 0x329EB (near PsIIcdvdfsv 2800PJ)
+  word 0x01000002 (LE): 7 times, first at 0xA13F (near PsIIsifman  2800@), 0xC66F (near PsIIthreadma2800), 0x11C93 (near PsIIioman   2800invalid lseek arg), 0x32A4F (near PsIIcdvdfsv 2800PJ), 0x32B37 (near PsIIcdvdfsv 2800PJ), 0x356AB (near PsIIcdvdfsv 2800PJ), 0x3E701 (near PsIIeesync  2800)
+  word 0x80000001 (LE): 1 times, first at 0x76D3 (near PsIIsifman  2800@)
 == MODULES/MODULES/LIBSD.IRX (28605 bytes)
   string: libsd
   string: PsIIlibsd   2800
-  word 0x01000001 (LE): 1 times, first at 0x2B6B
-  word 0x01000002 (LE): 1 times, first at 0x1E83
+  module names: PsIIlibsd   2800 at 0x51F0
+  word 0x01000001 (LE): 1 times, first at 0x2B6B (near PsIIlibsd   2800)
+  word 0x01000002 (LE): 1 times, first at 0x1E83 (near PsIIlibsd   2800)
 == MODULES/MODULES/MCMAN.IRX (95909 bytes)
+  module names: PsIImcman   2800 at 0x11DF0
 == MODULES/MODULES/MCSERV.IRX (7417 bytes)
   string: sifcmd
   string: mcserv.irx: thread prority definition ignored.
+  module names: PsIImcserv  2800` at 0x1340
 == MODULES/MODULES/MCXMAN.IRX (5857 bytes)
-  word 0x01000002 (LE): 1 times, first at 0x8AF
+  module names: PsIImcxman  2800 at 0xFC0
+  word 0x01000002 (LE): 1 times, first at 0x8AF (near PsIImcxman  2800)
 == MODULES/MODULES/MCXSERV.IRX (5449 bytes)
   string: sifcmd
   string: mcxserv.irx: thread prority definition ignored.
+  module names: PsIImcxserv 2800 at 0xE80
 == MODULES/MODULES/PADMAN.IRX (43813 bytes)
   string: sifcmd
+  module names: PsIIpadman  2800 at 0x7DC0
 == MODULES/MODULES/SDRDRV.IRX (9161 bytes)
   string: sdrdrv
   string: libsd
   string: sifcmd
   string:  sdrdrv: unloaded! 
   string: PsIIsdrdrv  2800
-  word 0x01000002 (LE): 2 times, first at 0x113, 0xAA7
+  module names: PsIIsdrdrv  2800 at 0x1570
+  word 0x01000002 (LE): 2 times, first at 0x113 (near PsIIsdrdrv  2800), 0xAA7 (near PsIIsdrdrv  2800)
 == MODULES/MODULES/SIO2MAN.IRX (6641 bytes)
-  word 0x01000002 (LE): 1 times, first at 0x747
+  module names: PsIIsio2man 2800@ at 0x1040
+  word 0x01000002 (LE): 1 times, first at 0x747 (near PsIIsio2man 2800@)
 == MODULES/MODULES/ZNASND.IRX (63232 bytes)
   string: sifcmd
   string: libsd
@@ -69,7 +78,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: sifcmd
   string: libsd
   code builds 0x01000001 (lui+ori/addiu): 1 times, first at 0x24CEE4
-  word 0x01000001 (LE): 468 times, first at 0x126E9F, 0x12821B, 0x4D777F, 0x4D9A8F, 0x4D9BFF, 0x4DA5CF, 0x4DA73F, 0x4DB0BF
-  word 0x01000002 (LE): 1205 times, first at 0xE44B6, 0xEB052, 0x13AACB, 0x142836, 0x16808F, 0x16830B, 0x190C66, 0x1DAE76
-  word 0x80000001 (LE): 40 times, first at 0x2224B, 0x11429F, 0x12BAC7, 0x230BBF, 0x2E22EF, 0x4D919F, 0x4DC81F, 0x4DCF2F
-  word 0x80000006 (LE): 1 times, first at 0x236D86
+  module names: PsIIlibgraph2800 at 0x5137F0; PsIIlibdma  2800 at 0x513830; PsIIlibkernl2800 at 0x513868; PsIIlibcdvd 2800 at 0x5156C0; PsIIlibpad  2800 at 0x517278; PsIIlibmc   2800 at 0x5172C0; PsIIlibscf  2800 at 0x5201A0; PsIIlibipu  2800 at 0x5203C0
+  word 0x01000001 (LE): 468 times, first at 0x126E9F (near PsIIlibgraph2800), 0x12821B (near PsIIlibgraph2800), 0x4D777F (near PsIIlibgraph2800), 0x4D9A8F (near PsIIlibgraph2800), 0x4D9BFF (near PsIIlibgraph2800), 0x4DA5CF (near PsIIlibgraph2800), 0x4DA73F (near PsIIlibgraph2800), 0x4DB0BF (near PsIIlibgraph2800)
+  word 0x01000002 (LE): 1205 times, first at 0xE44B6 (near PsIIlibgraph2800), 0xEB052 (near PsIIlibgraph2800), 0x13AACB (near PsIIlibgraph2800), 0x142836 (near PsIIlibgraph2800), 0x16808F (near PsIIlibgraph2800), 0x16830B (near PsIIlibgraph2800), 0x190C66 (near PsIIlibgraph2800), 0x1DAE76 (near PsIIlibgraph2800)
+  word 0x80000001 (LE): 40 times, first at 0x2224B (near PsIIlibgraph2800), 0x11429F (near PsIIlibgraph2800), 0x12BAC7 (near PsIIlibgraph2800), 0x230BBF (near PsIIlibgraph2800), 0x2E22EF (near PsIIlibgraph2800), 0x4D919F (near PsIIlibgraph2800), 0x4DC81F (near PsIIlibgraph2800), 0x4DCF2F (near PsIIlibgraph2800)
+  word 0x80000006 (LE): 1 times, first at 0x236D86 (near PsIIlibgraph2800)

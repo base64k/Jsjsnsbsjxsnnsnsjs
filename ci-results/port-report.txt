@@ -8838,7 +8838,7 @@ threads:
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 58.8 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 94.2%, SPU2 1.0%, waiting for the GS thread 0.0%
+time: 61.4 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 94.4%, SPU2 1.0%, waiting for the GS thread 0.0%
 kernel services used:
   -120  SifSetDChain             x19
    -67  iSignalSema              x19
@@ -8920,8 +8920,8 @@ most called:
   0x00754410                               x1
 device registers read: 39
   0x10000000 x3
-  0x10001000 x1545
-  0x10001010 x2062
+  0x10001000 x1611
+  0x10001010 x2150
   0x10001810 x1
   0x10003020 x1
   0x10008000 x4
@@ -8949,7 +8949,7 @@ device registers read: 39
   0x1000E030 x3
   0x1000E040 x3
   0x1000E050 x3
-  0x1000F000 x112475798
+  0x1000F000 x110725583
   0x12000000 x244
   0x12000020 x244
   0x12000070 x2
@@ -8959,11 +8959,11 @@ device registers read: 39
   0x120000E0 x244
   0x12001000 x159
 device registers written: 85
-  0x10000000 x742
-  0x10000010 x742
+  0x10000000 x745
+  0x10000010 x745
   0x10001000 x1
-  0x10001010 x1031
-  0x10001020 x516
+  0x10001010 x1075
+  0x10001020 x538
   0x10003000 x3
   0x10003010 x2
   0x10003C10 x3
