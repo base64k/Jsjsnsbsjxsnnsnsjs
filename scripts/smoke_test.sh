@@ -23,7 +23,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 GAME="games/up"
-SECONDS_TO_RUN="${UP_SMOKE_SECONDS:-120}"
+SECONDS_TO_RUN="${UP_SMOKE_SECONDS:-300}"
 ROUNDS="${UP_SMOKE_ROUNDS:-3}"
 JOBS="${UP_JOBS:-$(nproc 2>/dev/null || echo 2)}"
 BUILD="$GAME/build/linux/up"
