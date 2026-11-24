@@ -62,16 +62,26 @@ def scan(path, label):
             if sites:
                 say("  code builds %s (lui+ori/addiu): %d times, first at %s" % (
                     name, len(sites), ", ".join("0x%X" % x for x in sites[:8])))
+    # The module names an image carries (PsII<name>): an image of several
+    # modules says which one holds a word, by the nearest name to it.
+    names_at = [(m.start(), m.group().decode("ascii", "replace"))
+                for m in re.finditer(rb"PsII[\x20-\x7e]{3,40}", data)]
+    if names_at:
+        say("  module names: " + "; ".join("%s at 0x%X" % (n.strip(), at) for at, n in names_at[:24]))
     for label_sid, sid in SERVERS.items():
         needle = struct.pack("<I", sid)
         hits = []
         at = data.find(needle)
         while at >= 0 and len(hits) < 8:
-            hits.append("0x%X" % at)
+            hits.append(at)
             at = data.find(needle, at + 1)
         total = data.count(needle)
         if total:
-            say("  word %s (LE): %d times, first at %s" % (label_sid, total, ", ".join(hits)))
+            where = []
+            for h in hits:
+                near = min(names_at, key=lambda t: abs(t[0] - h))[1].strip() if names_at else "?"
+                where.append("0x%X (near %s)" % (h, near))
+            say("  word %s (LE): %d times, first at %s" % (label_sid, total, ", ".join(where)))
 
 
 def walk(folder):
