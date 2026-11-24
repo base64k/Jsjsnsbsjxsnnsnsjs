@@ -104,17 +104,25 @@ The `engine/` submodule is now initialized (commit `65c46e975a0c7f2c2eef67d283c9
 - `EnableSound()` hooks the host's audio output callback
 
 **IOP module execution (iop_vm.cpp / loadfile.cpp)**:
-- `RunModule("NAME.IRX")` — port names IOP modules to run from the disc
-- `LoadModule()` — loads ELF IRX images, applies R3000 relocations, patches import stubs to host HLE functions
+- `RunModule("NAME.IRX")` — port names IOP modules to run from the disc (iop_vm.cpp:472); modules are loaded from the disc image
+- `LoadModule()` — loads ELF IRX images, applies R3000 relocations, patches import stubs to host HLE functions (iop_vm.cpp:483)
 - Modules run as IOP threads under the IOP kernel scheduler; SIF commands go to/from the EE
 - `--iop-trace` logs every IOP library call a module makes
+- `RunsModule(path)` — checks if a module is named to run
 
 **SIF/RPC (iop.cpp)**:
 - Server 0x80000006 = loadfile (loads modules from disc or IOP memory)
 - Server 0x80000009 = RPC bind, 0x8000000A = RPC call (answered with RPC-end packets)
 - Servers with no host implementation still bind; calls are noted so the report says which IOP services the game needs
 
-**Missing from the host**: `SoundInterrupts()` (in iop_libs.cpp) handles transfer-complete and half-buffer interrupts, but the audio output sink (`EnableSound()` → `AudioFrames()`) needs to be wired. The SPU2 decodes and mixes but "nothing is played yet" until the output callback is connected.
+**Audio pipeline status** — verified from engine source, the pipeline IS wired:
+- `EnableSound()` is called from `host.cpp` when `--audio` or `--audio-wav` is given, wiring `Spu2::SetOutput` to `AudioFrames()` (iop_libs.cpp)
+- `SoundInterrupts()` is called in the IOP interpreter's scheduler loop (iop_vm.cpp:396) — handles transfer-complete and half-buffer interrupts, advances SPU2 playback
+- `SdBlockTrans()` sets up streaming buffers at 48 kHz / 16-bit stereo (192,000 bytes/sec)
+- `SdVoiceTrans()` writes voice data into SPU RAM
+- So: when `--audio` is given, the SPU2 decodes, mixes, and plays output through `AudioFrames()`
+
+**What the port still needs for sound**: the sound DRIVER handshake between EE and IOP. The IOP flag `0x1AEF8` must be set by the right RPC or EE-side write, and the sound modules (LIBSD, SDRDRV, CRI_ADXI) must run on the IOP via `RunModule()`.
 
 ---
 
@@ -155,17 +163,16 @@ All download methods fail in this sandbox with SSL/TLS connection resets:
 - Python `urllib` with unverified SSL: same EOF error
 - Google Drive connector `download_file`: file is 916 MB, exceeds the 100 MiB workspace limit
 
-The `disc/up.iso` file exists but is 0 bytes. The disc must be obtained before the
-`analyze.py → signatures.py → lift.py` pipeline can run against `SLUS_218.64`.
+The `disc/up.iso` file exists but is 0 bytes. **CI (GitHub Actions runners) can fetch it** — `.github/workflows/android-apk.yml` uses `scripts/fetch_disc.sh` with `UP_DRIVE_FILE_ID=1LIzZFzNoXUteK5fnJLT1P6vGoIxg1fDA` and caches the result. The blocker is only in this sandbox's network. The disc must be obtained before the `analyze.py → signatures.py → lift.py` pipeline can run against `SLUS_218.64`.
 
 ---
 
 ## Next steps (blocked on the disc)
 
-1. **Get the disc image** — resolve the SSL/TLS blocker or obtain `disc/up.iso` another way.
-   - Background retry running: `disc/download.log` shows attempts every 60s.
-   - All direct download methods fail in this sandbox: `SSL_ERROR_SYSCALL` / `SSLZeroReturnError` on `drive.google.com`, `drive.usercontent.google.com`, `www.googleapis.com`.
-   - Google Drive connector: file is 916 MB, exceeds the 100 MiB workspace limit.
+1. **Get the disc image** — the SSL/TLS blocker is only in this sandbox; CI runners can fetch it. Options:
+   - Run CI (`.github/workflows/android-apk.yml`) which fetches via `scripts/fetch_disc.sh` and caches `disc/up.iso`
+   - Resolve the sandbox's TLS block to `drive.google.com` / `drive.usercontent.google.com`
+   - Google Drive connector: file is 916 MB, exceeds the 100 MiB workspace limit
 2. **Extract the program**: `python engine/tools/isotool.py extract disc/up.iso SLUS_218.64 -o games/up/extracted/`
 3. **Analyze**: `python engine/tools/analyze.py --game games/up`
 4. **Name functions**: `python engine/tools/signatures.py --game games/up name`
@@ -233,14 +240,14 @@ The `disc/up.iso` file exists but is 0 bytes. The disc must be obtained before t
 - IOP: libsd (all 32 exports), SPU2 (full sound processor), module loading, SIF/RPC
 - GS: software renderer, GPU renderer (Vulkan), VIF1/VU1
 - Devices: CD/DVD, file I/O, memory card, pads, IPU (MPEG movies)
-- Audio output sink (wired via `EnableSound()` → `AudioFrames()`)
+- Audio output pipeline fully wired: `EnableSound()` → `AudioFrames()` via SPU2 output callback; `SoundInterrupts()` called in IOP scheduler; `SdBlockTrans()` sets up 48 kHz streaming
 - SDK library routines by name (GsSyncPath, KernelStore, TtyWrite, etc.)
 - PC features: window, settings panel, texture pack, mouse, controller, rumble
 
 **What Up's port must add (in `port/overrides.cpp`):**
 - Function overrides discovered from the analysis (addresses from `functions.csv`)
 - IOP sound modules to run (`RunModule("LIBSD.IRX")`, `RunModule("SDRDRV.IRX")`, etc.)
-- Sound handshake: which RPC/EE write sets flag `0x1AEF8`
+- Sound handshake: which RPC or EE-side write sets IOP flag `0x1AEF8`
 - Any hardware-specific behavior the host doesn't model
 
 ---
