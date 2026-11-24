@@ -18,6 +18,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: sifcmd
   string: Warning cdvdfsv.irx: Unload function can't be used.
   string: sifcmd
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIIsysmem  2800 at 0x12A8; PsIIloadcore2800 at 0x3838; PsIIsifcmd  2800 at 0x5EC0; PsIIsifman  2800@ at 0x7BE0; PsIIthreadma2800 at 0xF2D8; PsIIioman   2800invalid lseek arg at 0x13B78; PsIImodload 2800 at 0x18458; PsIIfileio  2800 at 0x1C340; PsIIcdvdman 2800 at 0x2ABE0; PsIIcdvdfsv 2800PJ at 0x36880; PsIIloadfile2800` at 0x3B0E0; PsIItimemani2800 at 0x3CC50; PsIIromdrv  2800l at 0x3DDA8; PsIIeesync  2800 at 0x3E6F0; PsIIsysclib 2800 at 0x40528; PsIIstdio   2800 at 0x41928
   word 0x01000001 (LE): 2 times, first at 0x2AFCE (near PsIIcdvdman 2800), 0x329EB (near PsIIcdvdfsv 2800PJ)
   word 0x01000002 (LE): 7 times, first at 0xA13F (near PsIIsifman  2800@), 0xC66F (near PsIIthreadma2800), 0x11C93 (near PsIIioman   2800invalid lseek arg), 0x32A4F (near PsIIcdvdfsv 2800PJ), 0x32B37 (near PsIIcdvdfsv 2800PJ), 0x356AB (near PsIIcdvdfsv 2800PJ), 0x3E701 (near PsIIeesync  2800)
@@ -70,6 +72,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
 == MODULES/MODULES/LIBSD.IRX (28605 bytes)
   string: libsd
   string: PsIIlibsd   2800
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIIlibsd   2800 at 0x51F0
   word 0x01000001 (LE): 1 times, first at 0x2B6B (near PsIIlibsd   2800)
   word 0x01000002 (LE): 1 times, first at 0x1E83 (near PsIIlibsd   2800)
@@ -89,12 +93,18 @@ extracted 523.4 KiB to games/up/build/disc-modules
     0x001E90: AFB00018  sw s0,24(sp)
     0x001E94: 08000784  j 0x00001E10
 == MODULES/MODULES/MCMAN.IRX (95909 bytes)
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIImcman   2800 at 0x11DF0
 == MODULES/MODULES/MCSERV.IRX (7417 bytes)
   string: sifcmd
   string: mcserv.irx: thread prority definition ignored.
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIImcserv  2800` at 0x1340
 == MODULES/MODULES/MCXMAN.IRX (5857 bytes)
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIImcxman  2800 at 0xFC0
   word 0x01000002 (LE): 1 times, first at 0x8AF (near PsIImcxman  2800)
   code around 0x8AF:
@@ -115,9 +125,13 @@ extracted 523.4 KiB to games/up/build/disc-modules
 == MODULES/MODULES/MCXSERV.IRX (5449 bytes)
   string: sifcmd
   string: mcxserv.irx: thread prority definition ignored.
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIImcxserv 2800 at 0xE80
 == MODULES/MODULES/PADMAN.IRX (43813 bytes)
   string: sifcmd
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIIpadman  2800 at 0x7DC0
 == MODULES/MODULES/SDRDRV.IRX (9161 bytes)
   string: sdrdrv
@@ -125,6 +139,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: sifcmd
   string:  sdrdrv: unloaded! 
   string: PsIIsdrdrv  2800
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIIsdrdrv  2800 at 0x1570
   word 0x01000002 (LE): 2 times, first at 0x113 (near PsIIsdrdrv  2800), 0xAA7 (near PsIIsdrdrv  2800)
   code around 0x113:
@@ -158,6 +174,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
     0x000AB4: AE02FFFC  sw v0,-4(s0)
     0x000AB8: 8CE20014  lw v0,20(a3)
 == MODULES/MODULES/SIO2MAN.IRX (6641 bytes)
+  lui 0x0100 ... addiu/ori 2 within 12 words: 0 sites
+  lui 0x0100 ... addiu/ori 1 within 12 words: 0 sites
   module names: PsIIsio2man 2800@ at 0x1040
   word 0x01000002 (LE): 1 times, first at 0x747 (near PsIIsio2man 2800@)
   code around 0x747:
@@ -184,7 +202,57 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: Check that ZnaSnd.irx have been loaded...
   string: [IOP] ZnaSnd.irx - Ver: %d
   code builds 0x01000002 (lui+ori/addiu): 1 times, first at 0x820
+    code at 0x820:
+    0x000818: 3C020001  lui v0,0x0001
+    0x00081C: 2444AED4  addiu a0,v0,-20780
+    0x000820: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x000824: 34450002  ori a1,v0,2
+    0x000828: 0C000030  jal 0x000000C0
+    0x00082C: 00003021  addu a2,zero,zero
+    0x000830: 04410004  .word 0x04410004
+    0x000834: 00000000  nop
+    0x000838: 3C020001  lui v0,0x0001
+  lui 0x0100 ... addiu/ori 2 within 12 words: 1 sites
+    wide site 0x820:
+    0x000818: 3C020001  lui v0,0x0001
+    0x00081C: 2444AED4  addiu a0,v0,-20780
+    0x000820: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x000824: 34450002  ori a1,v0,2
+    0x000828: 0C000030  jal 0x000000C0
+    0x00082C: 00003021  addu a2,zero,zero
+    0x000830: 04410004  .word 0x04410004
+    0x000834: 00000000  nop
+    0x000838: 3C020001  lui v0,0x0001
+    0x00083C: 0C0024D1  jal 0x00009344
+    0x000840: 244496E0  addiu a0,v0,-26912
+    0x000844: 24032710  addiu v1,zero,10000
+    0x000848: 00601021  addu v0,v1,zero
   code builds 0x01000001 (lui+ori/addiu): 1 times, first at 0x5A8
+    code at 0x5A8:
+    0x0005A0: 3C020001  lui v0,0x0001
+    0x0005A4: 2447AF3C  addiu a3,v0,-20676
+    0x0005A8: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x0005AC: 34450001  ori a1,v0,1
+    0x0005B0: 3C020000  lui v0,0x0000
+    0x0005B4: 27A40044  addiu a0,sp,68
+    0x0005B8: 0C000034  jal 0x000000D0
+    0x0005BC: 24460528  addiu a2,v0,1320
+    0x0005C0: 0C000038  jal 0x000000E0
+  lui 0x0100 ... addiu/ori 1 within 12 words: 1 sites
+    wide site 0x5A8:
+    0x0005A0: 3C020001  lui v0,0x0001
+    0x0005A4: 2447AF3C  addiu a3,v0,-20676
+    0x0005A8: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x0005AC: 34450001  ori a1,v0,1
+    0x0005B0: 3C020000  lui v0,0x0000
+    0x0005B4: 27A40044  addiu a0,sp,68
+    0x0005B8: 0C000034  jal 0x000000D0
+    0x0005BC: 24460528  addiu a2,v0,1320
+    0x0005C0: 0C000038  jal 0x000000E0
+    0x0005C4: 27A4002C  addiu a0,sp,44
+    0x0005C8: 8FBF0020  lw ra,32(sp)
+    0x0005CC: 00000000  nop
+    0x0005D0: 03E00008  jr ra
 == program SLUS_218.64 (5851096 bytes)
   string: SIO2MAN.IRX
   string: PADMAN.IRX
@@ -197,7 +265,103 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: libmc: too old release of mcman.irx
   string: sifcmd
   string: libsd
+  lui 0x0100 ... addiu/ori 2 within 12 words: 5 sites
+    wide site 0xE7634:
+    0x0E762C: 26440010  addiu a0,s2,16
+    0x0E7630: 8E4700CC  lw a3,204(s2)
+    0x0E7634: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x0E7638: 8E260000  lw a2,0(s1)
+    0x0E763C: 3C036C03  lui v1,0x6C03
+    0x0E7640: 344D0101  ori t5,v0,257
+    0x0E7644: 344A0404  ori t2,v0,1028
+    0x0E7648: 3C021000  lui v0,0x1000
+    0x0E764C: 346C0013  ori t4,v1,19
+    0x0E7650: 344B0002  ori t3,v0,2
+    0x0E7654: 26650001  addiu a1,s3,1
+    0x0E7658: 3C026C02  lui v0,0x6C02
+    0x0E765C: 3C036000  lui v1,0x6000
+    wide site 0xE7B48:
+    0x0E7B40: AC430000  sw v1,0(v0)
+    0x0E7B44: 8E470000  lw a3,0(s2)
+    0x0E7B48: 3C030100  lui v1,0x0100  <- 0x01000002
+    0x0E7B4C: 34660101  ori a2,v1,257
+    0x0E7B50: 3C036C51  lui v1,0x6C51
+    0x0E7B54: 3465812E  ori a1,v1,-32466
+    0x0E7B58: 3C031000  lui v1,0x1000
+    0x0E7B5C: 34640002  ori a0,v1,2
+    0x0E7B60: ACE20004  sw v0,4(a3)
+    0x0E7B64: 3C036C02  lui v1,0x6C02
+    0x0E7B68: 8E420000  lw v0,0(s2)
+    0x0E7B6C: 34630019  ori v1,v1,25
+    0x0E7B70: AC460008  sw a2,8(v0)
+    wide site 0xEE9A4:
+    0x0EE99C: 3C043000  lui a0,0x3000
+    0x0EE9A0: 34870001  ori a3,a0,1
+    0x0EE9A4: 3C030100  lui v1,0x0100  <- 0x01000002
+    0x0EE9A8: 34660101  ori a2,v1,257
+    0x0EE9AC: 3C046C01  lui a0,0x6C01
+    0x0EE9B0: 3C036000  lui v1,0x6000
+    0x0EE9B4: 34880006  ori t0,a0,6
+    0x0EE9B8: 34650002  ori a1,v1,2
+    0x0EE9BC: 26290060  addiu t1,s1,96
+    0x0EE9C0: 3C045000  lui a0,0x5000
+    0x0EE9C4: 3C031000  lui v1,0x1000
+    0x0EE9C8: AD470000  sw a3,0(t2)
+    0x0EE9CC: AD490004  sw t1,4(t2)
+    wide site 0x24D5BC:
+    0x24D5B4: 0C0F7EE8  jal 0x003DFBA0
+    0x24D5B8: 27A40010  addiu a0,sp,16
+    0x24D5BC: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x24D5C0: 3C060045  lui a2,0x0045
+    0x24D5C4: 3C07007B  lui a3,0x007B
+    0x24D5C8: 27A40030  addiu a0,sp,48
+    0x24D5CC: 34450002  ori a1,v0,2
+    0x24D5D0: 24C6D3A0  addiu a2,a2,-11360
+    0x24D5D4: 24E78400  addiu a3,a3,-31744
+    0x24D5D8: 0000402D  .word 0x0000402D
+    0x24D5DC: 0000482D  .word 0x0000482D
+    0x24D5E0: 0C0F7F0E  jal 0x003DFC38
+    0x24D5E4: 27AA0010  addiu t2,sp,16
+    wide site 0x261A6C:
+    0x261A64: 00835025  or t2,a0,v1
+    0x261A68: 8E074650  lw a3,18000(s0)
+    0x261A6C: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x261A70: 34480101  ori t0,v0,257
+    0x261A74: 00042400  sll a0,a0,16
+    0x261A78: 3C026C00  lui v0,0x6C00
+    0x261A7C: 0006303F  .word 0x0006303F
+    0x261A80: 34438002  ori v1,v0,-32766
+    0x261A84: 00831825  or v1,a0,v1
+    0x261A88: 3C026000  lui v0,0x6000
+    0x261A8C: 3C046C02  lui a0,0x6C02
+    0x261A90: 34420002  ori v0,v0,2
+    0x261A94: ACEA0000  sw t2,0(a3)
   code builds 0x01000001 (lui+ori/addiu): 1 times, first at 0x24CEE4
+    code at 0x24CEE4:
+    0x24CEDC: 00000000  nop
+    0x24CEE0: 3C04007A  lui a0,0x007A
+    0x24CEE4: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x24CEE8: 24847BC0  addiu a0,a0,31680
+    0x24CEEC: 34450001  ori a1,v0,1
+    0x24CEF0: 0C0F7DE6  jal 0x003DF798
+    0x24CEF4: 0000302D  .word 0x0000302D
+    0x24CEF8: 24032710  addiu v1,zero,10000
+    0x24CEFC: 00000000  nop
+  lui 0x0100 ... addiu/ori 1 within 12 words: 1 sites
+    wide site 0x24CEE4:
+    0x24CEDC: 00000000  nop
+    0x24CEE0: 3C04007A  lui a0,0x007A
+    0x24CEE4: 3C020100  lui v0,0x0100  <- 0x01000002
+    0x24CEE8: 24847BC0  addiu a0,a0,31680
+    0x24CEEC: 34450001  ori a1,v0,1
+    0x24CEF0: 0C0F7DE6  jal 0x003DF798
+    0x24CEF4: 0000302D  .word 0x0000302D
+    0x24CEF8: 24032710  addiu v1,zero,10000
+    0x24CEFC: 00000000  nop
+    0x24CF00: 0060102D  .word 0x0060102D
+    0x24CF04: 2463FFFF  addiu v1,v1,-1
+    0x24CF08: 00000000  nop
+    0x24CF0C: 00000000  nop
   module names: PsIIlibgraph2800 at 0x5137F0; PsIIlibdma  2800 at 0x513830; PsIIlibkernl2800 at 0x513868; PsIIlibcdvd 2800 at 0x5156C0; PsIIlibpad  2800 at 0x517278; PsIIlibmc   2800 at 0x5172C0; PsIIlibscf  2800 at 0x5201A0; PsIIlibipu  2800 at 0x5203C0
   word 0x01000001 (LE): 468 times, first at 0x126E9F (near PsIIlibgraph2800), 0x12821B (near PsIIlibgraph2800), 0x4D777F (near PsIIlibgraph2800), 0x4D9A8F (near PsIIlibgraph2800), 0x4D9BFF (near PsIIlibgraph2800), 0x4DA5CF (near PsIIlibgraph2800), 0x4DA73F (near PsIIlibgraph2800), 0x4DB0BF (near PsIIlibgraph2800)
   word 0x01000002 (LE): 1205 times, first at 0xE44B6 (near PsIIlibgraph2800), 0xEB052 (near PsIIlibgraph2800), 0x13AACB (near PsIIlibgraph2800), 0x142836 (near PsIIlibgraph2800), 0x16808F (near PsIIlibgraph2800), 0x16830B (near PsIIlibgraph2800), 0x190C66 (near PsIIlibgraph2800), 0x1DAE76 (near PsIIlibgraph2800)
