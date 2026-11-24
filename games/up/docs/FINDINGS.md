@@ -46,3 +46,44 @@ code is the point - override as little as possible.
 - The engine was built for Burnout 3 (RenderWare); Up's middleware is
   different, so what the host already provides and what it does not is the
   first thing the `smoke` run's report answers.
+
+## Audio: the sound driver and call 6 (under investigation)
+
+Everything below comes from the previous session's runs against the player's
+disc. It was never committed here, and it has **not** been re-verified in this
+checkout — the `engine/` submodule is empty (no analysis tools) and no disc
+image is present locally (`.gitignore` keeps `disc/` out, CI fetches it from
+the player's Drive file). Treat it as a hypothesis, not a confirmed fact.
+
+**What was observed**
+
+- RPC call 6 writes the decoder's output on top of call 83's input: the bytes
+  `CF`, then `00`, at EE address `0x01F7FCF3`, between DMA streams to that same
+  EE range. Confirmed across runs.
+- The decoder (`UnPack_Z`) reproduces all 83 calls exactly from the disc
+  image's data, so the disc data itself is not the problem.
+
+**What is still unknown**
+
+- The IOP poll flag at `0x1AEF8`: it is written by the host stand-in
+  (`patch_iop.py`), not by the sound module itself (ZNASND). The program
+  counter cited for the write, `pc 0x100C0`, points at data, not code — so the
+  real driver handshake has not been found, and answers to RPCs sent to server
+  `0x01000002` are guesses.
+- Which RPC, or which EE-side write, should set flag `0x1AEF8`, and what the
+  driver expects from the EE.
+
+**Working hypothesis (unproven)**
+
+The sound driver never gets the right answer from the EE, so the EE picks the
+wrong buffers for the stream — a likely explanation for the crash around the
+25-second mark, before the menu appears.
+
+**Next step**
+
+Find which RPC or EE-side write must set flag `0x1AEF8`, and check the
+driver's expectation from the EE side. Once the `engine` submodule is
+initialized and the disc has been fetched (`scripts/fetch_disc.sh`, then the
+`analyze.py` → `signatures.py` → `lift.py` pipeline), this can be re-verified
+against `SLUS_218.64` and the verified entries recorded in
+`games/up/config/functions.csv`.
