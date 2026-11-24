@@ -192,6 +192,10 @@ def main():
         if m:
             read_hist.append((int(m.group(1), 16), int(m.group(2), 16), int(m.group(3), 16)))
             continue
+        if "F7FCF3" in l.upper() and not l.startswith("[sif] IOP"):
+            # An EE store (--watch-write) to the byte, in the run's order with the DMAs below.
+            dma_lines.append("STORE: " + l[:200])
+            continue
         d = dma_re.match(l)
         if d:
             src, dst, n = int(d.group(1), 16), int(d.group(2), 16) & 0x1FFFFFFF, int(d.group(3))
