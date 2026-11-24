@@ -11,10 +11,12 @@
  *
  * Sound driver: ZNASND.IRX is the game's own sound driver (IOP module 6). It
  * runs for real in the IOP interpreter (RunModule below), with the sound
- * library's imports bound to the host's libsd. Its IOP hardware accesses
- * (0xBF80xxxx) need the engine's IOP hardware registers, which are in
- * games/up/engine-patches/0001-iop-hardware-registers.patch and applied to
- * the engine checkout before every build.
+ * library's imports bound to the host's libsd. What the engine lacks for it
+ * is in games/up/engine-patches/ (applied in order to the engine checkout by
+ * CI before every build; the submodule's commit is not changed):
+ *   0001 the IOP hardware registers (0xBF80xxxx), kept as written;
+ *   0002 the sound timer library's SetOverflowHandler and its setters.
+ * Each is the engine's to take in upstream.
  *
  * Earlier attempts that are NOT here any more (see git history and
  * docs/FINDINGS.md): answering ZNASND's RPC server 0x01000001 with guessed
