@@ -2,6 +2,17 @@ the run ended with the code 0
 the places with code copied at run time: 0
 
 the game did not run: the build failed. Its log's end:
+[543/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_043.cpp.o
+[544/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_042.cpp.o
+[545/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_045.cpp.o
+[546/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_044.cpp.o
+[547/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_047.cpp.o
+[548/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_046.cpp.o
+[549/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_049.cpp.o
+[550/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_048.cpp.o
+[551/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_050.cpp.o
+[552/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_051.cpp.o
+[553/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_052.cpp.o
 [554/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_053.cpp.o
 [555/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_054.cpp.o
 [556/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_055.cpp.o
@@ -20,27 +31,16 @@ the game did not run: the build failed. Its log's end:
 1 warning generated.
 [566/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_063.cpp.o
 [567/573] Building CXX object CMakeFiles/up.dir/overrides.cpp.o
-[568/573] Building CXX object CMakeFiles/up.dir/iop_servers.cpp.o
-FAILED: [code=1] CMakeFiles/up.dir/iop_servers.cpp.o 
-/usr/bin/clang++ -DPS2HOST_GAME_EXECUTABLE=\"SLUS_218.64\" -DPS2HOST_GAME_GITHUB=\"base64k/Up-android_port\" -DPS2HOST_GAME_NAME="\"Up (SLUS-21864)\"" -DPS2HOST_GAME_RELEASE=\"Up-Android\" -DPS2HOST_GAME_TARGET=\"up\" -DPS2HOST_GAME_TITLE=\"Up\" -DPS2HOST_GAME_VERSION=\"0.1.0-alpha\" -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/../runtime/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/gpu/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/linux/up/_deps/sdl3-build/include-revision -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/port/cmake/_deps/sdl3-src/include -O3 -DNDEBUG -ffile-prefix-map=/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/= -ffp-contract=off -fexceptions -Wno-unused-parameter -msse4.1 -MD -MT CMakeFiles/up.dir/iop_servers.cpp.o -MF CMakeFiles/up.dir/iop_servers.cpp.o.d -o CMakeFiles/up.dir/iop_servers.cpp.o -c /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/iop_servers.cpp
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/iop_servers.cpp:41:28: error: no member named 'setw' in namespace 'std'; did you mean 'getw'?
-   41 |         oss << std::hex << std::setw(2) << std::setfill('0')
-      |                            ^~~~~~~~~
-      |                            getw
-/usr/include/stdio.h:647:12: note: 'getw' declared here
-  647 | extern int getw (FILE *__stream) __nonnull ((1));
-      |            ^
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/iop_servers.cpp:41:38: error: cannot initialize a parameter of type 'FILE *' (aka '_IO_FILE *') with an rvalue of type 'int'
-   41 |         oss << std::hex << std::setw(2) << std::setfill('0')
-      |                                      ^
-/usr/include/stdio.h:647:24: note: passing argument to parameter '__stream' here
-  647 | extern int getw (FILE *__stream) __nonnull ((1));
-      |                        ^
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/iop_servers.cpp:41:49: error: no member named 'setfill' in namespace 'std'
-   41 |         oss << std::hex << std::setw(2) << std::setfill('0')
-      |                                                 ^~~~~~~
-3 errors generated.
-[569/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_066.cpp.o
+FAILED: [code=1] CMakeFiles/up.dir/overrides.cpp.o 
+/usr/bin/clang++ -DPS2HOST_GAME_EXECUTABLE=\"SLUS_218.64\" -DPS2HOST_GAME_GITHUB=\"base64k/Up-android_port\" -DPS2HOST_GAME_NAME="\"Up (SLUS-21864)\"" -DPS2HOST_GAME_RELEASE=\"Up-Android\" -DPS2HOST_GAME_TARGET=\"up\" -DPS2HOST_GAME_TITLE=\"Up\" -DPS2HOST_GAME_VERSION=\"0.1.0-alpha\" -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/../runtime/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/gpu/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/linux/up/_deps/sdl3-build/include-revision -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/port/cmake/_deps/sdl3-src/include -O3 -DNDEBUG -ffile-prefix-map=/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/= -ffp-contract=off -fexceptions -Wno-unused-parameter -msse4.1 -MD -MT CMakeFiles/up.dir/overrides.cpp.o -MF CMakeFiles/up.dir/overrides.cpp.o.d -o CMakeFiles/up.dir/overrides.cpp.o -c /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp
+/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp:49:14: error: no member named 'iop' in namespace 'ps2host'
+   49 |     ps2host::iop::RunModule("LIBSD.IRX");   // Sound Library (627 exports)
+      |     ~~~~~~~~~^
+/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp:50:14: error: no member named 'iop' in namespace 'ps2host'
+   50 |     ps2host::iop::RunModule("ZNASND.IRX");  // The game's sound driver
+      |     ~~~~~~~~~^
+2 errors generated.
+[568/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_066.cpp.o
 ninja: build stopped: subcommand failed.
 
 the pictures: 0
