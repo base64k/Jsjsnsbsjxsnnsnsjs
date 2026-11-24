@@ -1,46 +1,125 @@
-the run ended with the code 0
-the places with code copied at run time: 0
+the run ended with the code 2
+the places with code copied at run time: 2
 
-the game did not run: the build failed. Its log's end:
-[543/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_043.cpp.o
-[544/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_042.cpp.o
-[545/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_045.cpp.o
-[546/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_044.cpp.o
-[547/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_047.cpp.o
-[548/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_046.cpp.o
-[549/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_049.cpp.o
-[550/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_048.cpp.o
-[551/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_050.cpp.o
-[552/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_051.cpp.o
-[553/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_052.cpp.o
-[554/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_053.cpp.o
-[555/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_054.cpp.o
-[556/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_055.cpp.o
-[557/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_056.cpp.o
-[558/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_057.cpp.o
-[559/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_058.cpp.o
-[560/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_059.cpp.o
-[561/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_060.cpp.o
-[562/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_061.cpp.o
-[563/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_062.cpp.o
-[564/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_064.cpp.o
-[565/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_065.cpp.o
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_065.cpp:2911:17: warning: self-comparison always evaluates to false [-Wtautological-compare]
- 2911 |     if (c.r[31] != c.r[31]) { generated::Write64((u32)c.r[23] + 0xFFFFFFFFu, c.r[31]); goto L_00711028; }
-      |                 ^
-1 warning generated.
-[566/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_063.cpp.o
-[567/573] Building CXX object CMakeFiles/up.dir/overrides.cpp.o
-FAILED: [code=1] CMakeFiles/up.dir/overrides.cpp.o 
-/usr/bin/clang++ -DPS2HOST_GAME_EXECUTABLE=\"SLUS_218.64\" -DPS2HOST_GAME_GITHUB=\"base64k/Up-android_port\" -DPS2HOST_GAME_NAME="\"Up (SLUS-21864)\"" -DPS2HOST_GAME_RELEASE=\"Up-Android\" -DPS2HOST_GAME_TARGET=\"up\" -DPS2HOST_GAME_TITLE=\"Up\" -DPS2HOST_GAME_VERSION=\"0.1.0-alpha\" -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/host/../runtime/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/engine/gpu/include -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/linux/up/_deps/sdl3-build/include-revision -I/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/build/port/cmake/_deps/sdl3-src/include -O3 -DNDEBUG -ffile-prefix-map=/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/= -ffp-contract=off -fexceptions -Wno-unused-parameter -msse4.1 -MD -MT CMakeFiles/up.dir/overrides.cpp.o -MF CMakeFiles/up.dir/overrides.cpp.o.d -o CMakeFiles/up.dir/overrides.cpp.o -c /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp:49:14: error: no member named 'iop' in namespace 'ps2host'
-   49 |     ps2host::iop::RunModule("LIBSD.IRX");   // Sound Library (627 exports)
-      |     ~~~~~~~~~^
-/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/port/overrides.cpp:50:14: error: no member named 'iop' in namespace 'ps2host'
-   50 |     ps2host::iop::RunModule("ZNASND.IRX");  // The game's sound driver
-      |     ~~~~~~~~~^
-2 errors generated.
-[568/573] Building CXX object CMakeFiles/up.dir/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/games/up/src/lifted/lifted_066.cpp.o
-ninja: build stopped: subcommand failed.
+=== host report ===
+stopped: IOP: a write of 0xBF900000 to 0xBF801404 (IOP hardware or unmapped), by the instruction at 0x00011574 (IOP thread 1, $ra 0x000100F0)
+functions executed: 404 distinct
+guest call stack where it stopped (innermost last):
+  0x00200008
+  0x002DD240
+  0x002DD6B0
+  0x003E46F8
+  0x003E44D0
+  0x003DF968 sceSifCallRpc
+  0x003DED88
+  0x003DEC50
+  0x003DC960 SifSetDma
+threads:
+  thread 1: running, priority 1, entry 0x00200008, ran 18 times
+  thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
+      0x003DD2A0 
+      0x003DC5E0 WaitSema
+  IOP calls, most frequent:
+    0x000147A0 x1 (from 0x000100CC)
+    0x0001476C x1 (from 0x000100D8)
+    0x00014764 x1 (from 0x000100BC)
+    0x00011550 x1 (from 0x000100E8)
+  IOP thread 1: ready, priority 8, entry 0x000100B0, at 0x00011578
+VIF1 commands: STCYCL 1 OFFSET 1 BASE 1 ITOP 1 STMOD 1 MSKPATH3 1 STMASK 1; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
+GS: 0 primitives, 0 pixels written
+GIF tags: PATH1 0, PATH2 0, PATH3 65; image 4160 quadwords; register writes: 18:61 1A:61 40:61 45:61 46:61 47:61 4C:61 4E:61 50:2 51:2 52:2 53:2
+time: 1.6 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.0%, SPU2 0.0%, waiting for the GS thread 0.1%
+kernel services used:
+  -120  SifSetDChain             x16
+   -67  iSignalSema              x16
+     2  ?                        x1
+    16  AddIntcHandler           x1
+    18  AddDmacHandler           x2
+    19  RemoveDmacHandler        x1
+    20  _EnableIntc              x1
+    22  _EnableDmac              x2
+    23  _DisableDmac             x1
+    32  CreateThread             x1
+    34  StartThread              x1
+    41  ChangeThreadPriority     x1
+    47  GetThreadId              x7
+    48  ReferThreadStatus        x1
+    60  SetupThread              x1
+    61  SetupHeap                x1
+    62  EndOfHeap                x2
+    64  CreateSema               x29
+    65  DeleteSema               x17
+    66  SignalSema               x9
+    68  WaitSema                 x26
+    69  PollSema                 x1
+    74  SetOsdConfigParam        x2
+    75  GetOsdConfigParam        x4
+    90  kCopy                    x3
+    91  ?                        x12
+   100  FlushCache               x218
+   107  ?                        x1
+   113  GsPutIMR                 x1
+   116  SetSyscall               x18
+   119  SifSetDma                x20
+   120  SifSetDChain             x2
+   121  SifSetReg                x5
+   122  SifGetReg                x6
+   124  Deci2Call                x16
+   131  ?                        x2
+most called:
+  0x003F0E68                               x2
+  0x003DC650 GetOsdConfigParam             x2
+  0x0030CCA0                               x2
+  0x00200E68                               x2
+  0x80076000 copy of 0x00714678            x1
+  0x80075000 copy of 0x00713840            x1
+  0x0075D430                               x1
+  0x0075D3D0                               x1
+  0x0075D370                               x1
+  0x0075D350                               x1
+  0x0075D2F0                               x1
+  0x0075D290                               x1
+  0x0075D230                               x1
+  0x0075D1D0                               x1
+  0x0075D170                               x1
+  0x0075CEE0                               x1
+  0x0075CCA0                               x1
+  0x0075CC50                               x1
+  0x0075CC00                               x1
+  0x0075CB50                               x1
+  0x0075CAF0                               x1
+  0x00756800                               x1
+  0x007560B0                               x1
+  0x00755A90                               x1
+  0x00755820                               x1
+  0x007556D0                               x1
+  0x00755670                               x1
+  0x00755610                               x1
+  0x007555B0                               x1
+  0x00755550                               x1
+  0x007554F0                               x1
+  0x00755490                               x1
+  0x007545B0                               x1
+  0x00754550                               x1
+  0x00754470                               x1
+  0x00754410                               x1
+  0x007543B0                               x1
+  0x00754350                               x1
+  0x007542F0                               x1
+  0x00754170                               x1
+device registers read: 29
+  0x10001000 x39
+  0x10001010 x54
+  0x10001810 x1
+  0x10008000 x4
+  0x10008010 x2
+  0x10008020 x2
+  0x10008030 x3
+  0x10008040 x1
+  0x10008050 x1
+  0x1000A000 x208
+  0x1000A010 x137
+  0x1000A020 x137
+  0x1000A030 x208
 
-the pictures: 0
+the pictures: 22
