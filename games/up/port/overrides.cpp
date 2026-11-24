@@ -66,6 +66,15 @@ void RegisterGameOverrides() {
     // Called once at startup, before the IOP runs. Keep this minimal.
     RegisterIopSoundServers();
 
+    // Name the wait loops the game spins in while waiting for the sound
+    // driver to respond. The host skips virtual time in these loops so the
+    // game can move past them instead of burning real time. Addresses seen
+    // in CI smoke runs: 0x0044AA50, 0x00356AF0, 0x0030CCB4, 0x0045A738.
+    ps2host::AddIdleLoop(0x0044AA50u);
+    ps2host::AddIdleLoop(0x00356AF0u);
+    ps2host::AddIdleLoop(0x0030CCB4u);
+    ps2host::AddIdleLoop(0x0045A738u);
+
     // TODO: once --iop-trace reveals correct ZNASND RPC responses, refine
     // ZnasndRpcHandler in iop_servers.cpp. Also add function overrides here
     // for any EE functions that need host redirection.
