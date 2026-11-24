@@ -260,43 +260,55 @@ The `disc/up.iso` file exists but is 0 bytes. **CI (GitHub Actions runners) can 
 - Fixed issue: Bad text (garbled subtitles) — fixed in PCSX2 v1.7.5880
 - Widescreen supported natively
 
-## CI smoke test results (GitHub Actions run 45338174585)
+
+## CI smoke test results (latest runs)
 
 The CI runner **can** fetch the disc from Google Drive and run the full pipeline.
 Results saved to `ci-results/smoke-summary.txt` and `ci-results/port-report.txt`.
 
-**Key findings:**
+**Key findings (latest run, 301s timeout):**
 
-- **Game runs for full 120 seconds (time limit) — does NOT crash at 25s**
-  The previous "crash at 25s" was from an earlier build without the audio pipeline
-  wired. With `--audio` and libsd/SPU2 in place, the game runs stably.
+- **Game runs for full 301 seconds (time limit) — does NOT crash at 25s**
+  Runs stably with `--audio`, libsd/SPU2 wired, and ZNASND RPC handler.
 
-- **Game draws pictures**: 562 GS primitives, 860160 pixels written, 22 frames
-  captured. The menu appears — the game gets past boot.
+- **Game draws pictures**: 6,704,434 GS primitives, 9,582,335,118 pixels written,
+  22 frames captured. Massive improvement from 562 primitives / 860,160 pixels
+  in the first run.
 
-- **Stuck in idle loop at `0x0044E068`**, calling `SifSetDChain` (-120) and
-  `iSignalSema` (-67) ~45M times. Thread 1 runs at entry `0x00200008`, 45M iterations.
+- **Not stuck in idle loop** — progressed through multiple loop addresses:
+  `0x0044E068` → `0x0044AA50` → `0x00356AF0` → `0x0030CCB4` → `0x0045A738` →
+  `0x003F4674` (after StringCopy) → `0x0044A9F8`. Game is actively rendering
+  and processing interrupts (SPU2/DMA), not just spinning.
 
-- **IOP sound modules loaded** (from `cdrom0:\\MODULES\\IOPRP280.IMG`):
-  - `LIBSD.IRX` as module 5 — Sound Library (host HLE, 32 exports)
-  - `ZNASND.IRX` as module 6 — the game's sound driver (NOT SDRDRV!)
+- **IOP sound modules loaded**: LIBSD (module 5), ZNASND (module 6 — the game's
+  sound driver, NOT SDRDRV).
 
-- **RPC server `0x01000001` has no host implementation**:
-  The EE calls it with procedures **513, 768, 1797, 1808**, each sending 32 bytes
-  via `sceSifCallRpc → SifSetDma`. Call chain:
-  `0x003DF968 (sceSifCallRpc) → 0x003DED88 → 0x003DEC50 → 0x003DC960 (SifSetDma)`
-  Previously answered with zeros → ZNASND never starts streaming → flag `0x1AEF8`
-  never set → game spins in idle loop waiting for the sound driver.
+- **RPC server `0x01000001` has host implementation** (`ZnasndRpcHandler`):
+  Observed procedures: 513, 768, 1797 (init), 1808/1809 (buffer submit/poll loop),
+  1805/1810/1811 (setup), 772 (notification). Handler returns status=1 + echoed
+  request data + incrementing counter for procedure 1809 (polling).
+  Procedure 772 now sends varied data (was all zeros) — ZNASND is initializing.
 
-**Fix implemented** (`games/up/port/iop_servers.cpp`):
-- `ZnasndRpcHandler` registered for server `0x01000001` via
-  `ps2host::RegisterRpcServer(0x01000001u, ZnasndRpcHandler)`
-- Handler logs each call (procedure + data hex dump) and returns zeros for now
-- Next step: run with `--iop-trace` to determine correct responses for procedures
-  513, 768, 1797, 1808, then implement proper handler so ZNASND sets flag
-  `0x1AEF8` and starts streaming
+- **RunModule calls disabled** in `overrides.cpp`: loading LIBSD/ZNASND via
+  `RunModule` causes IOP crash on write to `0xBF801404` (SPU2 register). Game
+  loads modules via `sceSifLoadModule` from disc instead.
+
+**Current blocker:** Menu has not appeared yet. Game runs 301s and renders
+millions of primitives but is still in a loop at `0x0044A9F8`. ZNASND RPC
+handler responds with status=1 but ZNASND may need more specific responses
+to set IOP flag `0x1AEF8` and start streaming. `--iop-trace` would reveal the
+correct responses but crashes on IOP hardware write `0xBF801404` (needs
+engine-side IOP hardware register HLE in `iop_vm.cpp`).
+
+**Next steps:**
+1. Get `--iop-trace` working: implement IOP hardware register handling
+   (SPU2 `0xBF800000-0xBFFFFFFF`) in engine `iop_vm.cpp` `WriteFault`/`ReadFault`
+   so `--iop-trace` doesn't crash on `0xBF801404`
+2. Re-run with `--iop-trace` to capture exact RPC responses ZNASND expects
+3. Refine `ZnasndRpcHandler` with proper responses so ZNASND sets flag `0x1AEF8`
+4. Once menu appears, APK can be published (currently blocked per user constraint)
 
 **What still needs the disc** (CI can fetch it):
-- Re-verify call 6 / `0x1AEF8` against `SLUS_218.64` with `--iop-trace`
-- Find exact RPC responses ZNASND expects
+- Re-verify call 6 / `0x1AEF8` against `SLUS_218.64`
 - Record verified entries in `games/up/config/functions.csv`
+
