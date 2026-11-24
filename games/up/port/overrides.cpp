@@ -36,6 +36,7 @@
  */
 
 #include "ps2host/host.h"
+#include "ps2host/iop_vm.h"
 #include "ps2host/run.h"
 
 void RegisterIopSoundServers();
