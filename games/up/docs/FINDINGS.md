@@ -261,54 +261,54 @@ The `disc/up.iso` file exists but is 0 bytes. **CI (GitHub Actions runners) can 
 - Widescreen supported natively
 
 
-## CI smoke test results (latest runs)
+## Where the port stands (latest)
 
-The CI runner **can** fetch the disc from Google Drive and run the full pipeline.
-Results saved to `ci-results/smoke-summary.txt` and `ci-results/port-report.txt`.
+**A real phone run** (Mali-G57, Vulkan 1.3, arm64, uploaded log `up.log`):
+the game drew about 10,700 frames through the GPU renderer (`[gpu] frame`), with
+`0 of 0 GPU pipelines made` (no `port/gpu_pipelines.h` then - now generated from
+the run's keys, 8 of them). The ZNASND RPC server answered guessed replies: the
+game polled procedure 772 20,929 times with the same request. The run ended with
+`vkAcquireNextImageKHR failed (-1000000000)` (VK_ERROR_SURFACE_LOST_KHR) four
+times: the engine's swapchain path gives up on that error (`vulkan_display.cpp`,
+`Check` after the acquire), so a surface lost in the middle of a play ends the
+display. That is the engine's to handle (recreate the surface), not the game's.
 
-**Key findings (latest run, 301s timeout):**
+**Device-specific data is not portable.** `gpu_pipeline_cache.bin` is the
+driver's own pipeline cache (Mali's binary; the engine saves it as
+`gpu_pipeline_cache.bin` and the driver ignores another GPU's). The upload is
+a text rendering of it (U+FFFD replacement characters), so it cannot be used
+as-is and is not committed. Adreno, Mali and Helio builds each make their own.
 
-- **Game runs for full 301 seconds (time limit) — does NOT crash at 25s**
-  Runs stably with `--audio`, libsd/SPU2 wired, and ZNASND RPC handler.
+**The sound driver is the game's own code now.** `ZNASND.IRX` used to be
+"its services are the host's": the host answered its RPC with guesses, and the
+driver never ran. Now `RunModule("ZNASND.IRX")` runs it in the IOP interpreter.
+Two engine gaps stood in the way, kept as patches in `games/up/engine-patches/`
+(applied to the engine checkout by CI; the submodule's commit is unchanged):
 
-- **Game draws pictures**: 6,704,434 GS primitives, 9,582,335,118 pixels written,
-  22 frames captured. Massive improvement from 562 primitives / 860,160 pixels
-  in the first run.
+1. `0001-iop-hardware-registers.patch`: IOP hardware registers (0x1F80xxxx, seen
+   as 0xBF80xxxx) are kept as written, not a stop. (`0xBF801404` was the stop.)
+2. `0002-timrman-overflow-and-setters.patch`: `timrman#21` SetOverflowHandler,
+   and the timer setters #7, #9, #10, #11.
 
-- **Not stuck in idle loop** — progressed through multiple loop addresses:
-  `0x0044E068` → `0x0044AA50` → `0x00356AF0` → `0x0030CCB4` → `0x0045A738` →
-  `0x003F4674` (after StringCopy) → `0x0044A9F8`. Game is actively rendering
-  and processing interrupts (SPU2/DMA), not just spinning.
+The trace of the run (CI, `--iop-trace`, `ci-results/iop-trace.txt`) shows the
+driver's path: libsd init (`sceSdInit`, `sceSdSetCoreAttr`, `sceSdSetParam`),
+its own thread registering RPC server `0x01000001` (`sceSifRegisterRpc`,
+`sceSifRpcLoop`), `AllocHardTimer`, `SetupHardTimer`, then `SetOverflowHandler`
+(stopped there before patch 0002). Next stop: whatever the trace names next.
 
-- **IOP sound modules loaded**: LIBSD (module 5), ZNASND (module 6 — the game's
-  sound driver, NOT SDRDRV).
-
-- **RPC server `0x01000001` has host implementation** (`ZnasndRpcHandler`):
-  Observed procedures: 513, 768, 1797 (init), 1808/1809 (buffer submit/poll loop),
-  1805/1810/1811 (setup), 772 (notification). Handler returns status=1 + echoed
-  request data + incrementing counter for procedure 1809 (polling).
-  Procedure 772 now sends varied data (was all zeros) — ZNASND is initializing.
-
-- **RunModule calls disabled** in `overrides.cpp`: loading LIBSD/ZNASND via
-  `RunModule` causes IOP crash on write to `0xBF801404` (SPU2 register). Game
-  loads modules via `sceSifLoadModule` from disc instead.
-
-**Current blocker:** Menu has not appeared yet. Game runs 301s and renders
-millions of primitives but is still in a loop at `0x0044A9F8`. ZNASND RPC
-handler responds with status=1 but ZNASND may need more specific responses
-to set IOP flag `0x1AEF8` and start streaming. `--iop-trace` would reveal the
-correct responses but crashes on IOP hardware write `0xBF801404` (needs
-engine-side IOP hardware register HLE in `iop_vm.cpp`).
+**Open questions for the port (not yet in the code):**
+- The menu has not been seen on any run. What the EE waits for is the sound
+  driver's status (procedure 772 polling); whether the module now answers it
+  is what the next CI run shows.
+- The engine's `AddIdleLoop` overrides (five wait loops) are still in place;
+  they skip virtual time in waits the real driver should now resolve. Remove
+  them if the menu needs the real waits.
+- FPS counter: on by default now (`fps_counter`, F1 toggles, the choice kept
+  in the settings file). `fps_detail` in the engine adds CPU.
 
 **Next steps:**
-1. Get `--iop-trace` working: implement IOP hardware register handling
-   (SPU2 `0xBF800000-0xBFFFFFFF`) in engine `iop_vm.cpp` `WriteFault`/`ReadFault`
-   so `--iop-trace` doesn't crash on `0xBF801404`
-2. Re-run with `--iop-trace` to capture exact RPC responses ZNASND expects
-3. Refine `ZnasndRpcHandler` with proper responses so ZNASND sets flag `0x1AEF8`
-4. Once menu appears, APK can be published (currently blocked per user constraint)
-
-**What still needs the disc** (CI can fetch it):
-- Re-verify call 6 / `0x1AEF8` against `SLUS_218.64`
-- Record verified entries in `games/up/config/functions.csv`
-
+1. Read each CI run's `ci-results/iop-trace.txt`; implement the next unimplemented
+   import as a patch in `games/up/engine-patches/` (same way as 0002).
+2. When the trace shows the driver serving RPC and the EE leaving its wait loops,
+   check for the menu in `ci-results/smoke-summary.txt`'s frames.
+3. Do not publish the APK until the menu appears (user's condition).
