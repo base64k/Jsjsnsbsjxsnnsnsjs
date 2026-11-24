@@ -20,7 +20,8 @@
  *   0004 the timer's counter running with the clock, the IOP RPC client and
  *        the file manager as placeholders (the trace names what is asked).
  *   0005 the IOP's SIF RPC client as ps2sdk's library has it: sceSifBindRpc
- *        and sceSifCallRpc (blocking and no-wait, with end functions).
+ *        and sceSifCallRpc (blocking and no-wait, with end functions);
+ *   0006 ioman_open, iomanX_read, iomanX_lseek, iomanX_close on the disc's files.
  * Each is the engine's to take in upstream.
  *
  * Earlier attempts that are NOT here any more (see git history and
@@ -39,6 +40,10 @@ void RegisterGameOverrides() {
     // The game's own sound driver, from the disc, in the IOP interpreter. The
     // sound library (LIBSD.IRX) stays the host's: its exports are the host's
     // libsd, which ZNASND imports.
+    // The sound library runs for real as the EE loads it (LIBSD.IRX, the sound
+    // driver's remote): its RPC server is the one ZNASND binds (0x01000002),
+    // which the host's own library lacks. The EE loads LIBSD before ZNASND.
+    ps2host::iop::RunModule("LIBSD.IRX");
     ps2host::iop::RunModule("ZNASND.IRX");
 
     // The GPU pipelines this game draws with (scripted runs, the engine's own

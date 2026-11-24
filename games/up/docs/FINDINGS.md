@@ -347,6 +347,24 @@ port. Who should (the EE, a second module, or the disc's own file) is what
 folder and the program for the `ZnaSnd` string and the server ids
 (`scripts/disc_modules.py`).
 
+**What the disc's own files say (CI, `ci-results/disc-modules.txt`, run 45441846187).**
+The EE loads exactly six modules: `SIO2MAN`, `PADMAN`, `MCMAN`, `MCSERV`,
+`LIBSD`, `ZNASND` (the program's strings). `SDRDRV.IRX` is on the disc but the
+EE never loads it. The word `0x01000002` is in `LIBSD.IRX` (once) and
+`SDRDRV.IRX` (twice), and in the EE program 1,205 times (its sound-kit
+remote calls go to it). `ZNASND.IRX` itself has the strings "ZnaSnd.irx Loaded
+Successfully...", "Error while init SifRpc" and "Check that ZnaSnd.irx have
+been loaded...": that is its own load check. The sound driver's partner
+server is therefore most likely the real `LIBSD.IRX`'s. In the port, LIBSD is
+the host's (`RunModule` is not called for it), so no module serves 0x01000002.
+ps2sdk's `sdrdrv` registers `0x80000701` (a later SDK); the game's is older, so
+its ids are not ps2sdk's.
+
+Proven approach (DQ8-Recompiled, above): the sound library's IOP module runs
+unmodified, and the SIF RPC over it is the runtime's. Patch 0005 is that
+runtime's bind and call; the `RunModule("LIBSD.IRX")` in `overrides.cpp` is
+the module.
+
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
   driver's status (procedure 772 polling); whether the module now answers it
