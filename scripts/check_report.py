@@ -131,11 +131,36 @@ def main():
     # the run made them (a transfer's data is what the last read left in its buffer).
     flow_re = ("sifman#7 ", "sifman#8 ", "sifcmd#", "SetDma", "WaitSema", "SignalSema", "PollSema",
                "EventFlag", "SetEventFlag", "WaitEvent", "[host] SIF: call", "[host] IOP: RPC", "sceSifCallRpc")
-    timeline = [l for l in (report or "").splitlines()
-                if (("cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l) or l.startswith("[sif] IOP")
-                    or (("[iop]" in l or "[host]" in l) and any(k in l for k in flow_re)))]
-    text += section("The disc reads (not into 0x28900) and the SIF transfers out of IOP memory, in the run's order: %d lines" % len(timeline),
-                    "\n".join(timeline[:160]) if timeline else None, 12000)
+    all_lines = (report or "").splitlines()
+    def _is_read(l):
+        return "cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l
+    def _is_dma(l):
+        return l.startswith("[sif] IOP")
+    def _is_rpc(l):
+        return "[host] SIF: call" in l or "[host] IOP: RPC" in l or "sceSifCallRpc" in l
+    key = [i for i, l in enumerate(all_lines) if _is_read(l) or _is_dma(l) or _is_rpc(l)]
+    # Flow-control lines (semaphores, SifSetDma, event flags): kept only within 6 lines of a key event,
+    # and a repeated line is kept only once per run of identical neighbours.
+    near = set()
+    for i in key:
+        near.update(range(max(0, i - 6), min(len(all_lines), i + 7)))
+    timeline = []
+    last = None
+    for i, l in enumerate(all_lines):
+        if _is_read(l) or _is_dma(l) or _is_rpc(l):
+            keep = True
+        elif ("[iop]" in l or "[host]" in l) and any(k in l for k in flow_re):
+            keep = i in near
+        else:
+            keep = False
+        if keep:
+            norm = re.sub(r"\(again\)", "", l).strip()
+            if norm == last:
+                continue
+            last = norm
+            timeline.append(l)
+    text += section("The disc reads (not into 0x28900) and the SIF transfers out of IOP memory, with the flow control near them: %d lines" % len(timeline),
+                    "\n".join(timeline[:300]) if timeline else None, 14000)
     # The disc image itself, at the sectors the run read: the bytes the EE was sent
     # must be these, if the engine reads the disc right.
     iso_path = os.environ.get("UP_ISO", "disc/up.iso")
