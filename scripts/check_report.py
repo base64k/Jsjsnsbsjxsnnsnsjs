@@ -138,19 +138,22 @@ def main():
         return l.startswith("[sif] IOP")
     def _is_rpc(l):
         return "[host] SIF: call" in l or "[host] IOP: RPC" in l or "sceSifCallRpc" in l
-    key = [i for i, l in enumerate(all_lines) if _is_read(l) or _is_dma(l) or _is_rpc(l)]
-    # Flow-control lines (semaphores, SifSetDma, event flags): kept only within 6 lines of a key event,
-    # and a repeated line is kept only once per run of identical neighbours.
+    # The mailbox traffic (SifSetDma and semaphores on the common 0x2079B800 mailbox, the RPC
+    # procedures served) repeats for thousands of lines; leave it out. What stays: the disc reads
+    # (not into 0x28900), the IOP's DMAs, the SIF calls, and the flow control within 2 lines of those.
+    def _mailbox(l):
+        return "a2=0x2079B800" in l or "served by a module" in l
+    key = [i for i, l in enumerate(all_lines) if _is_read(l) or _is_dma(l) or ("sceSifCallRpc" in l)]
     near = set()
     for i in key:
-        near.update(range(max(0, i - 6), min(len(all_lines), i + 7)))
+        near.update(range(max(0, i - 2), min(len(all_lines), i + 3)))
     timeline = []
     last = None
     for i, l in enumerate(all_lines):
-        if _is_read(l) or _is_dma(l) or _is_rpc(l):
+        if _is_read(l) or _is_dma(l) or ("sceSifCallRpc" in l):
             keep = True
         elif ("[iop]" in l or "[host]" in l) and any(k in l for k in flow_re):
-            keep = i in near
+            keep = i in near and not _mailbox(l)
         else:
             keep = False
         if keep:
