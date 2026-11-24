@@ -330,6 +330,22 @@ jobs:
             nproc
           } >> "$GITHUB_STEP_SUMMARY" 2>&1
 
+      # Save smoke test results to the repo so they can be read without
+      # downloading artifacts (blocked in some networks).
+      - name: Save smoke test results to repo
+        if: always()
+        run: |
+          mkdir -p ci-results
+          cp games/up/build/smoke/summary.txt ci-results/smoke-summary.txt 2>/dev/null || true
+          cp games/up/build/port/report.txt ci-results/port-report.txt 2>/dev/null || true
+          if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
+            git config user.email "agent@arena.ai"
+            git config user.name "Arena Agent"
+            git add ci-results/
+            git commit -m "ci(up): save smoke test results from run ${{ github.run_id }}" || true
+            git push origin "${GITHUB_REF#refs/heads/}" || true
+          fi
+
       - name: Publish the release
         if: ${{ inputs.publish == true }}
         env:
