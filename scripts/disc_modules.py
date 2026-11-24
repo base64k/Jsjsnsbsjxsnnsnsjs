@@ -99,6 +99,23 @@ def lui_ori_sites(data, hi, lo):
     return found
 
 
+def lui_wide_sites(data, hi, lo, span=12):
+    """Offsets of `lui rt,hi` followed within `span` words by an addiu/ori/addi of
+    `lo` on rt (the id built with other registers, or with more code between)."""
+    found = []
+    words = struct.unpack_from("<%dI" % (len(data) // 4), data, 0)
+    for i, w in enumerate(words):
+        if (w >> 26) != 0x0F or ((w >> 21) & 0x1F) != 0 or (w & 0xFFFF) != hi:
+            continue
+        rt = (w >> 16) & 0x1F
+        for j in range(i + 1, min(i + 1 + span, len(words))):
+            w2 = words[j]
+            if (w2 >> 26) in (0x08, 0x09, 0x0D) and (w2 & 0xFFFF) == lo and ((w2 >> 21) & 0x1F) == rt:
+                found.append(i * 4)
+                break
+    return found
+
+
 def scan(path, label):
     with open(path, "rb") as f:
         data = f.read()
@@ -117,6 +134,15 @@ def scan(path, label):
             if sites:
                 say("  code builds %s (lui+ori/addiu): %d times, first at %s" % (
                     name, len(sites), ", ".join("0x%X" % x for x in sites[:8])))
+                for at in sites[:4]:
+                    say("    code at 0x%X:" % at)
+                    lines.extend(disasm_around(data, at, before=2, after=6))
+            wide = lui_wide_sites(data[: len(data) - len(data) % 4], *hi_lo)
+            say("  lui 0x%04X ... addiu/ori %d within 12 words: %d sites" % (
+                hi_lo[0], hi_lo[1], len(wide)))
+            for at in wide[:6]:
+                say("    wide site 0x%X:" % at)
+                lines.extend(disasm_around(data, at, before=2, after=10))
     # The module names an image carries (PsII<name>): an image of several
     # modules says which one holds a word, by the nearest name to it.
     names_at = [(m.start(), m.group().decode("ascii", "replace"))

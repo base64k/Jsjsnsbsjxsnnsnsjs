@@ -350,9 +350,11 @@ folder and the program for the `ZnaSnd` string and the server ids
 **What the disc's own files say (CI, `ci-results/disc-modules.txt`, run 45441846187).**
 The EE loads exactly six modules: `SIO2MAN`, `PADMAN`, `MCMAN`, `MCSERV`,
 `LIBSD`, `ZNASND` (the program's strings). `SDRDRV.IRX` is on the disc but the
-EE never loads it. The word `0x01000002` is in `LIBSD.IRX` (once) and
-`SDRDRV.IRX` (twice), and in the EE program 1,205 times (its sound-kit
-remote calls go to it). `ZNASND.IRX` itself has the strings "ZnaSnd.irx Loaded
+EE never loads it. (The first reading of this scan counted the bytes
+`02 00 00 01` wherever they occur: LIBSD, SDRDRV, the EE program. Those hits
+are not literal words: every one is at an odd or unaligned offset, so they
+are bytes across instruction boundaries. No aligned `0x01000002` word exists
+in any disc module or in the EE program.) `ZNASND.IRX` itself has the strings "ZnaSnd.irx Loaded
 Successfully...", "Error while init SifRpc" and "Check that ZnaSnd.irx have
 been loaded...": that is its own load check. The sound driver's partner
 server is therefore most likely the real `LIBSD.IRX`'s. In the port, LIBSD is
@@ -377,6 +379,33 @@ served to the IOP, the bind waits: a host server would have to guess the
 procedures, which is what the port's earlier guessed replies showed does not
 move the game.
 
+**Runs 45450438599, 45456522278, 45462705479 (the same code, plus the scan).**
+- 45450438599 (`RunModule("LIBSD.IRX")`, patches 0001-0006): smoke stopped
+  on "every thread is waiting", 633 distinct functions, 58.8 s, IOP 94.2%.
+  LIBSD runs (`entry 0x000100B0`), ZNASND prints "Loaded Successfully", and
+  the `sceSifBindRpc(…, 0x01000002)` loop continues.
+- 45456522278 (same, with the module names in the scan): same stop, 61.4 s.
+- 45462705479 (same code, the scan's code listing): same stop, 633 distinct,
+  47.4 s, IOP 93.0%. The summary is `ci-results/smoke-summary.txt`.
+
+**Who registers which server (from the trace, `ci-results/iop-trace.txt`).**
+The only `sceSifRegisterRpc` in the run is
+`sifcmd#17 sceSifRegisterRpc(…, 0x01000001, …) -> 0 from 0x00015EB8`, and the
+bind is `sceSifBindRpc(…, 0x01000002, …) from 0x00016128`. Both addresses are
+inside ZNASND (its `lui`+`ori` for `0x01000001` is at file offset 0x5A8 and
+for `0x01000002` at 0x820; the call sites differ by the same amount). So
+ZNASND registers its own server, `0x01000001`, and binds to `0x01000002`,
+which another side must register.
+
+**The disc does not hold server `0x01000002` as data or as a literal.** The
+scan finds no aligned word `0x01000002` in any module or in the EE program,
+and the only `lui`+`ori` that builds it is ZNASND's bind. The new scan also
+lists every `lui 0x0100` followed by an `addiu`/`ori` of 1 or 2 within 12
+words (`lui 0x0100 ... addiu/ori ... sites`). Its result is in
+`ci-results/disc-modules.txt`. A zero there means the id is not built from
+constants at all, so it comes from the console's own boot image or from a
+computed value at run time.
+
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
   driver's status (procedure 772 polling); whether the module now answers it
@@ -388,14 +417,14 @@ move the game.
   in the settings file). `fps_detail` in the engine adds CPU.
 
 **Next steps:**
-1. Read `ci-results/disc-modules.txt` (the disc's own files): which file has
-   the `ZnaSnd` string and the word `0x01000002`. That file, loaded by the EE
-   or started by the host, is what serves the server. If none has it, the
-   module waits for a server the EE never makes; then the next question is the
-   EE's side of the bind (the `[host] SIF:` lines of `port-report.txt`).
-2. Patches 0005 and 0006 are in place (real bind and call, disc files); their
-   effect is seen in the next run's trace (`ioman` opens and the bind loop).
-3. The trace is capped at 20,000 lines, so the stop is only seen at its end.
-2. When the trace shows the driver serving RPC and the EE leaving its wait loops,
-   check for the menu in `ci-results/smoke-summary.txt`'s frames.
-3. Do not publish the APK until the menu appears (user's condition).
+1. Read the "lui 0x0100 ... sites" lines in `ci-results/disc-modules.txt`.
+   If there are sites in the EE program or in a module, the code around them
+   says which register holds the id and where it goes (`sceSifRegisterRpc`
+   or a bind).
+2. If there are none: the server comes from the console's boot image or is
+   computed at run time. The next run should trace the `sceSifRegisterRpc`
+   calls on the EE side (`[host] SIF:` lines in `port-report.txt`).
+3. Patches 0005 and 0006 are in place; their effect is in the trace's
+   `ioman` lines and the bind loop. The trace is capped at 20,000 lines, so
+   the stop is seen only at its end.
+4. Do not publish the APK until the menu appears (the user's condition).
