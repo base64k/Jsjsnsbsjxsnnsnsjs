@@ -180,6 +180,44 @@ def main():
         iso_lines.append("no disc image at %s" % iso_path)
     text += section("The disc image's own sectors (the first 32 bytes, as words), at the LSNs the stream reads",
                     "\n".join(iso_lines), 2000)
+    # Each SIF DMA into the EE's call-6 / call-83 area that covers the watched EE byte: its IOP
+    # source, the disc read that filled that source, and the image bytes the EE receives there.
+    watch_ee = 0x01F7FCF3
+    dma_re = _re.compile(r"^\[sif\] IOP 0x([0-9A-Fa-f]+) -> EE 0x([0-9A-Fa-f]+), (\d+) bytes")
+    read_hist = []
+    dma_lines = []
+    iso_path = os.environ.get("UP_ISO", "disc/up.iso")
+    for l in (report or "").splitlines():
+        m = read_re.search(l)
+        if m:
+            read_hist.append((int(m.group(1), 16), int(m.group(2), 16), int(m.group(3), 16)))
+            continue
+        d = dma_re.match(l)
+        if d:
+            src, dst, n = int(d.group(1), 16), int(d.group(2), 16) & 0x1FFFFFFF, int(d.group(3))
+            if dst <= watch_ee < dst + n:
+                idx = watch_ee - dst
+                src_at = src + idx
+                src_read = None
+                for lsn, sect, buf in reversed(read_hist):
+                    if buf <= src_at < buf + sect * 2048:
+                        src_read = (lsn, sect, buf)
+                        break
+                if src_read is None:
+                    dma_lines.append("%s (%d bytes): byte %d = IOP %08X, no disc read of this run fills it" % (l[:60], n, idx, src_at))
+                else:
+                    lsn, sect, buf = src_read
+                    off = src_at - buf
+                    img = None
+                    if os.path.exists(iso_path):
+                        with open(iso_path, "rb") as f:
+                            f.seek((lsn + off // 2048) * 2048 + off % 2048 - 8)
+                            img = f.read(16)
+                    dma_lines.append("DMA IOP %08X -> EE %08X, %d bytes; byte %d = IOP %08X; read LSN 0x%X buffer %08X: sector 0x%X offset %d; image bytes -8..+8: %s" % (
+                        src, dst, n, idx, src_at, lsn, buf, lsn + off // 2048, off % 2048,
+                        " ".join("%02X" % b for b in img) if img else "no image"))
+    text += section("The SIF DMAs covering EE 0x%08X (the call-6 / call-83 byte): %d in all" % (watch_ee, len(dma_lines)),
+                    "\n".join(dma_lines[:40]) if dma_lines else "none", 6000)
     # The IOP's stores in the range the run watches (PS2HOST_IOP_WATCH): who writes the buffer.
     iop_stores = [l for l in (report or "").splitlines() if l.startswith("[iop-write]")]
     text += section("The IOP's stores in the watched range (PS2HOST_IOP_WATCH): %d in all, the first 120 and the last 40" % len(iop_stores),

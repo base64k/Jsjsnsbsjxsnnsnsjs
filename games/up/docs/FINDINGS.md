@@ -512,3 +512,15 @@ not the stack slot.
 - So the engine reads and transfers the disc correctly. The problem is not in the disc path.
 - Timeline (run 45253935577): the 59392-byte transfer from 0x75180 follows read 0x382D9 and comes before read 0x38399, which refills 0x58980. The transfers and reads are in the order the IOP made them.
 - Remaining suspects: (1) the EE does not ask the IOP for each chunk (the engine's IOP sends every chunk at once, the real IOP waits for the EE's flow control); (2) the unpacker's output (call 6 at 0x01F78100..0x01F80BEE) overlaps the next chunk's place, and in the real run the chunk is DMA'd after the unpacker consumed the previous one.
+
+## The stream DMAs and the call-6 bytes (run 45312233458)
+
+The filtered timeline (`check run` "with the flow control near them") shows, in order:
+
+- `sceCdRead(0x382D9, 0xC0, 0x58980)` fills 192 sectors at IOP 0x58980. The 59392-byte chunk `IOP 0x75180 -> EE 0x21F78900` starts at sector 57 of that buffer (0x75180 - 0x58980 = 116736 = 57 sectors). Its first word `00000018 00000004 00000014` equals the image's LSN 0x38312 header, so this is the disc data.
+- The IOP issues the `sceSifSetDma` calls itself (thread t4, `sifman#7`). No `sceCdRead` falls between the 0x75180 DMA and the previous read, so the buffer is still valid when the DMA is sent.
+- `sceCdRead(0x38399, 0xC0, 0x58980)` refills the same buffer. Then `IOP 0x6A980 -> EE 0x21F78100` (61440 bytes) is sent from sector 36 of that read.
+- EE addresses: `0x21F78100` + 61440 = `0x01F87100`, and `0x21F78900` + 59392 = `0x01F87100`. Both DMAs cover the call-6 output `0x01F78100..0x01F80BEE` and call 83's input `0x01F7FCF3`.
+- The byte `0x01F7FCF3` is at offset 31731 of the `0x6A980` DMA, which reads IOP `0x72573` (sector 0x383CC, offset 1011). The stream DMA may overwrite the byte that call 6 stored there.
+
+Open question: the EE-side order of call 6's stores and these DMAs. The next run prints the image bytes the EE receives at `0x01F7FCF3` ("The SIF DMAs covering EE 0x01F7FCF3").
