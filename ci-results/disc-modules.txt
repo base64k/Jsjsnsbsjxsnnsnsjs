@@ -54,6 +54,8 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: Error while init SifRpc
   string: Check that ZnaSnd.irx have been loaded...
   string: [IOP] ZnaSnd.irx - Ver: %d
+  code builds 0x01000002 (lui+ori/addiu): 1 times, first at 0x820
+  code builds 0x01000001 (lui+ori/addiu): 1 times, first at 0x5A8
 == program SLUS_218.64 (5851096 bytes)
   string: SIO2MAN.IRX
   string: PADMAN.IRX
@@ -66,6 +68,7 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: libmc: too old release of mcman.irx
   string: sifcmd
   string: libsd
+  code builds 0x01000001 (lui+ori/addiu): 1 times, first at 0x24CEE4
   word 0x01000001 (LE): 468 times, first at 0x126E9F, 0x12821B, 0x4D777F, 0x4D9A8F, 0x4D9BFF, 0x4DA5CF, 0x4DA73F, 0x4DB0BF
   word 0x01000002 (LE): 1205 times, first at 0xE44B6, 0xEB052, 0x13AACB, 0x142836, 0x16808F, 0x16830B, 0x190C66, 0x1DAE76
   word 0x80000001 (LE): 40 times, first at 0x2224B, 0x11429F, 0x12BAC7, 0x230BBF, 0x2E22EF, 0x4D919F, 0x4DC81F, 0x4DCF2F
