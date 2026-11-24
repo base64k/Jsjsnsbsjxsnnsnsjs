@@ -129,10 +129,13 @@ def main():
                     "\n".join(sif_watch[:40] + sif_in[:20]) if sif_in else None, 6000)
     # One timeline: the disc reads and the SIF transfers out of IOP memory, in the order
     # the run made them (a transfer's data is what the last read left in its buffer).
+    flow_re = ("sifman#7 ", "sifman#8 ", "sifcmd#", "SetDma", "WaitSema", "SignalSema", "PollSema",
+               "EventFlag", "SetEventFlag", "WaitEvent", "[host] SIF: call", "[host] IOP: RPC", "sceSifCallRpc")
     timeline = [l for l in (report or "").splitlines()
-                if (("cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l) or l.startswith("[sif] IOP"))]
+                if (("cdvdman#6 sceCdRead(" in l and ", 00028900, " not in l) or l.startswith("[sif] IOP")
+                    or (("[iop]" in l or "[host]" in l) and any(k in l for k in flow_re)))]
     text += section("The disc reads (not into 0x28900) and the SIF transfers out of IOP memory, in the run's order: %d lines" % len(timeline),
-                    "\n".join(timeline[:120]) if timeline else None, 9000)
+                    "\n".join(timeline[:160]) if timeline else None, 12000)
     # The disc image itself, at the sectors the run read: the bytes the EE was sent
     # must be these, if the engine reads the disc right.
     iso_path = os.environ.get("UP_ISO", "disc/up.iso")
