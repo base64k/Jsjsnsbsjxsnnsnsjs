@@ -163,6 +163,9 @@ The `disc/up.iso` file exists but is 0 bytes. The disc must be obtained before t
 ## Next steps (blocked on the disc)
 
 1. **Get the disc image** — resolve the SSL/TLS blocker or obtain `disc/up.iso` another way.
+   - Background retry running: `disc/download.log` shows attempts every 60s.
+   - All direct download methods fail in this sandbox: `SSL_ERROR_SYSCALL` / `SSLZeroReturnError` on `drive.google.com`, `drive.usercontent.google.com`, `www.googleapis.com`.
+   - Google Drive connector: file is 916 MB, exceeds the 100 MiB workspace limit.
 2. **Extract the program**: `python engine/tools/isotool.py extract disc/up.iso SLUS_218.64 -o games/up/extracted/`
 3. **Analyze**: `python engine/tools/analyze.py --game games/up`
 4. **Name functions**: `python engine/tools/signatures.py --game games/up name`
@@ -172,3 +175,80 @@ The `disc/up.iso` file exists but is 0 bytes. The disc must be obtained before t
 8. **Record verified entries** in `games/up/config/functions.csv`.
 
 **Reference approach for sound**: follow the DQ8 port — name the game's IOP sound modules (likely LIBSD, SDRDRV, CRI_ADXI) to run via `ps2host::iop::RunModule()`, keep `sceSifCallRpc` bound to the runtime (not stubbed), and let the game's own sound code talk to them over SIF. The host's libsd and SPU2 implementations are already in place.
+
+---
+
+## Engine API verified from source (for port code in `games/up/port/overrides.cpp`)
+
+**Override mechanism** (`host.h`, `host.cpp`):
+- `ps2host::Override(u32 address, GuestFunction function, const char* name)` — replaces a guest function at an address; the original is callable as `F_<ADDRESS>(c)` via `GuestCall`
+- `ps2host::RegisterGameOverrides()` — called from `engine/host/src/main.cpp` at start; implemented in the game's `port/overrides.cpp`
+- `ps2host::ApplySdkOverrides()` — applies host implementations of SDK library routines by name (from the game's dispatch table)
+- `ps2host::ApplySdkPatterns()` — finds SDK routines by instruction hash in the executable's bytes
+
+**Sound API** (`run.h`, `audio.cpp`):
+- `ps2host::OpenAudio()` / `CloseAudio()` — opens/closes the sound device
+- `ps2host::AudioFrames(const short* frames, unsigned count)` — the SPU2 calls this with mixed 16-bit stereo at 48 kHz
+- `ps2host::OpenWavDump(path)` / `AudioActive()` — WAV recording and activity check
+- `ps2host::AudioVolume()` / `SetAudioVolume(percent)` — master volume
+
+**IOP API** (`run.h`, `iop.cpp`, `iop_vm.h`):
+- `ps2host::iop::RunModule(file_name)` — names an IOP module to run from the disc
+- `ps2host::iop::RunsModule(path)` — checks if a module is named to run
+- `ps2host::RegisterRpcServer(u32 server_id, RpcServer)` — registers a host RPC server
+- `ps2host::InstallIopServers()` / `InstallLoadFile()` / `InstallFileIo()` / `InstallDbc()` / `InstallMcserv()` — installs IOP services
+
+**Device/run API** (`run.h`):
+- `ps2host::SetPath2Filter(filter)` — intercepts VIF1 DIRECT/PATH2 blocks before the GS (for 2D/HUD widescreen)
+- `ps2host::AddIdleLoop(address)` — names a wait loop so virtual time skips to the next event
+- `ps2host::SetFastForward(factor)` / `SetBlankRate(hz)` — real-time speed control
+- `ps2host::SetFastDisc(bool)` / `SetFastLoadingDefault(bool)` — disc read timing
+- `ps2host::SetVuFastDefault(bool)` / `SetFramePacingDefault(bool)` — VU1 and frame pacing defaults
+- `ps2host::SetPadHook(hook)` / `SetControllerFilter(filter)` — input hooks
+- `ps2host::SetKeyboardMapper(mapper)` — keyboard to pad mapping
+- `ps2host::AddPortOptions(options)` — PC settings panel pages
+- `ps2host::SetCaptureHook(hook)` — F12 capture hook
+
+---
+
+## Port code structure (what goes in `games/up/port/`)
+
+| File | Purpose |
+|------|---------|
+| `CMakeLists.txt` | Build: links `engine/host`, lists `overrides.cpp`, generated sources |
+| `overrides.cpp` | `RegisterGameOverrides()` — host implementations of game functions by address |
+| `port/runs/<name>.args` | Scripted test runs (`--virtual-time`, `--press`, etc.) |
+| `port/runs/README.md` | Documents each run: what it reaches, at which frames |
+| `port/icon.ico` | The port's icon (original art, never from the disc) |
+| `port/release/README.txt` | Player-facing README |
+| `config/functions.csv` | Function name table (address, name, status, source, notes) |
+| `docs/FINDINGS.md` | What the binary revealed (this file) |
+
+---
+
+## What the host already provides vs. what Up needs
+
+**Already provided by `engine/host`:**
+- EE kernel services (threads, semaphores, alarms, timers, SIF, syscalls)
+- IOP: libsd (all 32 exports), SPU2 (full sound processor), module loading, SIF/RPC
+- GS: software renderer, GPU renderer (Vulkan), VIF1/VU1
+- Devices: CD/DVD, file I/O, memory card, pads, IPU (MPEG movies)
+- Audio output sink (wired via `EnableSound()` → `AudioFrames()`)
+- SDK library routines by name (GsSyncPath, KernelStore, TtyWrite, etc.)
+- PC features: window, settings panel, texture pack, mouse, controller, rumble
+
+**What Up's port must add (in `port/overrides.cpp`):**
+- Function overrides discovered from the analysis (addresses from `functions.csv`)
+- IOP sound modules to run (`RunModule("LIBSD.IRX")`, `RunModule("SDRDRV.IRX")`, etc.)
+- Sound handshake: which RPC/EE write sets flag `0x1AEF8`
+- Any hardware-specific behavior the host doesn't model
+
+---
+
+## PCSX2 Wiki info on Up (SLUS-21864)
+
+- Developer: Asobo Studio, Publisher: THQ, Released: 2026-05-26
+- Status: Playable on PCSX2 Windows and Linux
+- Known issue: TLB Miss crash when aiming the mirror (NTSC version only)
+- Fixed issue: Bad text (garbled subtitles) — fixed in PCSX2 v1.7.5880
+- Widescreen supported natively
