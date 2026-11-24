@@ -2,17 +2,16 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: the time limit, in the loop at 0x0044A9F8
-functions executed: 1865 distinct
+stopped: the time limit, in the loop at 0x0045A738
+functions executed: 1864 distinct
 guest call stack where it stopped (innermost last):
   0x00200008
   0x002DD240
   0x0032F1B0
   0x0032EAA0
-  0x00399160
-  0x00397AA0
-  0x002F6970
-  0x0044A7A0
+  0x002FC4F0
+  0x0045B7F0
+  0x0045A6F0
 threads:
   thread 1: running, priority 10, entry 0x00200008, ran 107 times
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
@@ -22,13 +21,13 @@ threads:
       0x0044D4A0 
       0x003E0050 
       0x003DC4C0 SleepThread
-VIF1 commands: NOP 3908847 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 77958 FLUSH 133633 FLUSHA 44544 STMASK 3 DIRECT 244997; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
-GS: 6704434 primitives, 9582335118 pixels written
-GIF tags: PATH1 0, PATH2 478873, PATH3 44669; image 12832832 quadwords; register writes: 00:256150 01:22274 03:445440 04:44544 05:7573084 06:11137 07:11137 08:22273 09:11137 14:11137 15:22273 16:1 17:1 18:78078 19:44546 1A:55806 1B:44547 34:1 35:11137 36:1 37:11137 3B:22274 3D:1 3F:22273 40:100350 41:44546 42:11137 43:11137 44:11137 45:33533 46:122 47:100350 48:44546 49:1 4A:1 4B:1 4C:78078 4D:44546 4E:78078 4F:44546 50:33410 51:3 52:33410 53:33410 7F:44544
-time: 301.0 s; GS drawing 96.2%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.1%, IOP 0.0%, waiting for the GS thread 95.6%
+VIF1 commands: NOP 3019764 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 60227 FLUSH 103237 FLUSHA 34412 STMASK 3 DIRECT 189271; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
+GS: 5179568 primitives, 7402882927 pixels written
+GIF tags: PATH1 0, PATH2 369954, PATH3 34537; image 9914816 quadwords; register writes: 00:197891 01:17208 03:344120 04:34412 05:5850644 06:8604 07:8604 08:17207 09:8604 14:8604 15:17207 16:1 17:1 18:60347 19:34414 1A:43141 1B:34415 34:1 35:8604 36:1 37:8604 3B:17208 3D:1 3F:17207 40:77553 41:34414 42:8604 43:8604 44:8604 45:25934 46:122 47:77553 48:34414 49:1 4A:1 4B:1 4C:60347 4D:34414 4E:60347 4F:34414 50:25811 51:3 52:25811 53:25811 7F:34412
+time: 300.9 s; GS drawing 95.9%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.1%, IOP 0.0%, waiting for the GS thread 95.3%
 kernel services used:
-  -120  SifSetDChain             x16811
-   -67  iSignalSema              x5674
+  -120  SifSetDChain             x13010
+   -67  iSignalSema              x4407
      2  ?                        x2
     16  AddIntcHandler           x3
     18  AddDmacHandler           x4
@@ -47,47 +46,47 @@ kernel services used:
     62  EndOfHeap                x2
     64  CreateSema               x162
     65  DeleteSema               x149
-    66  SignalSema               x5707
+    66  SignalSema               x4441
     68  WaitSema                 x287
-    69  PollSema                 x11140
+    69  PollSema                 x8607
     74  SetOsdConfigParam        x2
     75  GetOsdConfigParam        x7
     90  kCopy                    x3
     91  ?                        x12
-   100  FlushCache               x44915
+   100  FlushCache               x34782
    107  ?                        x1
    113  GsPutIMR                 x2
    116  SetSyscall               x18
-   118  SifDmaStat               x11139
-   119  SifSetDma                x27953
+   118  SifDmaStat               x8605
+   119  SifSetDma                x21618
    120  SifSetDChain             x2
    121  SifSetReg                x5
    122  SifGetReg                x6
    124  Deci2Call                x40
    131  ?                        x2
 most called:
-  0x004E6340                               x11137
-  0x004C49A0                               x11137
-  0x0045B7F0                               x11137
-  0x00456970                               x11137
-  0x003AB7F0                               x11137
-  0x002F6970                               x11137
-  0x002F6340                               x11137
-  0x002F49A0                               x11136
-  0x002F0CC0                               x11136
-  0x00240CC0                               x11136
+  0x0045B7F0                               x8604
+  0x00456970                               x8604
+  0x003AB7F0                               x8604
+  0x002F6340                               x8604
+  0x004E6340                               x8603
+  0x004C49A0                               x8603
+  0x002F6970                               x8603
+  0x002F49A0                               x8603
+  0x002F0CC0                               x8603
+  0x00240CC0                               x8603
   0x00426870                               x27
   0x00356870                               x27
-  0x004B7A60                               x23
   0x004B68C0                               x23
   0x004268C0                               x22
-  0x00397A60                               x21
+  0x004B7A60                               x19
   0x004B8E60                               x17
+  0x00397A60                               x17
   0x00202C50                               x17
   0x00308E60                               x16
   0x00212C50                               x16
-  0x003DC960 SifSetDma                     x12
-  0x002DC960                               x11
+  0x003DC960 SifSetDma                     x10
+  0x002DC960                               x9
   0x0044F020                               x6
   0x0041F020                               x6
   0x002E7990                               x5
@@ -107,9 +106,9 @@ most called:
   0x004B7310                               x2
   0x004B7080                               x2
 device registers read: 39
-  0x10000000 x100248
-  0x10001000 x1053
-  0x10001010 x1406
+  0x10000000 x77451
+  0x10001000 x1182
+  0x10001010 x1578
   0x10001810 x1
   0x10003020 x1
   0x10008000 x4
@@ -118,8 +117,9 @@ device registers read: 39
   0x10008030 x3
   0x10008040 x1
   0x10008050 x1
-  0x10009000 x44551
-  0x10009010 x22276
-  0x10009020 x22276
+  0x10009000 x34419
+  0x10009010 x17210
+  0x10009020 x17210
+  0x10009030 x34420
 
 the pictures: 22
