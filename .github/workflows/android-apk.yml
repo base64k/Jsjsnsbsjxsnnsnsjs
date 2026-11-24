@@ -380,12 +380,19 @@ jobs:
             # The branch may have moved while the run went on (a push of the
             # next change): rebase onto it and push again, a few times.
             BRANCH="${GITHUB_REF#refs/heads/}"
-            for attempt in 1 2 3 4; do
-              git fetch -q origin "$BRANCH" && git rebase -q FETCH_HEAD && git push -q origin HEAD:"$BRANCH" && break
-              git rebase --abort 2>/dev/null || true
-              sleep $((attempt * 5))
-            done
+            git push origin "HEAD:refs/heads/$BRANCH" \
+              || { git fetch -q origin "$BRANCH" && git rebase -q FETCH_HEAD && git push origin "HEAD:refs/heads/$BRANCH"; } \
+              || echo "::warning title=results::the results could not be pushed to $BRANCH"
           fi
+          # The key lines of the run, as annotations too (they are kept by the
+          # checks API even when the logs and artifacts are not reachable).
+          grep -m1 "^stopped:" games/up/build/smoke/summary.txt 2>/dev/null | tr -d '\r' | sed 's/^/::notice title=smoke stop::/' || true
+          grep -m1 "^time:" games/up/build/smoke/summary.txt 2>/dev/null | cut -c1-160 | sed 's/^/::notice title=smoke time::/' || true
+          grep -m1 "^functions executed" games/up/build/smoke/summary.txt 2>/dev/null | sed 's/^/::notice title=smoke::/' || true
+          git -C engine status --short 2>/dev/null | sed 's/^/::notice title=engine patch::/' || true
+          NOT_IMPL=0; NOT_IMPL=$(grep -c 'is not implemented' games/up/build/port/report.txt 2>/dev/null) || true
+          echo "::notice title=smoke::lines 'is not implemented' in the report: ${NOT_IMPL:-0}"
+          grep -m3 "error" games/up/build/smoke/build.log 2>/dev/null | cut -c1-200 | sed 's/^/::notice title=smoke build::/' || true
 
       - name: Publish the release
         if: ${{ inputs.publish == true }}
