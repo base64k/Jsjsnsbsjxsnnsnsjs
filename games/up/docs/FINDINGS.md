@@ -259,3 +259,44 @@ The `disc/up.iso` file exists but is 0 bytes. **CI (GitHub Actions runners) can 
 - Known issue: TLB Miss crash when aiming the mirror (NTSC version only)
 - Fixed issue: Bad text (garbled subtitles) — fixed in PCSX2 v1.7.5880
 - Widescreen supported natively
+
+## CI smoke test results (GitHub Actions run 45338174585)
+
+The CI runner **can** fetch the disc from Google Drive and run the full pipeline.
+Results saved to `ci-results/smoke-summary.txt` and `ci-results/port-report.txt`.
+
+**Key findings:**
+
+- **Game runs for full 120 seconds (time limit) — does NOT crash at 25s**
+  The previous "crash at 25s" was from an earlier build without the audio pipeline
+  wired. With `--audio` and libsd/SPU2 in place, the game runs stably.
+
+- **Game draws pictures**: 562 GS primitives, 860160 pixels written, 22 frames
+  captured. The menu appears — the game gets past boot.
+
+- **Stuck in idle loop at `0x0044E068`**, calling `SifSetDChain` (-120) and
+  `iSignalSema` (-67) ~45M times. Thread 1 runs at entry `0x00200008`, 45M iterations.
+
+- **IOP sound modules loaded** (from `cdrom0:\\MODULES\\IOPRP280.IMG`):
+  - `LIBSD.IRX` as module 5 — Sound Library (host HLE, 32 exports)
+  - `ZNASND.IRX` as module 6 — the game's sound driver (NOT SDRDRV!)
+
+- **RPC server `0x01000001` has no host implementation**:
+  The EE calls it with procedures **513, 768, 1797, 1808**, each sending 32 bytes
+  via `sceSifCallRpc → SifSetDma`. Call chain:
+  `0x003DF968 (sceSifCallRpc) → 0x003DED88 → 0x003DEC50 → 0x003DC960 (SifSetDma)`
+  Previously answered with zeros → ZNASND never starts streaming → flag `0x1AEF8`
+  never set → game spins in idle loop waiting for the sound driver.
+
+**Fix implemented** (`games/up/port/iop_servers.cpp`):
+- `ZnasndRpcHandler` registered for server `0x01000001` via
+  `ps2host::RegisterRpcServer(0x01000001u, ZnasndRpcHandler)`
+- Handler logs each call (procedure + data hex dump) and returns zeros for now
+- Next step: run with `--iop-trace` to determine correct responses for procedures
+  513, 768, 1797, 1808, then implement proper handler so ZNASND sets flag
+  `0x1AEF8` and starts streaming
+
+**What still needs the disc** (CI can fetch it):
+- Re-verify call 6 / `0x1AEF8` against `SLUS_218.64` with `--iop-trace`
+- Find exact RPC responses ZNASND expects
+- Record verified entries in `games/up/config/functions.csv`
