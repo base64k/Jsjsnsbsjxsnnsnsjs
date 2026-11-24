@@ -524,3 +524,22 @@ The filtered timeline (`check run` "with the flow control near them") shows, in 
 - The byte `0x01F7FCF3` is at offset 31731 of the `0x6A980` DMA, which reads IOP `0x72573` (sector 0x383CC, offset 1011). The stream DMA may overwrite the byte that call 6 stored there.
 
 Open question: the EE-side order of call 6's stores and these DMAs. The next run prints the image bytes the EE receives at `0x01F7FCF3` ("The SIF DMAs covering EE 0x01F7FCF3").
+
+## The order of the stream DMAs and call 6's stores at 0x01F7FCF3 (run 45315359923, `--watch-write 0x01F7FCF3`)
+
+In report order, the byte `0x01F7FCF3` (EE) goes through:
+
+1. DMA `IOP 0x75180 -> EE 0x21F78900` (59392 B). The image byte at that position is `0x83`.
+2. Store `<- 0xCF` by `0x0032DFA0` (call 6's output loop).
+3. DMA `IOP 0x9F980 -> EE 0x21F78900`. Image byte `0x48`.
+4. DMA `IOP 0x6A980 -> EE 0x21F78100` (61440 B). Image byte `0xF1`.
+5. DMA `IOP 0x96180 -> EE 0x21F78900`. Image byte `0x3B`.
+6. DMA `IOP 0x61980 -> EE 0x21F78100` (63488 B). Image byte `0x00`.
+7. Store `<- 0x00` by `0x0032DFA0`. This is the last write.
+
+What this shows:
+- The stream DMAs and call 6's output use the same EE range, `0x01F78100..0x01F87100`. The DMAs land there before and after call 6's stores.
+- Call 6 writes its output over the stream bytes it has just been given. Its output runs up to `0x01F80BEE`, past the input bytes that calls 82 and 83 read at `0x01F7F9DB` and `0x01F7FCF3`.
+- The disc bytes are correct (see above), so the decoder itself is reading or sizing its output wrongly, or the game expects the output and the stream in different buffers.
+
+Next: find where call 6's output buffer (its destination pointer) and the stream's buffer (the EE address the game gives `sceSifSetDma`) come from, and whether they should differ. Check how the game sets up the destination for call 6 (`0x0032DE80`'s arguments).
