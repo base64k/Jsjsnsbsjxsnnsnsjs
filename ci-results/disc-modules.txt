@@ -1,0 +1,72 @@
+isotool extract MODULES: exit 0 DULES/MCMAN.IRX
+     7.2 KiB  MODULES/MCSERV.IRX
+     5.7 KiB  MODULES/MCXMAN.IRX
+     5.3 KiB  MODULES/MCXSERV.IRX
+    42.8 KiB  MODULES/PADMAN.IRX
+     8.9 KiB  MODULES/SDRDRV.IRX
+     6.5 KiB  MODULES/SIO2MAN.IRX
+    61.8 KiB  MODULES/ZNASND.IRX
+
+extracted 523.4 KiB to games/up/build/disc-modules
+== MODULES/MODULES/IOPRP280.IMG (269889 bytes)
+  string: SIFCMD
+  string: sifcmd
+  string:  No SIF service(sifcmd)
+  string:  No SIFCMD/RPC service
+  string: PsIIsifcmd  2800
+  string: sifcmd
+  string: sifcmd
+  string: Warning cdvdfsv.irx: Unload function can't be used.
+  string: sifcmd
+  word 0x01000001 (LE): 2 times, first at 0x2AFCE, 0x329EB
+  word 0x01000002 (LE): 7 times, first at 0xA13F, 0xC66F, 0x11C93, 0x32A4F, 0x32B37, 0x356AB, 0x3E701
+  word 0x80000001 (LE): 1 times, first at 0x76D3
+== MODULES/MODULES/LIBSD.IRX (28605 bytes)
+  string: libsd
+  string: PsIIlibsd   2800
+  word 0x01000001 (LE): 1 times, first at 0x2B6B
+  word 0x01000002 (LE): 1 times, first at 0x1E83
+== MODULES/MODULES/MCMAN.IRX (95909 bytes)
+== MODULES/MODULES/MCSERV.IRX (7417 bytes)
+  string: sifcmd
+  string: mcserv.irx: thread prority definition ignored.
+== MODULES/MODULES/MCXMAN.IRX (5857 bytes)
+  word 0x01000002 (LE): 1 times, first at 0x8AF
+== MODULES/MODULES/MCXSERV.IRX (5449 bytes)
+  string: sifcmd
+  string: mcxserv.irx: thread prority definition ignored.
+== MODULES/MODULES/PADMAN.IRX (43813 bytes)
+  string: sifcmd
+== MODULES/MODULES/SDRDRV.IRX (9161 bytes)
+  string: sdrdrv
+  string: libsd
+  string: sifcmd
+  string:  sdrdrv: unloaded! 
+  string: PsIIsdrdrv  2800
+  word 0x01000002 (LE): 2 times, first at 0x113, 0xAA7
+== MODULES/MODULES/SIO2MAN.IRX (6641 bytes)
+  word 0x01000002 (LE): 1 times, first at 0x747
+== MODULES/MODULES/ZNASND.IRX (63232 bytes)
+  string: sifcmd
+  string: libsd
+  string: ZnaSnd.irx Loaded Successfully...
+  string: Error while Loading ZnaSnd.irx...
+  string: Error while init SifRpc
+  string: Check that ZnaSnd.irx have been loaded...
+  string: [IOP] ZnaSnd.irx - Ver: %d
+== program SLUS_218.64 (5851096 bytes)
+  string: SIO2MAN.IRX
+  string: PADMAN.IRX
+  string: MCMAN.IRX
+  string: MCSERV.IRX
+  string: LIBSD.IRX
+  string: ZNASND.IRX
+  string: [libpad.a = %d.%d, padman.irx = %d.%d]
+  string: libmc: too old release of mcserv.irx
+  string: libmc: too old release of mcman.irx
+  string: sifcmd
+  string: libsd
+  word 0x01000001 (LE): 468 times, first at 0x126E9F, 0x12821B, 0x4D777F, 0x4D9A8F, 0x4D9BFF, 0x4DA5CF, 0x4DA73F, 0x4DB0BF
+  word 0x01000002 (LE): 1205 times, first at 0xE44B6, 0xEB052, 0x13AACB, 0x142836, 0x16808F, 0x16830B, 0x190C66, 0x1DAE76
+  word 0x80000001 (LE): 40 times, first at 0x2224B, 0x11429F, 0x12BAC7, 0x230BBF, 0x2E22EF, 0x4D919F, 0x4DC81F, 0x4DCF2F
+  word 0x80000006 (LE): 1 times, first at 0x236D86

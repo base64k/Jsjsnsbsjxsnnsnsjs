@@ -4498,7 +4498,7 @@ no sound device: running silent
 [iop] t1 sysclib#27 strlen(0002946B, 00019AE8, 0000000D, 00027734) -> 0000000E from 00014468
 [iop] t1 sysclib#27 strlen(0002946B, 00019AE8, 0000000D, 00027734) -> 0000000C from 00014478
 [iop] t1 sysclib#27 strlen(0002946B, 00019AE8, 0000000D, 00027734) -> 0000000C from 0001462C
-... 1203037 lines left out (the full report is in the up-smoke artifact) ...
+... 1203157 lines left out (the full report is in the up-smoke artifact) ...
 [iop] [IOP] Check that ZnaSnd.irx have been loaded...
 [iop] t2 sysmem#14 Kprintf(0001AC4C, 000196F8, 00000000, 0001AF3C) -> 00000031 from 000107BC
 [iop] t2 sifcmd#15 sceSifBindRpc(0001AED4, 01000002, 00000000, 0001AF3C) -> 00000000 from 00010778
@@ -8811,19 +8811,19 @@ threads:
     0x00014434 x608 (from 0x00014610)
     0x00010158 x608 (from 0x00014458)
     0x00010178 x556 (from 0x0001476C)
-    0x00010160 x110 (from 0x000193F4)
-    0x000102EC x108 (from 0x00013D78)
-    0x000101C4 x107 (from 0x0001347C)
-    0x000102E4 x80 (from 0x00013EB0)
-    0x000101F8 x55 (from 0x0001942C)
-    0x00019354 x54 (from 0x00013474)
-    0x000101F0 x54 (from 0x00019360)
-    0x0001940C x53 (from 0x00013490)
-    0x00013F34 x52 (from 0x00013634)
-    0x00013CBC x52 (from 0x00013F3C)
-    0x00010C30 x52 (from 0x00013498)
-    0x00010304 x52 (from 0x00013CC4)
-    0x00010224 x52 (from 0x00010C40)
+    0x00010160 x134 (from 0x000193F4)
+    0x000101C4 x131 (from 0x0001347C)
+    0x000102EC x120 (from 0x00013D78)
+    0x000102E4 x92 (from 0x00013EB0)
+    0x000101F8 x67 (from 0x0001942C)
+    0x00019354 x66 (from 0x00013474)
+    0x000101F0 x66 (from 0x00019360)
+    0x0001940C x65 (from 0x00013490)
+    0x00013F34 x64 (from 0x00013634)
+    0x00013CBC x64 (from 0x00013F3C)
+    0x00010C30 x64 (from 0x00013498)
+    0x00010304 x64 (from 0x00013CC4)
+    0x00010224 x64 (from 0x00010C40)
     0x000143B0 x28 (from 0x00014574)
     0x000102DC x28 (from 0x000143F0)
     0x000144BC x22 (from 0x00014894)
@@ -8838,7 +8838,7 @@ threads:
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 30.9 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 90.3%, SPU2 0.7%, waiting for the GS thread 0.0%
+time: 47.4 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 93.3%, SPU2 0.8%, waiting for the GS thread 0.0%
 kernel services used:
   -120  SifSetDChain             x19
    -67  iSignalSema              x19
@@ -8920,8 +8920,8 @@ most called:
   0x00754410                               x1
 device registers read: 39
   0x10000000 x3
-  0x10001000 x810
-  0x10001010 x1082
+  0x10001000 x1245
+  0x10001010 x1662
   0x10001810 x1
   0x10003020 x1
   0x10008000 x4
@@ -8949,7 +8949,7 @@ device registers read: 39
   0x1000E030 x3
   0x1000E040 x3
   0x1000E050 x3
-  0x1000F000 x191925927
+  0x1000F000 x146618400
   0x12000000 x244
   0x12000020 x244
   0x12000070 x2
@@ -8959,11 +8959,11 @@ device registers read: 39
   0x120000E0 x244
   0x12001000 x159
 device registers written: 85
-  0x10000000 x749
-  0x10000010 x749
+  0x10000000 x748
+  0x10000010 x748
   0x10001000 x1
-  0x10001010 x541
-  0x10001020 x271
+  0x10001010 x831
+  0x10001020 x416
   0x10003000 x3
   0x10003010 x2
   0x10003C10 x3
