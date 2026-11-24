@@ -368,7 +368,14 @@ jobs:
             git config user.name "Arena Agent"
             git add ci-results/
             git commit -m "ci(up): save smoke test results from run ${{ github.run_id }}" || true
-            git push origin "${GITHUB_REF#refs/heads/}" || true
+            # The branch may have moved while the run went on (a push of the
+            # next change): rebase onto it and push again, a few times.
+            BRANCH="${GITHUB_REF#refs/heads/}"
+            for attempt in 1 2 3 4; do
+              git fetch -q origin "$BRANCH" && git rebase -q FETCH_HEAD && git push -q origin HEAD:"$BRANCH" && break
+              git rebase --abort 2>/dev/null || true
+              sleep $((attempt * 5))
+            done
           fi
 
       - name: Publish the release
