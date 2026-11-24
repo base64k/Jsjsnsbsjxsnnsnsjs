@@ -289,12 +289,38 @@ Two engine gaps stood in the way, kept as patches in `games/up/engine-patches/`
    as 0xBF80xxxx) are kept as written, not a stop. (`0xBF801404` was the stop.)
 2. `0002-timrman-overflow-and-setters.patch`: `timrman#21` SetOverflowHandler,
    and the timer setters #7, #9, #10, #11.
+3. `0003-strtok-cdstatus-cdbreak.patch`: `sysclib#35` strtok, `cdvdman#28`
+   sceCdStatus, `cdvdman#39` sceCdBreak.
+4. `0004-timer-clock-sifcmd-ioman-placeholders.patch`: `GetTimerCounter` counts
+   with the clock while the timer runs (before it returned 0 every time, so
+   the thread polling it never left its wait); `sceSifBindRpc` and
+   `sceSifCallRpc` (sifcmd #15, #16) answer 0 ("not bound", "not called"); the
+   file manager's `ioman` opens fail with -1. The placeholders are there so
+   the trace shows what the module asks for; they are not the real calls.
+
+The patches apply in this order (0001, 0002, 0003, 0004) on the engine
+checkout; CI checks it (`ci-results/engine-build.txt`).
 
 The trace of the run (CI, `--iop-trace`, `ci-results/iop-trace.txt`) shows the
 driver's path: libsd init (`sceSdInit`, `sceSdSetCoreAttr`, `sceSdSetParam`),
 its own thread registering RPC server `0x01000001` (`sceSifRegisterRpc`,
-`sceSifRpcLoop`), `AllocHardTimer`, `SetupHardTimer`, then `SetOverflowHandler`
-(stopped there before patch 0002). Next stop: whatever the trace names next.
+`sceSifRpcLoop`), `AllocHardTimer`, `SetupHardTimer`, `SetOverflowHandler`.
+
+**Latest CI run, 45428902827** (patches 0001-0004, engine `65c46e9`): it no
+longer stops at an unimplemented import (`0 'is not implemented'` lines in the
+report; 633 distinct functions). It stops in a loop instead: the driver's
+thread runs `sceSifBindRpc(client, 0x01000002, 0)` again and again, each time
+answered 0 and printing `[IOP] Check that ZnaSnd.irx have been loaded...`
+(about 4,600 times in the trace; the trace is capped at 20,000 lines). IOP time
+is 90%, and the run ends with every thread waiting (`600 frames of interrupts
+woke none`). The EE binds the IOP servers `0x80000001`, `0x80000592`,
+`0x80000593`, `0x80000003` and `0x80000006`; nothing binds or registers
+`0x01000002`. So the blocker is that server: the sound driver waits for a
+partner that never appears, and the placeholder 0 for `sceSifBindRpc` keeps it
+waiting. Which side serves `0x01000002` (the EE, or a second module the EE
+loads) is not known yet. The real `sceSifBindRpc` return convention and the
+client struct's layout are not confirmed; they need the driver's disassembly
+(from the disc, which is only available in CI).
 
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
@@ -307,8 +333,14 @@ its own thread registering RPC server `0x01000001` (`sceSifRegisterRpc`,
   in the settings file). `fps_detail` in the engine adds CPU.
 
 **Next steps:**
-1. Read each CI run's `ci-results/iop-trace.txt`; implement the next unimplemented
-   import as a patch in `games/up/engine-patches/` (same way as 0002).
+1. Find who serves RPC server `0x01000002` (the EE's `sceSifRegisterRpc`, or a
+   second module). Look for a `sceSifLoadModule` of a `ZNASND`-partner module
+   in the EE side's notes (`ci-results/port-report.txt`, the `[host] SIF:`
+   and `[host] IOP:` lines). Then implement `sceSifBindRpc`/`sceSifCallRpc`
+   for real (patch 0005), with the bind result the driver checks.
+   Until then the bind loop is the stop, not the import list.
+   Also still open: `ioman` (`ioman#4-8`) is a placeholder that fails.
+   The trace is capped at 20,000 lines, so the stop is only seen at its end.
 2. When the trace shows the driver serving RPC and the EE leaving its wait loops,
    check for the menu in `ci-results/smoke-summary.txt`'s frames.
 3. Do not publish the APK until the menu appears (user's condition).
