@@ -80,6 +80,8 @@ u32 ReadU32(const std::vector<u8>& data, std::size_t offset) {
 // succeeded and it can proceed. This should let ZNASND set flag 0x1AEF8 and
 // start streaming, which should unblock the game's idle loop and let the
 // menu appear.
+static u32 g_poll_counter = 0;
+
 std::vector<u8> ZnasndRpcHandler(u32 procedure, const std::vector<u8>& data) {
     std::fprintf(stderr,
                  "[iop] ZNASND RPC server 0x01000001: procedure %u, %zu bytes: %s\n",
@@ -92,6 +94,15 @@ std::vector<u8> ZnasndRpcHandler(u32 procedure, const std::vector<u8>& data) {
     std::vector<u8> reply = data;
 
     u32 status = 1;  // non-zero = OK
+
+    // For the polling call (1809), return an incrementing counter so ZNASND
+    // can see that the host is answering its polls and is not stuck. This
+    // counter is part of the handshake that lets ZNASND set IOP flag 0x1AEF8.
+    if (procedure == 1809) {
+        g_poll_counter++;
+        std::memcpy(reply.data() + 4, &g_poll_counter, sizeof(g_poll_counter));
+    }
+
     std::memcpy(reply.data(), &status, sizeof(status));
     return reply;
 }
