@@ -363,6 +363,15 @@ jobs:
             fi
             grep "^\[iop\]" games/up/build/port/report.txt | head -n 20000 > ci-results/iop-trace.txt || true
           fi
+          # What was built: the engine's patches as applied, and the end of the
+          # smoke test's build log (a build that went wrong is seen here).
+          {
+            echo "run ${{ github.run_id }} (the engine at $(git -C engine rev-parse --short HEAD))"
+            echo "the engine's patches on the checkout:"
+            git -C engine status --short
+            git -C engine diff --stat
+          } > ci-results/engine-build.txt 2>&1 || true
+          tail -n 150 games/up/build/smoke/build.log > ci-results/smoke-build-tail.txt 2>/dev/null || true
           if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
             git config user.email "agent@arena.ai"
             git config user.name "Arena Agent"
