@@ -2,22 +2,22 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: IOP: library function sifcmd#15 (sceSifBindRpc) is not implemented
-functions executed: 632 distinct
-guest call stack where it stopped (innermost last):
-  0x00200008
-  0x002DD240
-  0x0032F1B0
-  0x0032F250
-  0x002DEC40
-  0x0044CDC0
-  0x0044CEE0
-  0x003DF968 sceSifCallRpc
-  0x003DED88
-  0x003DEC50
-  0x003DC960 SifSetDma
+stopped: every thread is waiting, and 600 frames of interrupts woke none:
+    thread 1: waiting on a semaphore
+    thread 2: waiting on a semaphore
+    thread 3: sleeping
+functions executed: 633 distinct
 threads:
-  thread 1: running, priority 10, entry 0x00200008, ran 22 times
+  thread 1: waiting on a semaphore, priority 10, entry 0x00200008, ran 22 times
+      0x00200008 
+      0x002DD240 
+      0x0032F1B0 
+      0x0032F250 
+      0x002DEC40 
+      0x0044CDC0 
+      0x0044CEE0 
+      0x003DF968 sceSifCallRpc
+      0x003DC5E0 WaitSema
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
       0x003DD2A0 
       0x003DC5E0 WaitSema
@@ -26,25 +26,27 @@ threads:
       0x003E0050 
       0x003DC4C0 SleepThread
   IOP calls, most frequent:
+    0x00019344 x401641 (from 0x000107BC)
+    0x000100C0 x401641 (from 0x00010778)
     0x00010168 x2390 (from 0x0001462C)
     0x00010140 x1114 (from 0x000146E0)
     0x00010170 x812 (from 0x00014658)
     0x00014434 x608 (from 0x00014610)
     0x00010158 x608 (from 0x00014458)
     0x00010178 x556 (from 0x0001476C)
-    0x00010160 x120 (from 0x000193F4)
-    0x000101C4 x117 (from 0x0001347C)
-    0x000102EC x113 (from 0x00013D78)
-    0x000102E4 x85 (from 0x00013EB0)
-    0x000101F8 x60 (from 0x0001942C)
-    0x00019354 x59 (from 0x00013474)
-    0x000101F0 x59 (from 0x00019360)
-    0x0001940C x58 (from 0x00013490)
-    0x00013F34 x57 (from 0x00013634)
-    0x00013CBC x57 (from 0x00013F3C)
-    0x00010C30 x57 (from 0x00013498)
-    0x00010304 x57 (from 0x00013CC4)
-    0x00010224 x57 (from 0x00010C40)
+    0x00010160 x110 (from 0x000193F4)
+    0x000102EC x108 (from 0x00013D78)
+    0x000101C4 x107 (from 0x0001347C)
+    0x000102E4 x80 (from 0x00013EB0)
+    0x000101F8 x55 (from 0x0001942C)
+    0x00019354 x54 (from 0x00013474)
+    0x000101F0 x54 (from 0x00019360)
+    0x0001940C x53 (from 0x00013490)
+    0x00013F34 x52 (from 0x00013634)
+    0x00013CBC x52 (from 0x00013F3C)
+    0x00010C30 x52 (from 0x00013498)
+    0x00010304 x52 (from 0x00013CC4)
+    0x00010224 x52 (from 0x00010C40)
     0x000143B0 x28 (from 0x00014574)
     0x000102DC x28 (from 0x000143F0)
     0x000144BC x22 (from 0x00014894)
@@ -54,14 +56,12 @@ threads:
     0x00010290 x4 (from 0x00011108)
     0x00010024 x3 (from 0x00014DC8)
     0x00010014 x3 (from 0x00015FF0)
-    0x000102B8 x2 (from 0x00011188)
-    0x0001023C x2 (from 0x00010CE0)
-  IOP thread 2: ready, priority 30, entry 0x000104C4, at 0x000100C4
+  IOP thread 2: ready, priority 30, entry 0x000104C4, at 0x000107A0
   IOP thread 4: ready, priority 30, entry 0x00013450, at 0x00013484
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 2.7 s; GS drawing 0.5%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.0%, SPU2 0.2%, waiting for the GS thread 0.1%
+time: 30.9 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 90.3%, SPU2 0.7%, waiting for the GS thread 0.0%
 kernel services used:
   -120  SifSetDChain             x19
    -67  iSignalSema              x19
@@ -84,7 +84,7 @@ kernel services used:
     64  CreateSema               x32
     65  DeleteSema               x20
     66  SignalSema               x9
-    68  WaitSema                 x29
+    68  WaitSema                 x30
     69  PollSema                 x1
     74  SetOsdConfigParam        x2
     75  GetOsdConfigParam        x4
