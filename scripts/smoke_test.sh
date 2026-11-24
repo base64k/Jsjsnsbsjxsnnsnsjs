@@ -99,6 +99,7 @@ run_game() {
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
+            --audio \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
             --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
             > "$REPORT" 2>&1
