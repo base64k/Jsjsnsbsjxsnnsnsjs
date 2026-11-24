@@ -265,6 +265,14 @@ jobs:
           [ -n "$STAGES" ] || STAGES="disc extract analyze lift host"
           bash scripts/build_apk.sh --stage "$STAGES" --abi "$UP_ABI"
 
+      # Which of the disc's own files serve the SIF RPC servers the trace names
+      # (the sound module waits for 0x01000002): the report is saved to
+      # ci-results/disc-modules.txt. It never fails the run.
+      - name: The disc's modules (who serves the RPC servers the trace names)
+        if: ${{ always() }}
+        continue-on-error: true
+        run: python3 scripts/disc_modules.py "${UP_ISO:-disc/up.iso}" games/up/extracted engine games/up/build/disc-modules.txt
+
       # The PC reference build and its headless run: it says how far the game
       # gets, which is the porting work's measure. It fails on its own without
       # stopping the run: the report is worth more than the build.
@@ -350,6 +358,7 @@ jobs:
         run: |
           mkdir -p ci-results
           cp games/up/build/smoke/summary.txt ci-results/smoke-summary.txt 2>/dev/null || true
+          cp games/up/build/disc-modules.txt ci-results/disc-modules.txt 2>/dev/null || true
           # The report, cut to its head and tail (a trace of a whole run is
           # big); the full one is in the smoke test's artifact.
           if [ -f games/up/build/port/report.txt ]; then

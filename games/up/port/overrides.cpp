@@ -19,6 +19,8 @@
  *   0003 strtok, sceCdStatus and sceCdBreak;
  *   0004 the timer's counter running with the clock, the IOP RPC client and
  *        the file manager as placeholders (the trace names what is asked).
+ *   0005 the IOP's SIF RPC client as ps2sdk's library has it: sceSifBindRpc
+ *        and sceSifCallRpc (blocking and no-wait, with end functions).
  * Each is the engine's to take in upstream.
  *
  * Earlier attempts that are NOT here any more (see git history and

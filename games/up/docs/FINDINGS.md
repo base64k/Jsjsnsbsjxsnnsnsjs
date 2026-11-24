@@ -298,8 +298,18 @@ Two engine gaps stood in the way, kept as patches in `games/up/engine-patches/`
    file manager's `ioman` opens fail with -1. The placeholders are there so
    the trace shows what the module asks for; they are not the real calls.
 
-The patches apply in this order (0001, 0002, 0003, 0004) on the engine
-checkout; CI checks it (`ci-results/engine-build.txt`).
+5. `0005-sifrpc-client-bind-and-call.patch`: the IOP's SIF RPC client as
+   ps2sdk's IOP library has it (`iop/system/sifcmd/src/sifrpc.c`, below):
+   `sceSifBindRpc` sets the client's `server` (offset 36) to the module's
+   server, or leaves it NULL when no module serves the id, and returns 0 in
+   both cases. `sceSifCallRpc` sends the arguments to the server's queue, waits
+   for the answer when blocking, runs the end function, then returns.
+6. `0006-ioman-disc-files.patch`: `ioman_open`, `iomanX_read`, `iomanX_lseek`,
+   `iomanX_close` read the disc's files (`GuestDisc().ReadFile`); a file the
+   disc does not have is -2 (ENOENT), and the report names each file opened.
+
+The patches apply in this order (0001 to 0006) on the engine checkout; CI
+checks it (`ci-results/engine-build.txt`).
 
 The trace of the run (CI, `--iop-trace`, `ci-results/iop-trace.txt`) shows the
 driver's path: libsd init (`sceSdInit`, `sceSdSetCoreAttr`, `sceSdSetParam`),
@@ -322,6 +332,21 @@ loads) is not known yet. The real `sceSifBindRpc` return convention and the
 client struct's layout are not confirmed; they need the driver's disassembly
 (from the disc, which is only available in CI).
 
+**The SIF RPC client, as ps2sdk's IOP library does it (proven reference).**
+`sceSifBindRpc` does not fail when no server has the id. It returns 0 and
+leaves `cd->server` NULL; the caller's loop waits for it (`Check that ZnaSnd.irx
+have been loaded...` is that loop). A bound client's `cd->server` is what
+`sceSifCallRpc` sends to. The end function runs on the reply, whether the call
+blocks or not. The `SifRpcClientData_t` layout: header 16 bytes (pkt_addr,
+rpc_id, sema_id, mode), then command (16), buf (20), cbuf (24), end_function
+(28), end_param (32), server (36). The source is ps2sdk's
+`iop/system/sifcmd/src/sifrpc.c` and `common/include/sifrpc-common.h`.
+So the trace's loop means: no module registers server `0x01000002` in this
+port. Who should (the EE, a second module, or the disc's own file) is what
+`ci-results/disc-modules.txt` answers: a CI step scans the disc's `MODULES`
+folder and the program for the `ZnaSnd` string and the server ids
+(`scripts/disc_modules.py`).
+
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
   driver's status (procedure 772 polling); whether the module now answers it
@@ -333,14 +358,14 @@ client struct's layout are not confirmed; they need the driver's disassembly
   in the settings file). `fps_detail` in the engine adds CPU.
 
 **Next steps:**
-1. Find who serves RPC server `0x01000002` (the EE's `sceSifRegisterRpc`, or a
-   second module). Look for a `sceSifLoadModule` of a `ZNASND`-partner module
-   in the EE side's notes (`ci-results/port-report.txt`, the `[host] SIF:`
-   and `[host] IOP:` lines). Then implement `sceSifBindRpc`/`sceSifCallRpc`
-   for real (patch 0005), with the bind result the driver checks.
-   Until then the bind loop is the stop, not the import list.
-   Also still open: `ioman` (`ioman#4-8`) is a placeholder that fails.
-   The trace is capped at 20,000 lines, so the stop is only seen at its end.
+1. Read `ci-results/disc-modules.txt` (the disc's own files): which file has
+   the `ZnaSnd` string and the word `0x01000002`. That file, loaded by the EE
+   or started by the host, is what serves the server. If none has it, the
+   module waits for a server the EE never makes; then the next question is the
+   EE's side of the bind (the `[host] SIF:` lines of `port-report.txt`).
+2. Patches 0005 and 0006 are in place (real bind and call, disc files); their
+   effect is seen in the next run's trace (`ioman` opens and the bind loop).
+3. The trace is capped at 20,000 lines, so the stop is only seen at its end.
 2. When the trace shows the driver serving RPC and the EE leaving its wait loops,
    check for the menu in `ci-results/smoke-summary.txt`'s frames.
 3. Do not publish the APK until the menu appears (user's condition).
