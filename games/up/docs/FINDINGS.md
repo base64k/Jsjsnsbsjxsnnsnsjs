@@ -543,3 +543,10 @@ What this shows:
 - The disc bytes are correct (see above), so the decoder itself is reading or sizing its output wrongly, or the game expects the output and the stream in different buffers.
 
 Next: find where call 6's output buffer (its destination pointer) and the stream's buffer (the EE address the game gives `sceSifSetDma`) come from, and whether they should differ. Check how the game sets up the destination for call 6 (`0x0032DE80`'s arguments).
+
+## The sound driver's poll flag is set by the host (run 45320259460, `iop_watch 1AEF0:1AF00`)
+
+- `[iop-write] 0001AEF8 <- 00000001 by IOP pc 000100C0`. Pc `0x100C0` is not code in ZNASND (the bytes there are data, `00000000 E0410000 ...`). So the store comes from the host's stand-in in `patch_iop.py` (the bind of server 0x01000002 sets the word), not from the module. The poll's real handshake is still unknown.
+- `0x1AEFC <- -1` is stored about 500 times by pc `0x10870` (`sw $v0,-0x5104($at)` after `jal 0x11a8`). The loader relocates the `lui $at,1` to `lui $at,2`, so these are the module's own variables at `0x1AEF8..0x1AF00`.
+- Consequence: the sound driver's real answer to the poll is not known, and the stand-in's value (`1`) and the replies to server 0x01000002 are guesses. The stream sizes that depend on them are therefore not validated.
+- Next: find which EE-side action (an RPC on 0x01000001 or 0x01000002, or an EE-side store that the SIF delivers to IOP memory) should set the driver's flag, and check the EE's own wait for the sound driver.
