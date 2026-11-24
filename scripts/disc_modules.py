@@ -26,6 +26,24 @@ def say(text=""):
     lines.append(text)
 
 
+def lui_ori_sites(data, hi, lo):
+    """Offsets where MIPS code builds the word `hi<<16 | lo` with lui + ori/addiu
+    (how a literal id reaches a register; a literal word in the code is rare)."""
+    found = []
+    words = struct.unpack_from("<%dI" % (len(data) // 4), data, 0)
+    for i, w in enumerate(words):
+        if (w >> 26) != 0x0F or ((w >> 21) & 0x1F) != 0 or (w & 0xFFFF) != hi:
+            continue
+        rt = (w >> 16) & 0x1F
+        for j in range(i + 1, min(i + 4, len(words))):
+            w2 = words[j]
+            op = w2 >> 26
+            if op in (0x0D, 0x09) and (w2 & 0xFFFF) == lo and ((w2 >> 21) & 0x1F) == rt:
+                found.append(i * 4)
+                break
+    return found
+
+
 def scan(path, label):
     with open(path, "rb") as f:
         data = f.read()
@@ -38,6 +56,12 @@ def scan(path, label):
         say("  string: %s" % name)
     if len(names) > 25:
         say("  ... %d more strings" % (len(names) - 25))
+    if len(data) >= 4:
+        for hi_lo, name in (((0x0100, 0x0002), "0x01000002"), ((0x0100, 0x0001), "0x01000001")):
+            sites = lui_ori_sites(data[: len(data) - len(data) % 4], *hi_lo)
+            if sites:
+                say("  code builds %s (lui+ori/addiu): %d times, first at %s" % (
+                    name, len(sites), ", ".join("0x%X" % x for x in sites[:8])))
     for label_sid, sid in SERVERS.items():
         needle = struct.pack("<I", sid)
         hits = []

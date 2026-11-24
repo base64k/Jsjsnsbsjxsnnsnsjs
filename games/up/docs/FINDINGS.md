@@ -360,10 +360,22 @@ the host's (`RunModule` is not called for it), so no module serves 0x01000002.
 ps2sdk's `sdrdrv` registers `0x80000701` (a later SDK); the game's is older, so
 its ids are not ps2sdk's.
 
-Proven approach (DQ8-Recompiled, above): the sound library's IOP module runs
-unmodified, and the SIF RPC over it is the runtime's. Patch 0005 is that
-runtime's bind and call; the `RunModule("LIBSD.IRX")` in `overrides.cpp` is
-the module.
+Run 45446669116 (`RunModule("LIBSD.IRX")`, patches 0001-0006): LIBSD now runs
+as code (`running cdrom0:\\MODULES\\LIBSD.IRX;1 ... entry 0x000100B0`), and
+ZNASND prints "ZnaSnd.irx Loaded Successfully...". But LIBSD's start only
+registers its library and returns: it makes no `sceSifRegisterRpc`. The bind
+for `0x01000002` still returns NULL, every time (the trace's loop). So server
+`0x01000002` is not LIBSD's. Its only other IOP candidate is `SDRDRV`, which
+the EE never loads.
+
+The next candidate is the EE: an IOP client can bind a server the EE
+registered (SIF is two-way; ps2sdk's EE `sifrpc.c` has `_request_bind`). The
+EE program builds `0x01000002` in its code, and `disc-modules.txt` now counts
+the `lui`+`ori` pairs that do that (in the EE program and in each module),
+which says whether the EE registers it. Until the EE's registration is
+served to the IOP, the bind waits: a host server would have to guess the
+procedures, which is what the port's earlier guessed replies showed does not
+move the game.
 
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
