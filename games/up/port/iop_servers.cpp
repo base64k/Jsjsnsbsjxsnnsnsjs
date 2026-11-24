@@ -85,58 +85,13 @@ std::vector<u8> ZnasndRpcHandler(u32 procedure, const std::vector<u8>& data) {
                  "[iop] ZNASND RPC server 0x01000001: procedure %u, %zu bytes: %s\n",
                  procedure, data.size(), HexDump(data).c_str());
 
-    // Build a response matching the request size, initialized to zeros.
-    std::vector<u8> reply(data.size(), 0);
+    // Build a response matching the request size. Echo the request back with
+    // the first u32 replaced by the status - this gives ZNASND its own buffer
+    // pointers, positions and sizes back, which it needs to know which buffer
+    // is accepted/ready.
+    std::vector<u8> reply = data;
 
     u32 status = 1;  // non-zero = OK
-
-    switch (procedure) {
-        case 513: {
-            // Init with two buffer pointers + sizes. Echo back the buffer
-            // pointers so ZNASND knows we accepted them.
-            status = 1;
-            break;
-        }
-        case 768: {
-            // Init with audio format params. Return success.
-            status = 1;
-            break;
-        }
-        case 1797: {
-            // Init with volume level. Return success.
-            status = 1;
-            break;
-        }
-        case 1808: {
-            // Buffer submission - ZNASND is offering an audio buffer.
-            // Return status=1 to accept it.
-            status = 1;
-            break;
-        }
-        case 1809: {
-            // Buffer poll - ZNASND is checking if a buffer is free/ready.
-            // Return status=1 to indicate a buffer is available.
-            status = 1;
-            break;
-        }
-        case 1805:
-        case 1810:
-        case 1811: {
-            // Setup calls. Return success.
-            status = 1;
-            break;
-        }
-        case 772: {
-            // Repeated notification. Return success.
-            status = 1;
-            break;
-        }
-        default: {
-            status = 1;
-            break;
-        }
-    }
-
     std::memcpy(reply.data(), &status, sizeof(status));
     return reply;
 }
