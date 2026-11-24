@@ -15,7 +15,10 @@
  * is in games/up/engine-patches/ (applied in order to the engine checkout by
  * CI before every build; the submodule's commit is not changed):
  *   0001 the IOP hardware registers (0xBF80xxxx), kept as written;
- *   0002 the sound timer library's SetOverflowHandler and its setters.
+ *   0002 the sound timer library's SetOverflowHandler and its setters;
+ *   0003 strtok, sceCdStatus and sceCdBreak;
+ *   0004 the timer's counter running with the clock, the IOP RPC client and
+ *        the file manager as placeholders (the trace names what is asked).
  * Each is the engine's to take in upstream.
  *
  * Earlier attempts that are NOT here any more (see git history and
