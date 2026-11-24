@@ -21,6 +21,51 @@ extracted 523.4 KiB to games/up/build/disc-modules
   module names: PsIIsysmem  2800 at 0x12A8; PsIIloadcore2800 at 0x3838; PsIIsifcmd  2800 at 0x5EC0; PsIIsifman  2800@ at 0x7BE0; PsIIthreadma2800 at 0xF2D8; PsIIioman   2800invalid lseek arg at 0x13B78; PsIImodload 2800 at 0x18458; PsIIfileio  2800 at 0x1C340; PsIIcdvdman 2800 at 0x2ABE0; PsIIcdvdfsv 2800PJ at 0x36880; PsIIloadfile2800` at 0x3B0E0; PsIItimemani2800 at 0x3CC50; PsIIromdrv  2800l at 0x3DDA8; PsIIeesync  2800 at 0x3E6F0; PsIIsysclib 2800 at 0x40528; PsIIstdio   2800 at 0x41928
   word 0x01000001 (LE): 2 times, first at 0x2AFCE (near PsIIcdvdman 2800), 0x329EB (near PsIIcdvdfsv 2800PJ)
   word 0x01000002 (LE): 7 times, first at 0xA13F (near PsIIsifman  2800@), 0xC66F (near PsIIthreadma2800), 0x11C93 (near PsIIioman   2800invalid lseek arg), 0x32A4F (near PsIIcdvdfsv 2800PJ), 0x32B37 (near PsIIcdvdfsv 2800PJ), 0x356AB (near PsIIcdvdfsv 2800PJ), 0x3E701 (near PsIIeesync  2800)
+  code around 0xA13F:
+    0x00A11C: 00000000  nop
+    0x00A120: 8E030020  lw v1,32(s0)
+    0x00A124: 00000000  nop
+    0x00A128: 8C620010  lw v0,16(v1)
+    0x00A12C: 00000000  nop
+    0x00A130: 2442FFFF  addiu v0,v0,-1
+    0x00A134: AC620010  sw v0,16(v1)
+    0x00A138: 0C000127  jal 0x0000049C
+    0x00A13C: 02002021  addu a0,s0,zero  <- 0x01000002
+    0x00A140: 3C010000  lui at,0x0000
+    0x00A144: AC207084  sw zero,28804(at)
+    0x00A148: 00001021  addu v0,zero,zero
+    0x00A14C: 8FBF0018  lw ra,24(sp)
+    0x00A150: 8FB10014  lw s1,20(sp)
+  code around 0xC66F:
+    0x00C64C: 24020002  addiu v0,zero,2
+    0x00C650: A202000C  sb v0,12(s0)
+    0x00C654: 8C620008  lw v0,8(v1)
+    0x00C658: 00000000  nop
+    0x00C65C: 10400002  beq v0,zero,0x0000C668
+    0x00C660: AC600008  sw zero,8(v1)
+    0x00C664: AC510000  sw s1,0(v0)
+    0x00C668: 0C000127  jal 0x0000049C
+    0x00C66C: 02002021  addu a0,s0,zero  <- 0x01000002
+    0x00C670: 3C010000  lui at,0x0000
+    0x00C674: AC207084  sw zero,28804(at)
+    0x00C678: 08001107  j 0x0000441C
+    0x00C67C: 00001021  addu v0,zero,zero
+    0x00C680: 0C001070  jal 0x000041C0
+  code around 0x11C93:
+    0x011C70: 00000000  nop
+    0x011C74: 0800002A  j 0x000000A8
+    0x011C78: 24020001  addiu v0,zero,1
+    0x011C7C: 02002021  addu a0,s0,zero
+    0x011C80: 0C000766  jal 0x00001D98
+    0x011C84: 24050002  addiu a1,zero,2
+    0x011C88: 3C100000  lui s0,0x0000
+    0x011C8C: 26102260  addiu s0,s0,8800
+    0x011C90: 02002021  addu a0,s0,zero  <- 0x01000002
+    0x011C94: 3C010000  lui at,0x0000
+    0x011C98: AC202050  sw zero,8272(at)
+    0x011C9C: 0C00077C  jal 0x00001DF0
+    0x011CA0: 24050080  addiu a1,zero,128
+    0x011CA4: 2404000E  addiu a0,zero,14
   word 0x80000001 (LE): 1 times, first at 0x76D3 (near PsIIsifman  2800@)
 == MODULES/MODULES/LIBSD.IRX (28605 bytes)
   string: libsd
@@ -28,6 +73,21 @@ extracted 523.4 KiB to games/up/build/disc-modules
   module names: PsIIlibsd   2800 at 0x51F0
   word 0x01000001 (LE): 1 times, first at 0x2B6B (near PsIIlibsd   2800)
   word 0x01000002 (LE): 1 times, first at 0x1E83 (near PsIIlibsd   2800)
+  code around 0x1E83:
+    0x001E60: 00431024  and v0,v0,v1
+    0x001E64: 8C420000  lw v0,0(v0)
+    0x001E68: 32C7FFFF  andi a3,s6,-1
+    0x001E6C: AFA20010  sw v0,16(sp)
+    0x001E70: 0C000B03  jal 0x00002C0C
+    0x001E74: 00000000  nop
+    0x001E78: 00408821  addu s1,v0,zero
+    0x001E7C: 06210010  .word 0x06210010
+    0x001E80: 02201021  addu v0,s1,zero  <- 0x01000002
+    0x001E84: 3C010000  lui at,0x0000
+    0x001E88: 00330821  addu at,at,s3
+    0x001E8C: AC3052F8  sw s0,21240(at)
+    0x001E90: AFB00018  sw s0,24(sp)
+    0x001E94: 08000784  j 0x00001E10
 == MODULES/MODULES/MCMAN.IRX (95909 bytes)
   module names: PsIImcman   2800 at 0x11DF0
 == MODULES/MODULES/MCSERV.IRX (7417 bytes)
@@ -37,6 +97,21 @@ extracted 523.4 KiB to games/up/build/disc-modules
 == MODULES/MODULES/MCXMAN.IRX (5857 bytes)
   module names: PsIImcxman  2800 at 0xFC0
   word 0x01000002 (LE): 1 times, first at 0x8AF (near PsIImcxman  2800)
+  code around 0x8AF:
+    0x00088C: AFB10014  sw s1,20(sp)
+    0x000890: 00A08821  addu s1,a1,zero
+    0x000894: AFB20018  sw s2,24(sp)
+    0x000898: 00C09021  addu s2,a2,zero
+    0x00089C: 2406000F  addiu a2,zero,15
+    0x0008A0: AFBF001C  sw ra,28(sp)
+    0x0008A4: 0C0000BD  jal 0x000002F4
+    0x0008A8: 00003821  addu a3,zero,zero
+    0x0008AC: 02002021  addu a0,s0,zero  <- 0x01000002
+    0x0008B0: 3C010000  lui at,0x0000
+    0x0008B4: A0320FFB  sb s2,4091(at)
+    0x0008B8: 0C00010F  jal 0x0000043C
+    0x0008BC: 02202821  addu a1,s1,zero
+    0x0008C0: 00401821  addu v1,v0,zero
 == MODULES/MODULES/MCXSERV.IRX (5449 bytes)
   string: sifcmd
   string: mcxserv.irx: thread prority definition ignored.
@@ -52,9 +127,54 @@ extracted 523.4 KiB to games/up/build/disc-modules
   string: PsIIsdrdrv  2800
   module names: PsIIsdrdrv  2800 at 0x1570
   word 0x01000002 (LE): 2 times, first at 0x113 (near PsIIsdrdrv  2800), 0xAA7 (near PsIIsdrdrv  2800)
+  code around 0x113:
+    0x0000F0: 2484133C  addiu a0,a0,4924
+    0x0000F4: 0C000470  jal 0x000011C0
+    0x0000F8: 24120001  addiu s2,zero,1
+    0x0000FC: 24020018  addiu v0,zero,24
+    0x000100: 3C010000  lui at,0x0000
+    0x000104: AC2215B0  sw v0,5552(at)
+    0x000108: 3C010000  lui at,0x0000
+    0x00010C: AC221624  sw v0,5668(at)
+    0x000110: 0253102A  slt v0,s2,s3  <- 0x01000002
+    0x000114: 3C010000  lui at,0x0000
+    0x000118: AC2014C8  sw zero,5320(at)
+    0x00011C: 3C010000  lui at,0x0000
+    0x000120: AC2014CC  sw zero,5324(at)
+    0x000124: 1040005C  beq v0,zero,0x00000298
+  code around 0xAA7:
+    0x000A84: 08000282  j 0x00000A08
+    0x000A88: 00000000  nop
+    0x000A8C: 24E40008  addiu a0,a3,8
+    0x000A90: 3C100000  lui s0,0x0000
+    0x000A94: 26101634  addiu s0,s0,5684
+    0x000A98: 94E60002  lhu a2,2(a3)
+    0x000A9C: 8CE70004  lw a3,4(a3)
+    0x000AA0: 0C00044D  jal 0x00001134
+    0x000AA4: 02002821  addu a1,s0,zero  <- 0x01000002
+    0x000AA8: 3C010000  lui at,0x0000
+    0x000AAC: AC2214E0  sw v0,5344(at)
+    0x000AB0: 08000354  j 0x00000D50
+    0x000AB4: AE02FFFC  sw v0,-4(s0)
+    0x000AB8: 8CE20014  lw v0,20(a3)
 == MODULES/MODULES/SIO2MAN.IRX (6641 bytes)
   module names: PsIIsio2man 2800@ at 0x1040
   word 0x01000002 (LE): 1 times, first at 0x747 (near PsIIsio2man 2800@)
+  code around 0x747:
+    0x000724: 00000000  nop
+    0x000728: 3C040000  lui a0,0x0000
+    0x00072C: 24840F7C  addiu a0,a0,3964
+    0x000730: 0C000381  jal 0x00000E04
+    0x000734: 02002821  addu a1,s0,zero
+    0x000738: 080001FF  j 0x000007FC
+    0x00073C: 24020001  addiu v0,zero,1
+    0x000740: 24130001  addiu s3,zero,1
+    0x000744: 02601021  addu v0,s3,zero  <- 0x01000002
+    0x000748: 3C010000  lui at,0x0000
+    0x00074C: AC220FB8  sw v0,4024(at)
+    0x000750: 24020010  addiu v0,zero,16
+    0x000754: 3C010000  lui at,0x0000
+    0x000758: AC220FD4  sw v0,4052(at)
 == MODULES/MODULES/ZNASND.IRX (63232 bytes)
   string: sifcmd
   string: libsd
