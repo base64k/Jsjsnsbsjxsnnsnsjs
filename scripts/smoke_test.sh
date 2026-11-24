@@ -101,6 +101,7 @@ run_game() {
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
             --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
+            --iop-trace \
             > "$REPORT" 2>&1
     CODE=$?
     set -e
