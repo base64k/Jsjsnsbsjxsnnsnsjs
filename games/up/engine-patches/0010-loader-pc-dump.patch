@@ -1,5 +1,5 @@
 diff --git a/host/src/iop_vm.cpp b/host/src/iop_vm.cpp
-index e3ff3d1..ad94291 100644
+index e3ff3d1..6436ac3 100644
 --- a/host/src/iop_vm.cpp
 +++ b/host/src/iop_vm.cpp
 @@ -686,8 +686,20 @@ bool LoadModule(const std::string& path, const std::vector<u8>& image,
@@ -11,7 +11,7 @@ index e3ff3d1..ad94291 100644
      while (vm.threads[loader.id].wait != Wait::Dormant && vm.NowUs() < deadline) {
 -        Run();
 +        Run(1000000);       // short slices, so the look below comes soon after a spin starts
-+        if (!dumped && std::chrono::steady_clock::now() - wall_start > std::chrono::milliseconds(1500)) {
++        if (!dumped && std::chrono::steady_clock::now() - wall_start > std::chrono::milliseconds(200)) {
 +            // Where the module's start is, if it has not returned: the code around its pc.
 +            dumped = true;
 +            const Thread& lt = vm.threads[loader.id];
