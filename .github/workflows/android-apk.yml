@@ -403,6 +403,16 @@ jobs:
           rm -rf /tmp/ee-asm
           timeout 900 python3 engine/tools/disasm.py --game games/up --all -o /tmp/ee-asm > /tmp/ee-asm.log 2>&1 || true
           python3 scripts/ee_rpc_ids.py /tmp/ee-asm 0x01000002 0x01000001 2>&1 | head -n 400 > ci-results/ee-rpc-ids.txt || true
+          # The functions around the bind (0x44CDC0), the RPC 513 caller (0x44CEE0)
+          # and the registration of 0x01000002 (0x44D4A0), and who calls them.
+          mkdir -p ci-results/ee-funcs
+          for f in func_0044CDC0 func_0044D4A0 func_0044CEE0 func_002DEC40 func_0032F250; do
+            cp "/tmp/ee-asm/$f.s" ci-results/ee-funcs/ 2>/dev/null || true
+          done
+          for f in func_0044D4A0 func_0044CDC0 func_0044CEE0 func_002DEC40 func_0032F250; do
+            echo "== called from ($f):"
+            grep -rlE "jal +$f( |\$)" /tmp/ee-asm 2>/dev/null | xargs -r -n1 basename || true
+          done > ci-results/ee-callers.txt || true
           if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
             git config user.email "agent@arena.ai"
             git config user.name "Arena Agent"
