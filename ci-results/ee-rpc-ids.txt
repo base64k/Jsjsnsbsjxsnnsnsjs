@@ -1,0 +1,25 @@
+functions rendered: 19502
+/tmp/ee-asm/func_002E5200.s-251-  002e55c8  addiu      $t0, $t0, 0x7450
+/tmp/ee-asm/func_002E5200.s-253-  002e55d0  ori        $a2, $a0, 0x404
+/tmp/ee-asm/func_002E5200.s-254-  002e55d4  ori        $a1, $v1, 0x1f
+/tmp/ee-asm/func_002E5200.s-256-  002e55d8  addiu      $v1, $t2, 0x1
+/tmp/ee-asm/func_002EE5D0.s-32-  002ee624  ori        $t2, $a0, 0x101
+/tmp/ee-asm/func_002EE5D0.s-33-  002ee628  ori        $a3, $v1, 0x6
+/tmp/ee-asm/func_002EE5D0.s-36-  002ee634  addiu      $t0, $s1, 0x10
+/tmp/ee-asm/func_003DA640.s-21-  003da66c  ori        $v1, $v1, 0xa000
+/tmp/ee-asm/func_003DAAB8.s-21-  003daae4  ori        $v1, $v1, 0x9000
+/tmp/ee-asm/func_003DAAB8.s-40-  003dab28  ori        $v1, $v1, 0xa000
+/tmp/ee-asm/func_003DAAB8.s-45-  003dab38  addiu      $a1, $a1, 0x1                           # delay slot
+/tmp/ee-asm/func_003DAAB8.s-61-  003dab74  ori        $a0, $a0, 0x3c00
+/tmp/ee-asm/func_003DAAB8.s-62-  003dab78  ori        $v1, $v1, 0x3
+/tmp/ee-asm/func_003DAAB8.s-94-  003dabe8  ori        $v1, $v1, 0x3020
+/tmp/ee-asm/func_003DAAB8.s-99-  003dabf8  addiu      $a1, $a1, 0x1                           # delay slot
+/tmp/ee-asm/func_003DAFB8.s-22-  003dafe8  ori        $v1, $v1, 0xa000
+/tmp/ee-asm/func_003DAFB8.s-27-  003daff8  addiu      $a2, $a2, 0x1                           # delay slot
+/tmp/ee-asm/func_003DAFB8.s-64-  003db080  ori        $v1, $v1, 0xa000
+/tmp/ee-asm/func_003DAFB8.s-69-  003db090  addiu      $a2, $a2, 0x1                           # delay slot
+/tmp/ee-asm/func_003EBA10.s-237-  003ebd64  ori        $a0, $a0, 0xffff
+/tmp/ee-asm/func_004020A0.s-197-  00402360  ori        $t4, $a1, 0x101
+/tmp/ee-asm/func_004020A0.s-200-  0040236c  addiu      $a0, $a0, 0x2
+/tmp/ee-asm/func_00460530.s-118-  004606d0  addiu      $v1, $zero, -0x4000
+/tmp/ee-asm/func_00460530.s-177-  004607ac  addiu      $v1, $zero, -0x4000

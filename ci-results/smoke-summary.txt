@@ -26,21 +26,21 @@ threads:
       0x003E0050 
       0x003DC4C0 SleepThread
   IOP calls, most frequent:
-    0x00015B10 x17204 (from 0x0001EDA4)
-    0x00015B74 x17201 (from 0x00018E2C)
-    0x00015C9C x8655 (from 0x00019728)
-    0x00015C94 x8627 (from 0x00019860)
-    0x00015BA8 x8602 (from 0x0001EDDC)
-    0x0001ED04 x8601 (from 0x00018E24)
-    0x00015BA0 x8601 (from 0x0001ED10)
-    0x0001EDBC x8600 (from 0x00018E40)
-    0x000198E4 x8599 (from 0x00018FE4)
-    0x0001966C x8599 (from 0x000198EC)
-    0x000165E0 x8599 (from 0x00018E48)
-    0x00015CB4 x8599 (from 0x00019674)
-    0x00015BD4 x8599 (from 0x000165F0)
-    0x0001ECF4 x7311 (from 0x0001616C)
-    0x00015A70 x7311 (from 0x00016128)
+    0x00015B10 x16752 (from 0x0001EDA4)
+    0x00015B74 x16749 (from 0x00018E2C)
+    0x00015C9C x8429 (from 0x00019728)
+    0x00015C94 x8401 (from 0x00019860)
+    0x00015BA8 x8376 (from 0x0001EDDC)
+    0x0001ED04 x8375 (from 0x00018E24)
+    0x00015BA0 x8375 (from 0x0001ED10)
+    0x0001EDBC x8374 (from 0x00018E40)
+    0x000198E4 x8373 (from 0x00018FE4)
+    0x0001966C x8373 (from 0x000198EC)
+    0x000165E0 x8373 (from 0x00018E48)
+    0x00015CB4 x8373 (from 0x00019674)
+    0x00015BD4 x8373 (from 0x000165F0)
+    0x0001ECF4 x7091 (from 0x0001616C)
+    0x00015A70 x7091 (from 0x00016128)
     0x00015B18 x2390 (from 0x00019FDC)
     0x00015AF0 x1114 (from 0x0001A090)
     0x00015B20 x812 (from 0x0001A008)
@@ -61,7 +61,7 @@ threads:
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 12.7 s; GS drawing 0.1%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 10.9%, SPU2 0.9%, waiting for the GS thread 0.1%
+time: 12.7 s; GS drawing 0.1%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 12.2%, SPU2 1.0%, waiting for the GS thread 0.1%
 kernel services used:
   -120  SifSetDChain             x19
    -67  iSignalSema              x19
