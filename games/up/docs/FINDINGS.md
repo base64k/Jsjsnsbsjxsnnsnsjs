@@ -610,3 +610,30 @@ only github, npm and pypi. The CI downloads the disc.
 3. Check `CreateThread` / `StartThread` in the engine's kernel for the case that
    silently drops the thread (no error in the log).
 
+**Run 45620249406: the registration thread exists, and the bind cannot see it (the cause).**
+- The stop report lists three EE threads, not two: `thread 3: sleeping, priority 4,
+  entry 0x0044D4A0, ran 1 times`, sleeping in `sceSifRpcLoop` (`func_003E0050`). So
+  the EE's server for `0x01000002` is created and registered. (`func_0044D190` creates
+  it: `CreateThread` with `{entry 0x44D4A0, stack from func_002DCB70 (AllocSysMemory-like,
+  0x2800 bytes), priority 4}`, then `StartThread`. Thread 2 is created the same way.)
+- The IOP's `sceSifBindRpc(0x01000002)` (patch 0005, `SifBindRpcClient` in
+  `iop_libs.cpp`) looks only in `vm.rpc_servers`, the IOP's own servers. The EE's
+  registration is not in any table the IOP side reads. So the bind returns "no server"
+  and the handler for RPC 513 waits, forever (patch 0008 only makes it wait 1 ms).
+- So the port is missing one path: an IOP bind (and the calls after it) for a server
+  that the EE registered. On the real console the EE's SIF library answers the bind
+  from its own server table. Options for the engine (not yet chosen):
+  (a) on a bind with no IOP server, forward the bind to the EE as a SIF message and let
+      the game's own EE sifrpc code answer it (faithful; needs the SIF path IOP→EE);
+  (b) override the EE's `sceSifRegisterRpc` (`func_003DFC38`) to record `sid → server`
+      in a host table, and let the bind use that table (smaller; the calls after the bind
+      must then also reach the EE thread, which needs the same IOP→EE delivery).
+- Engine state: the `engine/` submodule was not initialised in this session; it is
+  now (`65c46e9`). The patch chain 0001–0013 applies cleanly on it (checked).
+
+**Next steps:**
+1. Choose (a) or (b) above. Both need the IOP's call to reach an EE thread, so the
+   next patch is the IOP→EE delivery of a call and its reply.
+2. Log that delivery first (log-only patch): the IOP's bind and call for `0x01000002`,
+   and whether the EE thread 3 wakes.
+
