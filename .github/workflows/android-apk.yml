@@ -371,6 +371,10 @@ jobs:
               cp games/up/build/port/report.txt ci-results/port-report.txt
             fi
             grep "^\[iop\]" games/up/build/port/report.txt | head -n 20000 > ci-results/iop-trace.txt || true
+            # The host's own lines (module starts and returns, SIF replies,
+            # the EE's idle loop, the loader dump): the port-report above
+            # cuts its middle out, and these are what tell a run's story.
+            grep "^\[host\]" games/up/build/port/report.txt | head -n 20000 > ci-results/host-trace.txt || true
           fi
           # What was built: the engine's patches as applied, and the end of the
           # smoke test's build log (a build that went wrong is seen here).
