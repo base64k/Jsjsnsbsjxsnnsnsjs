@@ -503,3 +503,50 @@ the EE's frames that really advance.
 3. Patches 0005 and 0006 are in place; their effect is in the trace's `ioman`
    lines and the bind loop. The trace is capped at 20,000 lines.
 4. Do not publish the APK until the menu appears (the user's condition).
+
+**Runs 45569467257 and 45573559671 (patch 0013: the loader's pc from the idle loop).**
+
+*A correction to the notes above.* `ci-results/port-report.txt` keeps only the
+first 4,500 and the last 4,500 lines of the report ("... lines left out ..."). So
+the middle of a run is missing from it. The conclusions "ZNASND's start never
+returns", "no `LOADER` line" and "no `every thread waits` line" were drawn from
+that cut file and are not reliable. `iop-trace.txt` is the `[iop]` lines of the
+whole report, capped at 20,000. From now on the workflow also saves
+`ci-results/host-trace.txt` (the `[host]` lines, same cap).
+
+*Patch 0013 had two faults, both fixed in the second commit.* The first diff
+held the whole 0001–0012 chain (`git diff` compares with the pristine engine),
+so it did not apply on top of 0012. The probe patch 0011 also clears
+`g_probe_thread` before `Run()`, so the dump printed nothing. 0013 now keeps
+its own `g_loader_thread`, set at each module start and never cleared.
+
+*What 45573559671 shows (from the capped traces):*
+- LIBSD's start returns 0 and LIBSD is loaded. ZNASND's `_start` (loader, IOP
+  thread 2) runs about 5,600 calls, then stops calling after `SetupHardTimer`,
+  `StartHardTimer`, `Kprintf` (trace line 5663).
+- At giving-up, the loader thread is gone (`LOADER: thread 2 is gone`). The
+  erase happens only after `LoadModule`'s wait loop sees the thread Dormant, so
+  the start probably did return, and its `start returned` / `loaded` lines are
+  in the elided middle. This has not been checked.
+- IOP thread 3 (ZNASND's, started by `_start`) registers the server `0x01000001`
+  (`sceSifRegisterRpc`, trace line 5638) and runs `sceSifRpcLoop`. The EE's
+  `sceSifCallRpc(0x01000001, procedure 513)` arrives at trace line 6304. The
+  handler then calls `sceSifBindRpc(…, 0x01000002, mode 0)` and gets "waits",
+  about 1,050 times, with `[IOP] Check that ZnaSnd.irx have been loaded...`
+  printed between the waits.
+- On the EE side, thread 1 waits in `sceSifCallRpc` (for the reply to 513) and
+  thread 2 waits on a semaphore after one run. The EE registers `0x01000002`
+  (`9120ca7`), but that registration has not been seen running.
+
+*Working hypothesis (not verified):* a deadlock. The IOP handler for 513 waits for
+the EE's `0x01000002` server, and the EE is waiting for the reply to 513. Either
+the EE registers `0x01000002` in a thread that never runs in the engine, or the
+handler should not block there. Which one is still open.
+
+**Next steps:**
+1. Read `host-trace.txt` from the next run: the ZNASND `start returned` / `loaded`
+   lines and the `LOADER` dump at idle 0 and 300.
+2. Find which EE thread registers `0x01000002` (`0x24D5BC`) and when it runs
+   (EE thread 2, entry `0x003DD2A0`, waits on a semaphore: what signals it?).
+3. Only then decide whether the fix is in the engine's SIF/bind code or in how
+   the EE's threads are started.
