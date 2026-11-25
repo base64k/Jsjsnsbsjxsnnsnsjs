@@ -504,49 +504,52 @@ the EE's frames that really advance.
    lines and the bind loop. The trace is capped at 20,000 lines.
 4. Do not publish the APK until the menu appears (the user's condition).
 
-**Runs 45569467257 and 45573559671 (patch 0013: the loader's pc from the idle loop).**
+**Runs 45569467257, 45573559671 and 45581017566 (patch 0013; the full host trace).**
 
 *A correction to the notes above.* `ci-results/port-report.txt` keeps only the
-first 4,500 and the last 4,500 lines of the report ("... lines left out ..."). So
-the middle of a run is missing from it. The conclusions "ZNASND's start never
-returns", "no `LOADER` line" and "no `every thread waits` line" were drawn from
-that cut file and are not reliable. `iop-trace.txt` is the `[iop]` lines of the
-whole report, capped at 20,000. From now on the workflow also saves
-`ci-results/host-trace.txt` (the `[host]` lines, same cap).
+first 4,500 and the last 4,500 lines of the report ("... lines left out ..."),
+so the middle of a run is missing from it. The conclusions "ZNASND's start never
+returns" and "no `LOADER` / `every thread waits` line" were drawn from that cut
+file and are wrong. `ci-results/host-trace.txt` (new in 45581017566) holds every
+`[host]` line; it is short (126 lines), so it is not cut. `iop-trace.txt` is the
+`[iop]` lines, capped at 20,000.
 
-*Patch 0013 had two faults, both fixed in the second commit.* The first diff
-held the whole 0001–0012 chain (`git diff` compares with the pristine engine),
-so it did not apply on top of 0012. The probe patch 0011 also clears
-`g_probe_thread` before `Run()`, so the dump printed nothing. 0013 now keeps
-its own `g_loader_thread`, set at each module start and never cleared.
+*Patch 0013 had two faults, both fixed.* The first diff held the whole 0001–0012
+chain (`git diff` compares with the pristine engine), so it did not apply on top
+of 0012. The probe patch 0011 also clears `g_probe_thread` before `Run()`, so the
+dump printed nothing. 0013 keeps its own `g_loader_thread`.
 
-*What 45573559671 shows (from the capped traces):*
-- LIBSD's start returns 0 and LIBSD is loaded. ZNASND's `_start` (loader, IOP
-  thread 2) runs about 5,600 calls, then stops calling after `SetupHardTimer`,
-  `StartHardTimer`, `Kprintf` (trace line 5663).
-- At giving-up, the loader thread is gone (`LOADER: thread 2 is gone`). The
-  erase happens only after `LoadModule`'s wait loop sees the thread Dormant, so
-  the start probably did return, and its `start returned` / `loaded` lines are
-  in the elided middle. This has not been checked.
-- IOP thread 3 (ZNASND's, started by `_start`) registers the server `0x01000001`
-  (`sceSifRegisterRpc`, trace line 5638) and runs `sceSifRpcLoop`. The EE's
-  `sceSifCallRpc(0x01000001, procedure 513)` arrives at trace line 6304. The
-  handler then calls `sceSifBindRpc(…, 0x01000002, mode 0)` and gets "waits",
-  about 1,050 times, with `[IOP] Check that ZnaSnd.irx have been loaded...`
-  printed between the waits.
-- On the EE side, thread 1 waits in `sceSifCallRpc` (for the reply to 513) and
-  thread 2 waits on a semaphore after one run. The EE registers `0x01000002`
-  (`9120ca7`), but that registration has not been seen running.
+*The run, from host-trace.txt (45581017566):*
+1. LIBSD: `start returned 0`, `loaded` at 1060347 ms.
+2. ZNASND: `start returned 0`, `loaded` at 1060359 ms. It registers the IOP server
+   `0x01000001` (its thread 3 runs `sceSifRpcLoop`, trace line 5638).
+3. EE: `SIF: bound to IOP server 0x01000001`, then `SIF: EE call, server 0x00000000
+   (at 0x0002E1EC), procedure 513, 32 bytes sent`, from `0x0044CEE0`.
+4. IOP: `RPC 0x01000001 procedure 513 ... served by a module`. The handler (IOP
+   thread 3) calls `sceSifBindRpc(…, 0x01000002, mode 0)`, which returns "waits"
+   and is retried about 1,050 times (`[IOP] Check that ZnaSnd.irx have been
+   loaded...` between the tries). No reply to 513 is ever delivered.
+5. EE: `every thread waits` at 1061430 ms, then after 601 frames it gives up.
 
-*Working hypothesis (not verified):* a deadlock. The IOP handler for 513 waits for
-the EE's `0x01000002` server, and the EE is waiting for the reply to 513. Either
-the EE registers `0x01000002` in a thread that never runs in the engine, or the
-handler should not block there. Which one is still open.
+*What blocks it (working hypothesis, not verified):* a deadlock. The handler for
+513 waits for the EE to register the server `0x01000002`. The EE is waiting for
+the reply to 513, so the registration (`sceSifRegisterRpc`, `0x24D5BC` in the
+program, `9120ca7`) has not run. Either it runs after the 513 call in the
+program's own order (then the handler must not block there, and the question is
+why the port's bind waits), or it runs in an EE thread that never runs in the
+engine (EE thread 2, entry `0x003DD2A0`, ran once, waits on a semaphore).
+
+*Added to the workflow (not yet run):* `ci-results/ee-code.txt`, the EE functions
+at `0x24CEE4` (the bind of 0x01000001), `0x24D5BC` (the registration of
+0x01000002), `0x44CEE0` (the caller of 513) and `0x3DD2A0` (EE thread 2's entry),
+from `engine/tools/disasm.py --game games/up --addr …`.
 
 **Next steps:**
-1. Read `host-trace.txt` from the next run: the ZNASND `start returned` / `loaded`
-   lines and the `LOADER` dump at idle 0 and 300.
-2. Find which EE thread registers `0x01000002` (`0x24D5BC`) and when it runs
-   (EE thread 2, entry `0x003DD2A0`, waits on a semaphore: what signals it?).
-3. Only then decide whether the fix is in the engine's SIF/bind code or in how
-   the EE's threads are started.
+1. Read `ci-results/ee-code.txt`: the order of the bind, the 513 call, and the
+   registration; and whether `0x24D5BC` is reached from the main thread before
+   the 513 call.
+2. If it is reached only after the 513 reply, the program expects the IOP handler
+   not to wait for `0x01000002`: check the `sceSifBindRpc` mode and the port's
+   bind behaviour (patch 0008 makes a bind wait 1 ms when no server exists).
+3. If it is reached in EE thread 2, log that thread's wait (semaphore id, who
+   signals it) with a new log-only patch.
