@@ -435,6 +435,39 @@ such hit is at an unaligned offset, so they are bytes across instruction
 boundaries, not literals. No aligned `0x01000002` word exists in any disc module
 or in the EE program.
 
+**Patches 0007-0010 and the EE's load (runs 45530173257, 45534355291, 45537324174, 45541066304, 45543826201, 45547139945).**
+- 0007 (log): every distinct EE `sceSifCallRpc` with its server, procedure, and
+  EE callers. The EE's calls in the port are: `0x80000001` (SIO2MAN-era
+  server), `0x80000592` CdInit, `0x80000593`, `0x80000006` LoadFile (procedure
+  0, 512 bytes: the module's path). The last one is the load of ZNASND. The
+  EE never calls `0x01000001`, so `0x24CEE4` and `0x24D5BC` are not reached.
+- 0008 (fix, the one real bug found): a bind for a server that is not there
+  returned 0 at once, so ZNASND's loop (about 4,600 binds) never let the IOP
+  run return to the load. Now the bind waits 1 ms (as the library's bind does).
+  Smoke: 60 s and IOP 94% before; 12.7 s and IOP 9-11% after. The stop is now
+  the same "every thread is waiting".
+- 0009 (log): the SIF replies queued and delivered. LIBSD's load returns
+  (`start returned 0`, `loaded`) and its reply reaches the EE. ZNASND's start
+  does not return: after its `[IOP] ZnaSnd.irx Loaded Successfully...` the
+  loader thread makes no more calls, so no "start returned" line appears.
+- 0010 (log): would print the loader's pc after 0.2 s of waiting in
+  `LoadModule`, but it does not fire: the spin is not in the loop that checks
+  the time. So the place where ZNASND's start spins is still unknown.
+
+**The EE's server table.** The IOP's bind (patch 0005) looks in the IOP's
+servers only. Even once the EE has registered `0x01000002`, the IOP's bind
+returns 0 unless the port reads the EE's registrations. That is still open.
+
+**Next steps (updated):**
+1. Find where ZNASND's start spins after "Loaded Successfully": log the
+   loader's pc from inside `Run` (for example at each slice, after 0.2 s), and
+   decode the words around it (the code is in the loaded image; the dump is
+   what 0010 was meant to print).
+2. Once the start returns, check that the EE's call to `0x80000006` gets its
+   answer, and then whether the EE reaches `0x24CEE4` (bind `0x01000001`) and
+   `0x24D5BC` (register `0x01000002`).
+3. Make the IOP's bind see the EE's registrations for `0x01000002`.
+
 **Open questions for the port (not yet in the code):**
 - The menu has not been seen on any run. What the EE waits for is the sound
   driver's status (procedure 772 polling); whether the module now answers it
