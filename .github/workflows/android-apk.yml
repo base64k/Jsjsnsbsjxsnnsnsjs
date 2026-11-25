@@ -379,6 +379,9 @@ jobs:
             grep "^\[host\]" games/up/build/port/report.txt | head -n 20000 > ci-results/host-trace.txt || true
             # The writes to the watched address (UP_SMOKE_WATCH), with their callers.
             grep "^\[write\]" games/up/build/port/report.txt | head -n 2000 > ci-results/write-trace.txt || true
+            # Every SIF command the IOP sends to the EE (sceSifSendCmd), and the IOP's
+            # command-handler registrations: the EE flag 0x007A982C waits for command 0xB.
+            grep -E 'to the EE: command|sifcmd#(10|12|13) ' games/up/build/port/report.txt | head -n 2000 > ci-results/iop-sendcmd.txt || true
           fi
           # What was built: the engine's patches as applied, and the end of the
           # smoke test's build log (a build that went wrong is seen here).
@@ -407,7 +410,7 @@ jobs:
           # The functions around the wait (its caller 0x301B80, the one that clears the
           # flag 0x47C300) and every function that touches the flag's word or its
           # struct (0x7A9700 + offsets, lui 0x7b/0x7a): who sets it, if anyone does.
-          for a in 0x00301B80 0x0047C300 0x0047DAE0; do
+          for a in 0x00301B80 0x0047C300 0x0047DAE0 0x003DEB88 0x0047B8E8 0x003DED88 0x003DEB58; do
             echo "=== EE function at $a ==="
             timeout 120 python3 engine/tools/disasm.py --game games/up --addr "$a" 2>&1 | head -n 300 || true
           done > ci-results/ee-code-flag.txt || true
