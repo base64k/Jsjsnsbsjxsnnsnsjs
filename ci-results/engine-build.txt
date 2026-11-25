@@ -1,15 +1,17 @@
-run 45557930345 (the engine at 65c46e9)
+run 45566746094 (the engine at 65c46e9)
 the engine's patches on the checkout:
  M android/java/org/ps2port/PortActivity.java
  M host/src/iop.cpp
  M host/src/iop_libs.cpp
  M host/src/iop_vm.cpp
  M host/src/iop_vm_internal.h
+ M host/src/threads.cpp
  M tools/android.py
  android/java/org/ps2port/PortActivity.java |  28 ++++
  host/src/iop.cpp                           |  19 +++
  host/src/iop_libs.cpp                      | 230 ++++++++++++++++++++++++++++-
- host/src/iop_vm.cpp                        | 139 ++++++++++++++++-
+ host/src/iop_vm.cpp                        | 144 +++++++++++++++++-
  host/src/iop_vm_internal.h                 |  40 ++++-
+ host/src/threads.cpp                       |   8 +
  tools/android.py                           |   4 +
- 6 files changed, 449 insertions(+), 11 deletions(-)
+ 7 files changed, 462 insertions(+), 11 deletions(-)
