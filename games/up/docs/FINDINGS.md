@@ -661,3 +661,31 @@ Not verified yet: that the game's EE interrupt handler takes the bind packet (it
 for the replies the engine already sends), and that the EE's registration sets
 `active_queue` (ps2sdk: `sceSifSetRpcQueue`). The log lines `[host] IOP: binds RPC…`,
 `IOP: the EE's bind answer: server 0x…` and `IOP: RPC procedure … on the EE` show both.
+
+### Where the EE main thread waits (runs 45657847582, 45670428784)
+
+- Bind delivery is confirmed (run 45647073822): the IOP binds `0x01000002` on the
+  EE, the EE's answer comes back, and RPC 513 is answered. The port now reaches
+  the EE's wait in `0x0047DB38`, which is not the bind any more.
+- The wait is on the word `0x007A982C` (`lw $v0,-0x67d4($v1)`, `$v1 = 0x7B0000`).
+  The loop is in `func_0047DAE0` (CI `ci-results/ee-flag/func_0047DAE0.s`). The
+  loop spins until the flag is nonzero, then sends one RPC-like request through
+  `func_003DED88` (sceSifCallRpc wrapper) with server id/handle `-0x67e0` and a
+  36-byte packet at `0x7A96F0`. It does up to 32 rounds.
+- `func_0047C300` sets the handle to `0xB` and registers the EE command handler
+  `func_0047BF98` for SIF command id `0xB` through `func_003DEB88` (sceSifAddCmdHandler:
+  table at `0x7A4A28`, 12-byte entries). Then it clears the flag to 0. Only
+  `func_0047BF98` writes the flag (it stores the result of `func_0047B8E8`).
+  So the EE waits for an IOP command `0xB` before it sends anything.
+- Write trace (45657847582 and again 45670428784): the flag is written once, as
+  zero, by `0x47C300`. No nonzero write happens.
+- IOP side (45670428784, `ci-results/iop-sendcmd.txt`): no `sceSifSendCmd` from
+  the IOP at all, and no sifcmd#10/#12/#13 call in the trace. LIBSD and ZNASND do
+  not send command `0xB`. SDRDRV is never loaded by the EE (see above).
+- Conclusion: the EE blocks on a command from the IOP that no module in the port
+  sends. Which IOP module sends `0xB` on the console is not yet known. Candidates to
+  check: the IOP side of the sound-driver handshake (LIBSD/SDRDRV), or a
+  `sceSifSendCmd` from another IOP module that is not run.
+- Open: the result of the `AddIdleLoop(0x0047DB38)` run (45651299149) is unknown
+  (the watch timed out; no result was read). The loop at `0x47DB38` is the flag wait
+  above, not INTC polling.
