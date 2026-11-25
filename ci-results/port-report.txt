@@ -272,9 +272,11 @@ no sound device: running silent
 [call] 0x003DC5C0 SignalSema
 [host] kernel SignalSema (0x42) a0=0x00000006 a1=0x00000001 a2=0x2079B800 a3=0x00000040
 [call] 0x003DF968 sceSifCallRpc
+[host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 255, 8 bytes sent; from 0x003E0720 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [call] 0x003E0928
 [call] 0x003F16A4
 [call] 0x003E00F0
+[host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 0, 1048 bytes sent; from 0x003E09F0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] file I/O: open rom0:ROMVER (not found)
 [call] 0x003E0620
 [call] 0x003F2AF8
@@ -430,6 +432,7 @@ no sound device: running silent
 [call] 0x003F9D50
 [call] 0x003DFB60
 [host] SIF: bound to IOP server 0x80000592
+[host] SIF: EE call, server 0x80000592 (at 0x00180800), procedure 0, 4 bytes sent; from 0x003F9FE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [call] 0x003F94C8
 [call] 0x003F96F8
 [call] 0x003DE7C8
@@ -464,6 +467,7 @@ no sound device: running silent
 [call] 0x003DC4A0 ReferThreadStatus
 [host] kernel ReferThreadStatus (0x30) a0=0x00000001 a1=0x007A25A0 a2=0x00000000 a3=0x003F96A0
 [host] SIF: bound to IOP server 0x80000593
+[host] SIF: EE call, server 0x80000593 (at 0x00180C00), procedure 34, 4 bytes sent; from 0x003FA970 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [call] 0x003E09B8
 [call] 0x003E37A8
 [host] SIF: bound to IOP server 0x80000003
@@ -471,7 +475,9 @@ no sound device: running silent
 [call] 0x003E44D0
 [call] 0x003E3CF8
 [host] SIF: bound to IOP server 0x80000006
+[host] SIF: EE call, server 0x80000006 (at 0x00181400), procedure 255, 0 bytes sent; from 0x003E3CF8 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [call] 0x003E3DF8
+[host] SIF: EE call, server 0x80000006 (at 0x00181400), procedure 0, 512 bytes sent; from 0x003E44D0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: module cdrom0:\MODULES\SIO2MAN.IRX;1 loaded as 1 (its services are the host's)
 [host] IOP: module cdrom0:\MODULES\PADMAN.IRX;1 loaded as 2 (its services are the host's)
 [host] IOP: module cdrom0:\MODULES\MCMAN.IRX;1 loaded as 3 (its services are the host's)
@@ -4492,13 +4498,7 @@ no sound device: running silent
 [iop] t2 sysclib#30 strncpy(00059460, 0002EDB3, 0000000D, 0002D0E4) -> 00059460 from 0001A11C
 [iop] t2 sysclib#27 strlen(0002EDEF, 00056300, 0000000D, 0002D0E4) -> 0000000D from 00019DF0
 [iop] t2 sysclib#22 strcmp(0002EDFA, 0001F498, 0000000D, 0002D0E4) -> 00000000 from 00019E08
-[iop] t2 sysclib#27 strlen(0002EDEF, 0001F498, 0000000D, 0002D0E4) -> 0000000D from 00019E18
-[iop] t2 sysclib#27 strlen(0002EDEF, 0001F498, 0000000D, 0002D0E4) -> 0000000B from 00019E28
-[iop] t2 sysclib#27 strlen(0002EDEF, 0001F498, 0000000D, 0002D0E4) -> 0000000B from 00019FDC
-[iop] t2 sysclib#29 strncmp(0002EDF7, 0001F48C, 00000003, 0002D0E4) -> 00000000 from 0001A008
-[iop] t2 sysclib#12 memcpy(0002D12C, 0002EDD8, 00000004, 0002D0E4) -> 0002D12C from 0001A060
-[iop] t2 sysclib#12 memcpy(0002D12C, 0002EDD0, 00000004, 0002D0E4) -> 0002D12C from 0001A090
-... 1203163 lines left out (the full report is in the up-smoke artifact) ...
+... 1203170 lines left out (the full report is in the up-smoke artifact) ...
 [iop] [IOP] Check that ZnaSnd.irx have been loaded...
 [iop] t3 sysmem#14 Kprintf(000205FC, 0001F0A8, 00000000, 000208EC) -> 00000031 from 0001616C
 [iop] t3 sifcmd#15 sceSifBindRpc(00020884, 01000002, 00000000, 000208EC) -> 00000000 from 00016128
@@ -8838,7 +8838,7 @@ threads:
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 61.1 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 94.3%, SPU2 1.0%, waiting for the GS thread 0.0%
+time: 60.4 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 94.2%, SPU2 1.1%, waiting for the GS thread 0.0%
 kernel services used:
   -120  SifSetDChain             x19
    -67  iSignalSema              x19
@@ -8920,8 +8920,8 @@ most called:
   0x00754410                               x1
 device registers read: 39
   0x10000000 x3
-  0x10001000 x1602
-  0x10001010 x2138
+  0x10001000 x1587
+  0x10001010 x2118
   0x10001810 x1
   0x10003020 x1
   0x10008000 x4
@@ -8949,7 +8949,7 @@ device registers read: 39
   0x1000E030 x3
   0x1000E040 x3
   0x1000E050 x3
-  0x1000F000 x110560908
+  0x1000F000 x109899489
   0x12000000 x244
   0x12000020 x244
   0x12000070 x2
@@ -8959,11 +8959,11 @@ device registers read: 39
   0x120000E0 x244
   0x12001000 x159
 device registers written: 85
-  0x10000000 x746
-  0x10000010 x746
+  0x10000000 x745
+  0x10000010 x745
   0x10001000 x1
-  0x10001010 x1069
-  0x10001020 x535
+  0x10001010 x1059
+  0x10001020 x530
   0x10003000 x3
   0x10003010 x2
   0x10003C10 x3
