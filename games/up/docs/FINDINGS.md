@@ -577,3 +577,36 @@ from `engine/tools/disasm.py --game games/up --addr …`.
 3. If it comes only after the reply, the bind in the IOP handler must not wait.
    If it is in a thread that does not run, log that thread's wait.
 
+**Runs 45606669485, 45611623898, 45617023584 (the RPC ids in the EE program).**
+- `scripts/ee_rpc_ids.py` (new) tracks the constants a function loads (lui, addiu,
+  ori) and prints the calls after each load. In `ci-results/ee-rpc-ids.txt`:
+  - `func_0044CDC0` at `0x44CDEC` loads `0x01000001`, then `func_003DF798` (the bind).
+  - `func_0044D4A0` at `0x44D4CC` loads `0x01000002`, then `func_003DFC38` (the
+    registration: `sceSifRegisterRpc(…, 0x01000002, handler 0x44D3A0, …)`) and
+    `func_003E0050` (`sceSifRpcLoop`). So `0x44D4A0` is the body of the EE's RPC
+    server thread for `0x01000002`.
+- `func_0044D4A0` has no direct caller (`ci-results/ee-callers.txt`): it is only
+  reachable as a thread's entry. So the thread is created somewhere, and the stop
+  report lists only two EE threads (1: the main one, entry `0x200008`; 2: the
+  command worker, entry `0x3DD2A0`). The registration thread never ran.
+- `func_0044CDC0` (the client's start): `func_003DF000`, then `func_0044D190`, then a
+  loop `sceSifBindRpc(0x7A7BC0, 0x01000001, 0)` until the client's `server` field
+  (`0x7A7BE4`, offset 36) is set, then `func_003DC820`, then `func_0044CEE0(1, 0x201)`
+  (the RPC 513). `func_0044D190` runs before the bind and is the next thing to read:
+  it is the likely place of the thread creation for `0x44D4A0`.
+- The earlier addresses `0x24CEE4` / `0x24D5BC` are not in use (see above); the
+  program's own addresses are `0x44CDEC` (bind) and `0x44D4CC` (registration).
+
+**Disc download:** the Google Drive connector can read the zip's metadata (916,253,681
+bytes, MD5 `c2bdf10f…`, the same as before), but it cannot put the file in the sandbox:
+`download_file` returns at most 100 MB into the model's context, and the sandbox reaches
+only github, npm and pypi. The CI downloads the disc.
+
+**Next steps:**
+1. Read `ci-results/ee-funcs/func_0044D190.s`: what it creates, with which entry, and
+   whether the creation succeeds (the thread count at the stop says it does not).
+2. Find the callers of `func_0044D190` and `func_0044CDC0` (the `ee-callers.txt`
+   lists the callers of `0x44CDC0`: `func_002DEC40`, then `func_0032F250`).
+3. Check `CreateThread` / `StartThread` in the engine's kernel for the case that
+   silently drops the thread (no error in the log).
+
