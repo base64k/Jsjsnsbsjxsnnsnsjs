@@ -279,6 +279,8 @@ jobs:
       - name: The PC reference build and a headless run (how far the game gets)
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
+        env:
+          UP_SMOKE_WATCH: "0x007A982C"   # the flag the main thread waits on at 0x47DB38
         run: bash scripts/smoke_test.sh
 
       # The APK's stage, when it was asked for. (The check is in the shell:
@@ -375,6 +377,8 @@ jobs:
             # the EE's idle loop, the loader dump): the port-report above
             # cuts its middle out, and these are what tell a run's story.
             grep "^\[host\]" games/up/build/port/report.txt | head -n 20000 > ci-results/host-trace.txt || true
+            # The writes to the watched address (UP_SMOKE_WATCH), with their callers.
+            grep "^\[write\]" games/up/build/port/report.txt | head -n 2000 > ci-results/write-trace.txt || true
           fi
           # What was built: the engine's patches as applied, and the end of the
           # smoke test's build log (a build that went wrong is seen here).

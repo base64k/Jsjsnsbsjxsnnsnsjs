@@ -99,11 +99,15 @@ run_game() {
     # sound driver's, what it asks of the host). On by default; UP_SMOKE_IOP_TRACE=0 turns it off.
     local -a iop_trace=()
     [ "${UP_SMOKE_IOP_TRACE:-1}" = "1" ] && iop_trace=(--iop-trace)
+    # Every store to one guest address, with the calls that make it (its writer):
+    # UP_SMOKE_WATCH=0x007A982C, for a wait on a flag. Logged as "[write]" lines.
+    local -a watch=()
+    [ -n "${UP_SMOKE_WATCH:-}" ] && watch=(--watch-write "$UP_SMOKE_WATCH")
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
-            --audio ${iop_trace[@]+"${iop_trace[@]}"} \
+            --audio ${iop_trace[@]+"${iop_trace[@]}"} ${watch[@]+"${watch[@]}"} \
             --timeout "$SECONDS_TO_RUN" --frames "$GAME/build/smoke/frames" \
             --frames-every 1 --frames-limit 20 --discover "$DISCOVERED" \
             > "$REPORT" 2>&1
