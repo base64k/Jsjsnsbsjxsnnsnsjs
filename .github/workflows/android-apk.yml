@@ -389,11 +389,14 @@ jobs:
           # registration of 0x01000002, the bind of 0x01000001, the caller of the
           # RPC 513, and the entry of EE thread 2. Read with host-trace.txt.
           {
-            for a in 0x0024CEE4 0x0024D5BC 0x0044CEE0 0x003DD2A0; do
+            for a in 0x0044CEE0 0x003DD2A0; do
               echo "=== EE function at $a ==="
               timeout 120 python3 engine/tools/disasm.py --game games/up --addr "$a" 2>&1 | head -n 400 || true
             done
           } > ci-results/ee-code.txt 2>&1 || true
+          # The functions around 0x24CEE4 (the bind) and 0x24D5BC (the registration):
+          # those addresses are inside functions, so the range is rendered.
+          timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x00249000 0x0024E000 2>&1 | head -n 4000 > ci-results/ee-code-24.txt || true
           if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
             git config user.email "agent@arena.ai"
             git config user.name "Arena Agent"
