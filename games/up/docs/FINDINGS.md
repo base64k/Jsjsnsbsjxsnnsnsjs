@@ -272,12 +272,19 @@ game polled procedure 772 20,929 times with the same request. The run ended with
 times: the engine's swapchain path gives up on that error (`vulkan_display.cpp`,
 `Check` after the acquire), so a surface lost in the middle of a play ends the
 display. That is the engine's to handle (recreate the surface), not the game's.
+Patch `0015-surface-lost-made-again.patch` does that (`gpu/src/vulkan_display.cpp`): the
+surface and the swapchain are made again from the window, and the lost picture is
+not shown instead of ending the display.
 
 **Device-specific data is not portable.** `gpu_pipeline_cache.bin` is the
 driver's own pipeline cache (Mali's binary; the engine saves it as
-`gpu_pipeline_cache.bin` and the driver ignores another GPU's). The upload is
-a text rendering of it (U+FFFD replacement characters), so it cannot be used
-as-is and is not committed. Adreno, Mali and Helio builds each make their own.
+`gpu_pipeline_cache.bin` and the driver ignores another GPU's). The upload
+(`gpu_pipeline_cache.bin.txt`, 400,377 bytes) is the raw binary under a `.txt` name:
+its bytes are not UTF-8, and its Vulkan header reads header size 0x20, version 1, vendor
+0x13B5 (ARM), device 0x90910010 (the Mali-G57). The driver checks that header and
+ignores a cache that is not its own. It is git-ignored (`*.bin`) and not committed:
+the engine writes the file on the device itself. Adreno, Mali and Helio builds each
+make their own.
 
 **The sound driver is the game's own code now.** `ZNASND.IRX` used to be
 "its services are the host's": the host answered its RPC with guesses, and the
