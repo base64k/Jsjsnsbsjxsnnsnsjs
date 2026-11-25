@@ -404,12 +404,23 @@ jobs:
           # The loop the main thread spins in at the end of a smoke run (its loop head
           # 0x47DB38, in 0x47DAE0): what it waits for. ci-results/ee-code-47.txt.
           timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0047DA80 0x0047DB80 2>&1 | head -n 400 > ci-results/ee-code-47.txt || true
+          # The functions around the wait (its caller 0x301B80, the one that clears the
+          # flag 0x47C300) and every function that touches the flag's word or its
+          # struct (0x7A9700 + offsets, lui 0x7b/0x7a): who sets it, if anyone does.
+          for a in 0x00301B80 0x0047C300 0x0047DAE0; do
+            echo "=== EE function at $a ==="
+            timeout 120 python3 engine/tools/disasm.py --game games/up --addr "$a" 2>&1 | head -n 300 || true
+          done > ci-results/ee-code-flag.txt || true
           # Every EE function that loads the RPC ids 0x01000002 or 0x01000001 (the
           # constant tracked through lui/addiu/ori), and the calls after it: the
           # registration or bind the id goes to. scripts/ee_rpc_ids.py.
           rm -rf /tmp/ee-asm
           timeout 900 python3 engine/tools/disasm.py --game games/up --all -o /tmp/ee-asm > /tmp/ee-asm.log 2>&1 || true
           python3 scripts/ee_rpc_ids.py /tmp/ee-asm 0x01000002 0x01000001 0x0044D4A0 0x003DD2A0 0x0044CDC0 0x0044CEE0 2>&1 | head -n 400 > ci-results/ee-rpc-ids.txt || true
+          mkdir -p ci-results/ee-flag
+          rm -f ci-results/ee-flag/*.s
+          grep -rlE -- "(-0x67d4|0x982c|-0x67d8|0x9828|-0x6900)\(" /tmp/ee-asm 2>/dev/null | head -n 40 > ci-results/ee-flag/list.txt || true
+          while read -r f; do cp "$f" ci-results/ee-flag/ 2>/dev/null || true; done < ci-results/ee-flag/list.txt
           # The functions around the bind (0x44CDC0), the RPC 513 caller (0x44CEE0)
           # and the registration of 0x01000002 (0x44D4A0), and who calls them.
           mkdir -p ci-results/ee-funcs
