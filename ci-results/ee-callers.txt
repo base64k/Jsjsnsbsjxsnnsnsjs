@@ -33,3 +33,5 @@ func_0044E0D0.s
 func_0032F250.s
 == called from (func_0032F250):
 func_0032F1B0.s
+== called from (func_0044D190):
+func_0044CDC0.s
