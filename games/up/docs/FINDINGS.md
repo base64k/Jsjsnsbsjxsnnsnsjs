@@ -637,3 +637,27 @@ only github, npm and pypi. The CI downloads the disc.
 2. Log that delivery first (log-only patch): the IOP's bind and call for `0x01000002`,
    and whether the EE thread 3 wakes.
 
+**Decision: option (a), the EE's own sifrpc answers (patch 0014).** Option (b) would
+still need the IOP→EE delivery for calls, so the delivery is built once, for both.
+
+What patch 0014 does (`engine/host/src/iop_vm.cpp`, `iop_libs.cpp`, `iop.cpp`):
+- `sceSifBindRpc` with no IOP server for the sid sends the EE a bind packet (0x80000009:
+  `sid` at 32, `cd` = the IOP's client at 28), queued like the other SIF replies. A
+  blocking bind waits (`Wait::RpcReply`) for the answer.
+- The EE's sifrpc (ps2sdk's `_request_bind`, in the game's own code) answers with an
+  RPC-end (0x80000008): `cid` 0x80000009 at 32, `sd` 36, `buf` 40, `cbuf` 44. The IOP
+  copies `buf`, `cbuf`, `sd` into the client (20, 24, 36). With `sd` NULL (no server for
+  the sid yet) the caller waits 1 ms before it asks again, as patch 0008 did.
+- `sceSifCallRpc` on such a server sends a call packet (0x8000000A): `rpc_number` 32,
+  `send_size` 36, `recvbuf` 40 (the IOP's receive address: the EE DMAs its data there),
+  `recv_size` 44, `rmode` 1 (the answer's data arrives with its packet), `sd` 52. The
+  arguments are written into the EE server's buffer (`buf` from the bind) first.
+- The EE's answer to a call (cid 0x8000000A) runs the end function and wakes the caller.
+
+Layouts: ps2sdk `common/include/sifrpc-common.h` (`SifRpcBindPkt_t`, `SifRpcCallPkt_t`,
+`SifRpcRendPkt_t`), the same offsets `iop.cpp` already reads for the EE's requests.
+
+Not verified yet: that the game's EE interrupt handler takes the bind packet (it does
+for the replies the engine already sends), and that the EE's registration sets
+`active_queue` (ps2sdk: `sceSifSetRpcQueue`). The log lines `[host] IOP: binds RPC…`,
+`IOP: the EE's bind answer: server 0x…` and `IOP: RPC procedure … on the EE` show both.
