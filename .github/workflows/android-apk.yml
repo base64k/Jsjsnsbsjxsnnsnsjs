@@ -397,15 +397,12 @@ jobs:
           # The code around 0x24CEE4 (the bind) and 0x24D5BC (the registration), in
           # a range: those addresses are inside functions, not at their starts.
           timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0024C000 0x0024D800 2>&1 | head -n 2000 > ci-results/ee-code-24.txt || true
-          # Every EE call that loads the RPC ids 0x01000002 or 0x01000001 (lui of
-          # 0x0100, then the low half 0x2 or 0x1 in the next few instructions):
-          # which functions register or bind them, and where in the program.
+          # Every EE function that loads the RPC ids 0x01000002 or 0x01000001 (the
+          # constant tracked through lui/addiu/ori), and the calls after it: the
+          # registration or bind the id goes to. scripts/ee_rpc_ids.py.
           rm -rf /tmp/ee-asm
           timeout 900 python3 engine/tools/disasm.py --game games/up --all -o /tmp/ee-asm > /tmp/ee-asm.log 2>&1 || true
-          {
-            echo "functions rendered: $(ls /tmp/ee-asm 2>/dev/null | wc -l)"
-            grep -rn -A6 -E "lui +\\\$a[0-3], 0x100$" /tmp/ee-asm 2>/dev/null | grep -E "0x2$|0x1$|addiu|ori" | head -n 400 || true
-          } > ci-results/ee-rpc-ids.txt || true
+          python3 scripts/ee_rpc_ids.py /tmp/ee-asm 0x01000002 0x01000001 2>&1 | head -n 400 > ci-results/ee-rpc-ids.txt || true
           if [ -f ci-results/smoke-summary.txt ] || [ -f ci-results/port-report.txt ]; then
             git config user.email "agent@arena.ai"
             git config user.name "Arena Agent"
