@@ -553,3 +553,27 @@ from `engine/tools/disasm.py --game games/up --addr …`.
    bind behaviour (patch 0008 makes a bind wait 1 ms when no server exists).
 3. If it is reached in EE thread 2, log that thread's wait (semaphore id, who
    signals it) with a new log-only patch.
+
+**Runs 45585891104 and 45595639376 (the EE code the run stops at).**
+- `ci-results/ee-code.txt`: the caller of the RPC 513 is `func_0044CEE0`. It first
+  waits while `func_003DFB60(0x7A7BC0)` is nonzero (sleeping 10 ms each time), then
+  sends 32 bytes from `0x7A7C00`. The trace's `0x007A7C00` is that buffer.
+- `ci-results/ee-code.txt`: EE thread 2 is `func_003DD2A0`, a worker for a queue of
+  one-byte commands. It waits on the semaphore at `[0x7A0000 - 0x53A0]`
+  (`0x79AC60`). It is not the thread that registers `0x01000002`.
+- **Correction:** the addresses `0x24CEE4` and `0x24D5BC` from `9120ca7` are not
+  call sites in this analysis. `0x24CEE4` is a `nop` and `0x24D5BC` is a `daddu`
+  (`ci-results/ee-code-24.txt`, lines 1033 and 1501). They were probably wrong, or
+  they were return addresses from another run. The EE's `sceSifRegisterRpc` and
+  `sceSifBindRpc` calls for `0x01000002` and `0x01000001` must be found by their
+  constants (`lui`/`ori` of `0x0100`/`0x0002` and `0x0100`/`0x0001`), not by these
+  addresses.
+
+**Next steps (replace the earlier ones):**
+1. Find every EE call that loads `0x01000002` or `0x01000001` as an argument
+   (a scan of `disasm.py --all` in CI, saved as a grep result), and which of them
+   is a `sceSifRegisterRpc` (`jal` to the same target as the other registrations).
+2. Check whether that registration is reached before the RPC 513 call.
+3. If it comes only after the reply, the bind in the IOP handler must not wait.
+   If it is in a thread that does not run, log that thread's wait.
+
