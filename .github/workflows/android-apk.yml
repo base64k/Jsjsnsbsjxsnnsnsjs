@@ -397,6 +397,9 @@ jobs:
           # The code around 0x24CEE4 (the bind) and 0x24D5BC (the registration), in
           # a range: those addresses are inside functions, not at their starts.
           timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0024C000 0x0024D800 2>&1 | head -n 2000 > ci-results/ee-code-24.txt || true
+          # The loop the main thread spins in at the end of a smoke run (its loop head
+          # 0x47DB38, in 0x47DAE0): what it waits for. ci-results/ee-code-47.txt.
+          timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0047DA80 0x0047DB80 2>&1 | head -n 400 > ci-results/ee-code-47.txt || true
           # Every EE function that loads the RPC ids 0x01000002 or 0x01000001 (the
           # constant tracked through lui/addiu/ori), and the calls after it: the
           # registration or bind the id goes to. scripts/ee_rpc_ids.py.

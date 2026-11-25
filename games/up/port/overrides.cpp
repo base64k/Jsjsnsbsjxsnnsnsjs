@@ -65,4 +65,8 @@ void RegisterGameOverrides() {
     ps2host::AddIdleLoop(0x0030CCB4u);
     ps2host::AddIdleLoop(0x0045A738u);
     ps2host::AddIdleLoop(0x003F4674u);
+    // The EE's main thread after the sound driver is bound (0x47DAE0, from the
+    // game's init at 0x32F250): it polls INTC_STAT for the vertical blank, 216
+    // million reads in a 300 s run. Named, it waits asleep for the blank.
+    ps2host::AddIdleLoop(0x0047DB38u);
 }
