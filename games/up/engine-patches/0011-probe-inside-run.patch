@@ -1,5 +1,5 @@
 diff --git a/host/src/iop_vm.cpp b/host/src/iop_vm.cpp
-index 6436ac3..5fc2b22 100644
+index 6436ac3..6c1d3dd 100644
 --- a/host/src/iop_vm.cpp
 +++ b/host/src/iop_vm.cpp
 @@ -445,6 +445,27 @@ void IopRpcAnswer(Vm& vm, const RpcRequest& done, u32 answer) {
@@ -13,7 +13,7 @@ index 6436ac3..5fc2b22 100644
 +
 +void ProbeLoader(Vm& vm) {
 +    if (!g_probe_thread || g_probe_done) return;
-+    if (std::chrono::steady_clock::now() - g_probe_start < std::chrono::milliseconds(200)) return;
++    if (std::chrono::steady_clock::now() - g_probe_start < std::chrono::milliseconds(20)) return;
 +    g_probe_done = true;
 +    std::fprintf(stderr, "[host] PROBE: current thread %u, instructions %llu\n", unsigned(vm.current),
 +                 (unsigned long long)vm.instructions);
