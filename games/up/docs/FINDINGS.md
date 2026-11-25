@@ -458,6 +458,20 @@ or in the EE program.
 servers only. Even once the EE has registered `0x01000002`, the IOP's bind
 returns 0 unless the port reads the EE's registrations. That is still open.
 
+**Runs 45554406369 and 45557930345 (patch 0011: a probe in the IOP's run loop).**
+The probe prints the thread states and the loader's code 0.2 s (then 20 ms)
+after a module's start begins. It never printed, in either run. Every run now
+stops at exactly 12.7 s, which looks like the smoke's "600 frames of
+interrupts woke none" watchdog (about 47 frames a second), not like the
+loader's own time. So the watchdog may stop the run before the loader's start
+has run long enough to show. Also, `Execute` runs a thread with its interrupts
+off past its quantum, up to 1,000,000 instructions per call (`kInterruptsOffMax`),
+so a spin with interrupts off returns to `Run` only every 1,000,000 instructions.
+
+Next: stamp the wall clock on "running ZNASND" and on the stop, to see how long
+the start had before the stop; if it is short, make the watchdog count only
+the EE's frames that really advance.
+
 **Next steps (updated):**
 1. Find where ZNASND's start spins after "Loaded Successfully": log the
    loader's pc from inside `Run` (for example at each slice, after 0.2 s), and
