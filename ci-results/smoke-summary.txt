@@ -2,45 +2,39 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: every thread is waiting, and 600 frames of interrupts woke none:
-    thread 1: waiting on a semaphore
-    thread 2: waiting on a semaphore
-    thread 3: sleeping
-functions executed: 633 distinct
+stopped: the time limit, in the loop at 0x0047DB38
+functions executed: 689 distinct
+guest call stack where it stopped (innermost last):
+  0x00200008
+  0x002DD240
+  0x0032F1B0
+  0x0032F250
+  0x002DEC40
+  0x00301B80
+  0x0047DAE0
 threads:
-  thread 1: waiting on a semaphore, priority 10, entry 0x00200008, ran 22 times
-      0x00200008 
-      0x002DD240 
-      0x0032F1B0 
-      0x0032F250 
-      0x002DEC40 
-      0x0044CDC0 
-      0x0044CEE0 
-      0x003DF968 sceSifCallRpc
-      0x003DC5E0 WaitSema
+  thread 1: running, priority 10, entry 0x00200008, ran 42 times
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
       0x003DD2A0 
       0x003DC5E0 WaitSema
-  thread 3: sleeping, priority 4, entry 0x0044D4A0, ran 1 times
+  thread 3: sleeping, priority 4, entry 0x0044D4A0, ran 2 times
       0x0044D4A0 
       0x003E0050 
       0x003DC4C0 SleepThread
   IOP calls, most frequent:
-    0x00015B10 x13406 (from 0x0001EDA4)
-    0x00015B74 x13404 (from 0x00018E2C)
-    0x0001ECF4 x7260 (from 0x0001616C)
-    0x00015A70 x7260 (from 0x00016128)
-    0x00015C9C x6756 (from 0x00019728)
-    0x00015C94 x6728 (from 0x00019860)
-    0x00015BA8 x6704 (from 0x0001EDDC)
-    0x0001ED04 x6702 (from 0x00018E24)
-    0x00015BA0 x6702 (from 0x0001ED10)
-    0x0001EDBC x6701 (from 0x00018E40)
-    0x000198E4 x6700 (from 0x00018FE4)
-    0x0001966C x6700 (from 0x000198EC)
-    0x000165E0 x6700 (from 0x00018E48)
-    0x00015CB4 x6700 (from 0x00019674)
-    0x00015BD4 x6700 (from 0x000165F0)
+    0x00015B10 x21610 (from 0x0001EDA4)
+    0x00015B74 x21607 (from 0x00018E2C)
+    0x00015C9C x10858 (from 0x00019728)
+    0x00015C94 x10830 (from 0x00019860)
+    0x00015BA8 x10805 (from 0x0001EDDC)
+    0x0001ED04 x10804 (from 0x00018E24)
+    0x00015BA0 x10804 (from 0x0001ED10)
+    0x0001EDBC x10803 (from 0x00018E40)
+    0x000198E4 x10802 (from 0x00018FE4)
+    0x0001966C x10802 (from 0x000198EC)
+    0x000165E0 x10802 (from 0x00018E48)
+    0x00015CB4 x10802 (from 0x00019674)
+    0x00015BD4 x10802 (from 0x000165F0)
     0x00015B18 x2390 (from 0x00019FDC)
     0x00015AF0 x1114 (from 0x0001A090)
     0x00015B20 x812 (from 0x0001A008)
@@ -50,21 +44,26 @@ threads:
     0x00019D60 x28 (from 0x00019F24)
     0x00015C8C x28 (from 0x00019DA0)
     0x00019E6C x22 (from 0x0001A244)
-    0x00015C18 x14 (from 0x00017D24)
+    0x00015C18 x22 (from 0x00016B18)
     0x0001EA58 x11 (from 0x00017B48)
     0x0001D620 x8 (from 0x00017BA8)
-    0x00015C40 x4 (from 0x00016AB8)
-    0x000159D4 x3 (from 0x0001A778)
+    0x00015C40 x8 (from 0x00016AB8)
+    0x00015C68 x4 (from 0x00016B38)
+    0x000159D4 x4 (from 0x000161B8)
     0x000159C4 x3 (from 0x0001B9A0)
-  IOP thread 3: delayed, priority 30, entry 0x00015E74, at 0x00016130
+    0x0001ECF4 x2 (from 0x000161A4)
+  IOP thread 3: serving RPC, priority 30, entry 0x00015E74, at 0x1FFFFFD0
   IOP thread 5: delayed, priority 30, entry 0x00018E00, at 0x00018E34
 VIF1 commands: NOP 6 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 3 FLUSH 1 STMASK 3 DIRECT 5; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
 GS: 562 primitives, 860160 pixels written
 GIF tags: PATH1 0, PATH2 25, PATH3 125; image 4160 quadwords; register writes: 00:22 01:2 05:604 06:1 07:1 08:1 09:1 14:1 15:1 16:1 17:1 18:126 19:2 1A:126 1B:3 34:1 35:1 36:1 37:1 3B:2 3D:1 3F:1 40:126 41:2 42:1 43:1 44:1 45:125 46:122 47:126 48:2 49:1 4A:1 4B:1 4C:126 4D:2 4E:126 4F:2 50:2 51:3 52:2 53:2
-time: 12.7 s; GS drawing 0.1%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 7.3%, SPU2 0.6%, waiting for the GS thread 1.0%
+time: 300.0 s; GS drawing 0.0%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.4%, waiting for the GS thread 0.2%
 kernel services used:
-  -120  SifSetDChain             x19
-   -67  iSignalSema              x19
+  -120  SifSetDChain             x41
+  -119  SifSetDma                x1
+   -67  iSignalSema              x39
+   -52  iWakeupThread            x1
+   -47  GetThreadId              x1
      2  ?                        x2
     16  AddIntcHandler           x3
     18  AddDmacHandler           x4
@@ -77,14 +76,14 @@ kernel services used:
     41  ChangeThreadPriority     x2
     47  GetThreadId              x10
     48  ReferThreadStatus        x1
-    50  SleepThread              x1
+    50  SleepThread              x2
     60  SetupThread              x1
     61  SetupHeap                x1
     62  EndOfHeap                x2
-    64  CreateSema               x32
-    65  DeleteSema               x20
+    64  CreateSema               x51
+    65  DeleteSema               x40
     66  SignalSema               x9
-    68  WaitSema                 x30
+    68  WaitSema                 x49
     69  PollSema                 x1
     74  SetOsdConfigParam        x2
     75  GetOsdConfigParam        x4
@@ -94,7 +93,8 @@ kernel services used:
    107  ?                        x1
    113  GsPutIMR                 x2
    116  SetSyscall               x18
-   119  SifSetDma                x23
+   118  SifDmaStat               x1
+   119  SifSetDma                x44
    120  SifSetDChain             x2
    121  SifSetReg                x5
    122  SifGetReg                x6
