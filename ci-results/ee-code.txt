@@ -1,7 +1,3 @@
-=== EE function at 0x0024CEE4 ===
-no function at 0x0024cee4
-=== EE function at 0x0024D5BC ===
-no function at 0x0024d5bc
 === EE function at 0x0044CEE0 ===
 /**************************************************************************
  * func_0044CEE0
