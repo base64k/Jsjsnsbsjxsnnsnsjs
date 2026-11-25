@@ -696,3 +696,8 @@ for the replies the engine already sends), and that the EE's registration sets
 - Open: the result of the `AddIdleLoop(0x0047DB38)` run (45651299149) is unknown
   (the watch timed out; no result was read). The loop at `0x47DB38` is the flag wait
   above, not INTC polling.
+
+- Run 45683487799 (`3a24cdb`, patches 0001-0015): the APK builds (`success`). The PC
+  smoke still stops at the time limit in the loop at `0x0047DB38`, with the same guest stack
+  (`0x0047DAE0` ... `0x00200008`), 689 functions. Patch 0015 is not reached in the smoke
+  (no surface is lost there); its effect is the phone's, and is not yet read from a phone run.
