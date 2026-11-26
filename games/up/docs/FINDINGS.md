@@ -870,3 +870,20 @@ print directly (`ci-results/ee-string-path.txt`):
 - The chain, from the game's `printf` to the engine: `printf` (`0x3F2AF8`) calls `0x3DDEB0` per
   character, which sends each line through `0x3DD900` (`kputs`, `Deci2Call(0x10)`), which the
   engine prints as `[guest]`.
+
+### The likely root cause: the program is started with no argv (patch 0018)
+
+`func_002DD240` is `main`: it keeps its arguments (`$s3 = $a0`, `$s2 = $a1`) and reads `argv[0]`
+at once (`lw $a2, 0($s2)`, the "%s.xMAP" line). The engine starts the program with a fresh
+register file (`NewContext()`), so `$a0 = argc = 0` and `$a1 = argv = NULL`. Then `argv[0]`
+reads as null, the boot path is built from nothing, and the game prints `Path : (null)`
+(`func_002DD6B0`). The kernel gives a program `argc = 1` and `argv[0]` = its own path
+(`cdrom0:\NAME;1`), which is what the game expects.
+
+Patch `0018-ee-argv.patch` (host.cpp, applied after 0017) writes that argv at the top of RAM
+(`kRdramSize - 0x800`, the string 16 bytes above it), sets `$a0 = 1` and `$a1 = argv`. The path
+is the disc's boot path (`Disc::BootPath()`), or the ELF's name for a run without a disc.
+
+Check: the next smoke run should print `[guest] Path : cdrom0:\SLUS_218.64;1`, not `(null)`,
+and the port should go past the place it stopped before (the ManipulatorMgr read at `0x795F94`).
+If it does not, the `(null)` is not the whole story.

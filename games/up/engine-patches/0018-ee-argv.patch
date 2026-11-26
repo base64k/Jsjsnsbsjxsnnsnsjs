@@ -1,0 +1,34 @@
+diff --git a/host/src/host.cpp b/host/src/host.cpp
+index ef94d7f..78b7b62 100644
+--- a/host/src/host.cpp
++++ b/host/src/host.cpp
+@@ -950,6 +950,29 @@ int Run(const Options& options) {
+         // own start-up code then asks for its real one (SetupThread).
+         c.r[29] = kRdramSize - 0x10;
+         c.r[31] = 0;
++        // The kernel gives the program its arguments, main(argc, argv), and argv[0] is its own
++        // path (cdrom0:\NAME;1). The game copies argv[0] first thing - its file paths are built
++        // from it - so without them it prints "Path : (null)" and works on empty names. Written
++        // at the top of RAM, below the first frames of the start-up stack, which main copies
++        // from before it goes any deeper.
++        {
++            std::string self = options.disc_path.empty() ? std::string() : GuestDisc().BootPath();
++            if (self.empty()) {
++                const std::size_t slash = options.elf_path.find_last_of("/\\");
++                self = "cdrom0:\\" + options.elf_path.substr(slash == std::string::npos ? 0 : slash + 1) + ";1";
++            }
++            const u32 argv_base = kRdramSize - 0x800, text = argv_base + 0x10;
++            Memory& memory = GuestMemory();
++            u8* string = memory.Translate(text, u32(self.size() + 1));
++            u8* vector = memory.Translate(argv_base, 8);
++            if (string && vector) {
++                std::memcpy(string, self.c_str(), self.size() + 1);
++                const u32 argv[2] = {text, 0};
++                std::memcpy(vector, argv, 8);
++                c.r[4] = 1;                  // argc
++                c.r[5] = argv_base;          // argv
++            }
++        }
+         std::fprintf(stderr, "[host] entry %s\n", Describe(entry).c_str());
+         RunThreads(c, entry, options.loop_budget);
+     } catch (const GuestExit& exit) {
