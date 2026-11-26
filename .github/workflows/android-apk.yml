@@ -458,10 +458,10 @@ jobs:
           # The functions around the bind (0x44CDC0), the RPC 513 caller (0x44CEE0)
           # and the registration of 0x01000002 (0x44D4A0), and who calls them.
           mkdir -p ci-results/ee-funcs
-          for f in func_0044CDC0 func_0044D4A0 func_0044CEE0 func_002DEC40 func_0032F250 func_0044D190 func_003DF000 func_003DC820 func_002DCB00 func_002DD240 func_0032F1B0 func_0032EAA0 func_004B7A60 func_002DD6B0 func_002DCE30 func_00331230 func_002DD6A0 func_00338480 func_00338490; do
+          for f in func_0044CDC0 func_0044D4A0 func_0044CEE0 func_002DEC40 func_0032F250 func_0044D190 func_003DF000 func_003DC820 func_002DCB00 func_002DD240 func_0032F1B0 func_0032EAA0 func_004B7A60 func_002DD6B0 func_002DCE30 func_00331230 func_002DD6A0 func_00338480 func_00338490 func_002DC710 func_003DD900 func_003DC9D0; do
             cp "/tmp/ee-asm/$f.s" ci-results/ee-funcs/ 2>/dev/null || true
           done
-          for f in func_0044D4A0 func_0044CDC0 func_0044CEE0 func_002DEC40 func_0032F250 func_0044D190 func_002DCE30 func_00331230 func_002DD6A0; do
+          for f in func_0044D4A0 func_0044CDC0 func_0044CEE0 func_002DEC40 func_0032F250 func_0044D190 func_002DCE30 func_00331230 func_002DD6A0 func_003DD900 func_002DC710; do
             echo "== called from ($f):"
             grep -rlE "jal +$f( |\$)" /tmp/ee-asm 2>/dev/null | xargs -r -n1 basename || true
           done > ci-results/ee-callers.txt || true

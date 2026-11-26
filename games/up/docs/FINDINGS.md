@@ -816,3 +816,17 @@ it logs `vkQueuePresentKHR failed (-1000000000)` through `Check()`, which is the
 behaviour. So the phone's build predates 0015, and 0015 is still unverified on a device.
 
 **5. The GPU pipeline cache.** `*.bin` is in `.gitignore`, and no `.bin` is tracked.
+
+### Run 45764916555 and 45767596301 (the three checks, with the tools)
+
+- **The debug print is `func_003DD900`.** `scripts/ee_find.py` finds `Deci2Call` (syscall 0x7C)
+  through its wrapper `func_003DC9D0`, and the call with `$a0 = 0x10` is in `func_003DD900`
+  (`ci-results/ee-find.txt`). The phone trace shows `[call] 0x003DD900` right before
+  `[guest] Path : (null)`. So the `[guest]` line is `func_003DD900`'s output.
+- **The allocator is `func_002DC710`.** `func_002DCB00` (`ManipulatorManager_Z`) tail-jumps to
+  `func_002DCE30`, which in turn is `j func_002DC710`. Its body is dumped in the next run.
+- **The pointer is cleared after the loop.** `func_0032F1B0` runs the init (`func_0032F250`), then
+  loops on `func_0032EAA0` until `func_002DD6A0` returns non-zero, then calls `func_00331230`,
+  which does `sw $zero, 0x5F94`. So the pointer is valid only during the loop, and the crash is a
+  read through it after something other than the loop exit has run.
+- **Run 45767596301 stopped on `0x08C20FB0`** (the crash address varies between runs, as before).
