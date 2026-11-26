@@ -413,6 +413,8 @@ jobs:
             echo "=== EE function at $a ==="
             timeout 120 python3 engine/tools/disasm.py --game games/up --addr "$a" 2>&1 | head -n 300 || true
           done > ci-results/ee-code-crash.txt 2>&1 || true
+          # The caller of the crashing function: where its object comes from (0x32ED94).
+          timeout 120 python3 engine/tools/disasm.py --game games/up --range 0x0032ED40 0x0032EDF0 2>&1 | head -n 200 >> ci-results/ee-code-crash.txt || true
           timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0047DA80 0x0047DB80 2>&1 | head -n 400 > ci-results/ee-code-47.txt || true
           # The functions around the wait (its caller 0x301B80, the one that clears the
           # flag 0x47C300) and every function that touches the flag's word or its
