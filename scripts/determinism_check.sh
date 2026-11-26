@@ -60,7 +60,7 @@ for i in 1 2; do
     BUILD_DIR="$(dirname "$BUILD")"
     ls -la "$BUILD_DIR" > "$OUT/state-before-$i.txt" 2>&1 || true
     rm -rf "$BUILD_DIR/captures"
-    rm -f "$BUILD_DIR/pc_settings.ini" "$BUILD_DIR"/*.bin
+    rm -f "$BUILD_DIR/pc_settings.ini" "$BUILD_DIR/gpu_pipeline_cache.bin"
     log "run $i of 2: ${SECONDS_TO_RUN}s"
     echo "command: $BUILD $ELF --disc ... --no-memcard --audio --iop-trace ${det_flags[*]:-} ${local_watch[*]:-} --timeout $SECONDS_TO_RUN" > "$OUT/command-$i.txt"
     set +e
@@ -74,16 +74,19 @@ for i in 1 2; do
     echo "exit $?" >> "$OUT/run-$i.txt"
     set -e
     # A run that did not get to the game (a missing binary, a bad argument) is a failure, not a result.
+    # Its summary is still written (below), so the failure is in the saved results and not silent.
     if ! grep -q -E '^(stopped:|functions executed)' "$OUT/run-$i.txt"; then
         log "run $i ended without a report of its stop: see $OUT/run-$i.txt"
-        tail -n 20 "$OUT/run-$i.txt"
-        exit 1
+        tail -n 20 "$OUT/run-$i.txt" || true
+        failed="run $i ended without a report (exit $(tail -n 1 "$OUT/run-$i.txt" | sed 's/^exit //'))"
+        break
     fi
 done
 
 # The lines that differ run to run by the clock alone are taken out: the IOP's
 # and the loader's "(wall)" times. What is left must be the same in every run.
 for i in 1 2; do
+    [ -f "$OUT/run-$i.txt" ] || : > "$OUT/run-$i.txt"
     grep -v "(wall)" "$OUT/run-$i.txt" > "$OUT/run-$i.nowall.txt" || true
 done
 
@@ -95,6 +98,7 @@ done
 
 {
     echo "the two runs, the wall-clock lines taken out"
+    [ -z "${failed:-}" ] || echo "FAILED: $failed"
     echo "the first times in run 1: $(head -n 3 "$OUT/times-1.txt" | tr '\n' '|')"
     echo "the first times in run 2: $(head -n 3 "$OUT/times-2.txt" | tr '\n' '|')"
     echo "lines: run 1 $(wc -l < "$OUT/run-1.nowall.txt"), run 2 $(wc -l < "$OUT/run-2.nowall.txt")"
@@ -114,3 +118,4 @@ done
 } > "$OUT/summary.txt"
 
 cat "$OUT/summary.txt"
+[ -z "${failed:-}" ] || exit 1
