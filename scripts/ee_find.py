@@ -95,31 +95,28 @@ def main():
     root = sys.argv[1]
     lo = num(sys.argv[2]) if len(sys.argv) > 3 else 0x795F80
     hi = num(sys.argv[3]) if len(sys.argv) > 3 else 0x795FA0
+    # the Deci2Call wrapper (li $v1, 0x7C; syscall) and the call sites that set $a0 = 0x10
+    # just before each jal to it: kputs.
     files = sorted(os.path.join(root, f) for f in os.listdir(root) if f.endswith(".s"))
     print(f"== {len(files)} functions in {root}")
 
     # 1. Deci2Call(0x10) - kputs
-    print("\n== 1. functions with syscall 0x7C (Deci2Call) and $a0 = 0x10 in the body")
-    kputs = []
-    callers = defaultdict(set)
+    print("\n== 1. Deci2Call (syscall 0x7C) wrappers, and the jal sites that set $a0 = 0x10 before them")
+    wrappers = set()
     for path in files:
         for name, body in functions(path):
             text = "\n".join(t for *_, t in body)
-            if re.search(r"addiu\s+\$v1,\s*\$zero,\s*0x7c\b", text) and re.search(r"addiu\s+\$a0,\s*\$zero,\s*0x10\b", text):
-                kputs.append(name)
-    for name in sorted(set(kputs)):
-        print(f"  candidate {name}")
-    targets = set(kputs)
-    if targets:
-        for path in files:
-            for name, body in functions(path):
-                for addr, mn, ops, text in body:
-                    if mn == "jal":
-                        callee = ops.strip()
-                        if callee in targets:
-                            callers[callee].add(name)
-        for name in sorted(callers):
-            print(f"  {name} called from: {', '.join(sorted(callers[name]))}")
+            if re.search(r"addiu\s+\$v1,\s*\$zero,\s*0x7c\b", text):
+                wrappers.add(name)
+    print("  wrappers: " + (", ".join(sorted(wrappers)) or "none"))
+    for path in files:
+        for name, body in functions(path):
+            for i, (addr, mn, ops, text) in enumerate(body):
+                if mn == "jal" and ops.strip() in wrappers:
+                    # the four instructions before the jal, and the delay slot
+                    window = [b[3].strip() for b in body[max(0, i - 4):i + 2]]
+                    if any(re.search(r"addiu\s+\$a0,\s*\$zero,\s*0x10\b", w) for w in window):
+                        print(f"  {name} @ {addr:08x} calls {ops.strip()} with $a0 = 0x10 (kputs)")
 
     # 2. Loads and stores of the address range
     print(f"\n== 2. loads and stores of 0x{lo:08X}..0x{hi:08X} (base tracked through lui/addiu/ori)")
