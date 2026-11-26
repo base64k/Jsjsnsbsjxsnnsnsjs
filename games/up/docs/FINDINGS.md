@@ -842,3 +842,14 @@ behaviour. So the phone's build predates 0015, and 0015 is still unverified on a
 - Run 45770284829 stopped on `0xFFFFF000`, outside guest memory: the crash address varies per
   run (`0x02000000`, `0x08C20FB0`, `0xF6FFFF42`, `0xFFFFF000`).
 - Open: who calls `func_003DDEB0` with a null `Path` (the next run dumps it and its callers).
+
+### The print path, to the character
+
+- `func_003DDEB0(c)` is the character output of the game's `printf`: it appends `c` to a buffer
+  (`0x79B480`, the count at `0x713784`) and sends the buffer through `func_003DD900` (`kputs`) on
+  a newline or at 126 characters. It has no direct `jal` callers, so `printf` calls it through a
+  function pointer. That is why its callers list is empty.
+- `func_003F2AF8` is printf-like (the `Language: %d` and `App : %s` lines in `func_002DD240`).
+- `(null)` is what `printf` writes for a null `%s`, so the caller that passed a null `Path` is the
+  one to find. The disassembly writes the strings it loads as comments, so the next run greps for
+  the `"Path` string (`ci-results/ee-string-path.txt`, `ci-results/ee-path/`).
