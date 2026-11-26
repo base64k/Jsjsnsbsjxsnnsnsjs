@@ -9,6 +9,7 @@
 #
 #   UP_DET_SECONDS  how long each run goes (default 150)
 #   UP_SMOKE_WATCH  the same watched addresses as the smoke run (optional)
+#   UP_DET_FLAGS    the engine's flags for the runs (default --virtual-time)
 
 set -euo pipefail
 
@@ -30,6 +31,11 @@ log() { printf '\033[1;34m[determinism]\033[0m %s\n' "$*"; }
 rm -rf "$OUT"
 mkdir -p "$OUT"
 
+# The engine\'s own switch for a repeatable run: --virtual-time keeps the clock
+# (timers, the SIF replies\' due times) in the scheduler, not in the wall clock.
+# Without it the runs differ by their real timing (ClockNs in timers.cpp).
+read -r -a det_flags <<< "${UP_DET_FLAGS:---virtual-time}"
+
 local_watch=()
 for w in ${UP_SMOKE_WATCH//,/ }; do local_watch+=(--watch-write "$w"); done
 
@@ -48,7 +54,7 @@ for i in 1 2; do
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
-            --audio --iop-trace ${local_watch[@]+"${local_watch[@]}"} \
+            --audio --iop-trace ${det_flags[@]+"${det_flags[@]}"} ${local_watch[@]+"${local_watch[@]}"} \
             --timeout "$SECONDS_TO_RUN" --frames "$OUT/frames-$i" \
             --frames-every 1 --frames-limit 20 --discover "$OUT/discovered-$i.txt" \
             > "$OUT/run-$i.txt" 2>&1
