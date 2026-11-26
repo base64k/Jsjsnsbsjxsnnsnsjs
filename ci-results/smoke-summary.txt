@@ -30,28 +30,28 @@ threads:
   IOP calls, most frequent:
     0x00018FE8 x2393 (from 0x0001DD0C)
     0x00018FC0 x1114 (from 0x0001D560)
-    0x00018FE0 x925 (from 0x00022274)
+    0x00018FE0 x1033 (from 0x00022274)
+    0x00019044 x975 (from 0x0001C2FC)
     0x00018FD8 x887 (from 0x0001DEA8)
-    0x00019044 x868 (from 0x0001C2FC)
     0x00018FF0 x821 (from 0x0001E344)
     0x0001D2B4 x608 (from 0x0001D490)
     0x00018FF8 x556 (from 0x0001D5EC)
-    0x0001916C x494 (from 0x0001CBF8)
-    0x00019078 x466 (from 0x000222AC)
-    0x000221D4 x460 (from 0x0001C2F4)
-    0x00019070 x460 (from 0x000221E0)
-    0x0002228C x459 (from 0x0001C310)
-    0x00019164 x456 (from 0x0001CD30)
-    0x000190E8 x448 (from 0x0001C2B8)
-    0x00019AB0 x437 (from 0x0001C318)
-    0x000190A4 x437 (from 0x00019AC0)
-    0x0001CDB4 x428 (from 0x0001C4B4)
-    0x0001CB3C x428 (from 0x0001CDBC)
-    0x00019184 x428 (from 0x0001CB44)
-    0x0001F18C x352 (from 0x0001C41C)
-    0x00019EF4 x352 (from 0x0001F1F0)
-    0x0001C0E4 x71 (from 0x0001A0D0)
-    0x0001A028 x70 (from 0x000196E4)
+    0x0001916C x548 (from 0x0001CBF8)
+    0x00019078 x519 (from 0x000222AC)
+    0x000221D4 x514 (from 0x0001C2F4)
+    0x00019070 x514 (from 0x000221E0)
+    0x0002228C x513 (from 0x0001C310)
+    0x00019164 x510 (from 0x0001CD30)
+    0x00019AB0 x491 (from 0x0001C318)
+    0x000190A4 x491 (from 0x00019AC0)
+    0x0001CDB4 x482 (from 0x0001C4B4)
+    0x0001CB3C x482 (from 0x0001CDBC)
+    0x00019184 x482 (from 0x0001CB44)
+    0x000190E8 x466 (from 0x0001C2B8)
+    0x0001F18C x391 (from 0x0001C41C)
+    0x00019EF4 x391 (from 0x0001F1F0)
+    0x0001C0E4 x74 (from 0x0001A0D0)
+    0x0001A028 x73 (from 0x000196E4)
     0x0001915C x33 (from 0x0001E550)
     0x00018ED8 x32 (from 0x00019F3C)
     0x00018ED0 x32 (from 0x00019F14)
@@ -61,14 +61,14 @@ threads:
   IOP thread 2: serving RPC, priority 24, entry 0x000104E0, at 0x00010574
   IOP thread 5: serving RPC, priority 30, entry 0x00019344, at 0x1FFFFFD0
   IOP thread 7: delayed, priority 30, entry 0x0001C2D0, at 0x0001C304
-VIF1 commands: NOP 24681 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 496 FLUSH 841 FLUSHA 280 STMASK 3 DIRECT 1545; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
-GS: 42702 primitives, 61090490 pixels written
-GIF tags: PATH1 0, PATH2 3035, PATH3 405; image 84800 quadwords; register writes: 00:1632 01:142 03:2800 04:280 05:48204 06:71 07:71 08:141 09:71 14:71 15:141 16:1 17:1 18:616 19:282 1A:476 1B:283 34:1 35:71 36:1 37:71 3B:142 3D:1 3F:141 40:756 41:282 42:71 43:71 44:71 45:335 46:122 47:756 48:282 49:1 4A:1 4B:1 4C:616 4D:282 4E:616 4F:282 50:212 51:3 52:212 53:212 7F:280
-time: 9.7 s; GS drawing 19.3%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.6%, waiting for the GS thread 18.2%
+VIF1 commands: NOP 25734 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 517 FLUSH 877 FLUSHA 292 STMASK 3 DIRECT 1611; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
+GS: 44508 primitives, 63665416 pixels written
+GIF tags: PATH1 0, PATH2 3164, PATH3 417; image 88256 quadwords; register writes: 00:1701 01:148 03:2920 04:292 05:50244 06:74 07:74 08:147 09:74 14:74 15:147 16:1 17:1 18:637 19:294 1A:491 1B:295 34:1 35:74 36:1 37:74 3B:148 3D:1 3F:147 40:783 41:294 42:74 43:74 44:74 45:344 46:122 47:783 48:294 49:1 4A:1 4B:1 4C:637 4D:294 4E:637 4F:294 50:221 51:3 52:221 53:221 7F:292
+time: 10.4 s; GS drawing 19.7%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.6%, waiting for the GS thread 18.6%
 kernel services used:
-  -120  SifSetDChain             x228
+  -120  SifSetDChain             x232
   -119  SifSetDma                x1
-   -67  iSignalSema              x156
+   -67  iSignalSema              x157
    -52  iWakeupThread            x1
    -47  GetThreadId              x1
      2  ?                        x2
@@ -89,36 +89,36 @@ kernel services used:
     62  EndOfHeap                x2
     64  CreateSema               x177
     65  DeleteSema               x164
-    66  SignalSema               x174
+    66  SignalSema               x176
     68  WaitSema                 x302
-    69  PollSema                 x74
+    69  PollSema                 x77
     74  SetOsdConfigParam        x2
     75  GetOsdConfigParam        x7
     90  kCopy                    x3
     91  ?                        x12
-   100  FlushCache               x664
+   100  FlushCache               x676
    107  ?                        x1
    113  GsPutIMR                 x2
-   115  SetVSyncFlag             x2
+   115  SetVSyncFlag             x3
    116  SetSyscall               x18
-   118  SifDmaStat               x73
-   119  SifSetDma                x303
+   118  SifDmaStat               x76
+   119  SifSetDma                x310
    120  SifSetDChain             x2
    121  SifSetReg                x5
    122  SifGetReg                x6
    124  Deci2Call                x40
    131  ?                        x2
 most called:
-  0x0045B7F0                               x71
-  0x00456970                               x71
-  0x003AB7F0                               x71
-  0x002F6340                               x71
-  0x004E6340                               x70
-  0x002F6970                               x70
-  0x002F0CC0                               x70
-  0x00240CC0                               x70
-  0x004C49A0                               x69
-  0x002F49A0                               x68
+  0x0045B7F0                               x74
+  0x00456970                               x74
+  0x003AB7F0                               x74
+  0x002F6340                               x74
+  0x004E6340                               x73
+  0x002F6970                               x73
+  0x002F0CC0                               x73
+  0x00240CC0                               x73
+  0x004C49A0                               x72
+  0x002F49A0                               x71
   0x004B68C0                               x37
   0x00426870                               x27
 
