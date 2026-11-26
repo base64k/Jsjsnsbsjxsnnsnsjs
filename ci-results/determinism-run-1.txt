@@ -1,0 +1,2 @@
+/usr/bin/xvfb-run: 200: games/up/build/linux/up: Permission denied
+exit 126

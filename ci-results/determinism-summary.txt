@@ -1,0 +1,5 @@
+the two runs, the wall-clock lines taken out
+lines: run 1 2, run 2 2
+stop in run 1: (none)
+stop in run 2: (none)
+IDENTICAL: the runs are the same
