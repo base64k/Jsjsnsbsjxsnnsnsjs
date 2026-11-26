@@ -37,10 +37,11 @@ mkdir -p "$OUT"
 # The engine\'s own switch for a repeatable run: --virtual-time keeps the clock
 # (timers, the SIF replies\' due times) in the scheduler, not in the wall clock.
 # Without it the runs differ by their real timing (ClockNs in timers.cpp).
-read -r -a det_flags <<< "${UP_DET_FLAGS:---virtual-time}"
+read -r -a det_flags <<< "${UP_DET_FLAGS:---virtual-time --gs-inline --vif1-sync}"
 
 local_watch=()
-for w in ${UP_SMOKE_WATCH//,/ }; do local_watch+=(--watch-write "$w"); done
+WATCH_LIST="${UP_SMOKE_WATCH:-}"
+for w in ${WATCH_LIST//,/ }; do local_watch+=(--watch-write "$w"); done
 
 headless=()
 command -v xvfb-run >/dev/null 2>&1 && headless=(xvfb-run -a)
