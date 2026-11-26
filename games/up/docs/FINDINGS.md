@@ -871,19 +871,17 @@ print directly (`ci-results/ee-string-path.txt`):
   character, which sends each line through `0x3DD900` (`kputs`, `Deci2Call(0x10)`), which the
   engine prints as `[guest]`.
 
-### The likely root cause: the program is started with no argv (patch 0018)
+### The root cause: the start-up code reads argc/argv from the SetupThread block (patch 0018)
 
-`func_002DD240` is `main`: it keeps its arguments (`$s3 = $a0`, `$s2 = $a1`) and reads `argv[0]`
-at once (`lw $a2, 0($s2)`, the "%s.xMAP" line). The engine starts the program with a fresh
-register file (`NewContext()`), so `$a0 = argc = 0` and `$a1 = argv = NULL`. Then `argv[0]`
-reads as null, the boot path is built from nothing, and the game prints `Path : (null)`
-(`func_002DD6B0`). The kernel gives a program `argc = 1` and `argv[0]` = its own path
-(`cdrom0:\NAME;1`), which is what the game expects.
+`crt0` (ps2sdk, `ee/startup/src/crt0.c`, which the game's start at `0x200008` follows) does not take
+`$a0`/`$a1` for `main`. It passes `SetupThread`'s fourth argument (`$a3`, `args`) and reads
+`argc` and `argv` from that `struct sargs` (`argc`, `argv[16]`, `payload[256]`), which the
+kernel/loader fills in. The engine's `SetupThread` ignored `$a3`, so `argc = 0` and `argv` was
+null, and `main` read `argv[0]` as `(null)`: `Path : (null)` (`func_002DD6B0`).
 
-Patch `0018-ee-argv.patch` (host.cpp, applied after 0017) writes that argv at the top of RAM
-(`kRdramSize - 0x800`, the string 16 bytes above it), sets `$a0 = 1` and `$a1 = argv`. The path
-is the disc's boot path (`Disc::BootPath()`), or the ELF's name for a run without a disc.
+Patch `0018-ee-argv.patch` (kernel.cpp, host.cpp): `SetupThread` writes `argc = 1` and `argv[0]` to
+the `args` block, with the program's path in its payload. The path is the disc's boot path
+(`Disc::BootPath()`), or the ELF's name under `cdrom0` for a run without a disc.
 
-Check: the next smoke run should print `[guest] Path : cdrom0:\SLUS_218.64;1`, not `(null)`,
-and the port should go past the place it stopped before (the ManipulatorMgr read at `0x795F94`).
-If it does not, the `(null)` is not the whole story.
+Check: the next smoke run should print `[guest] Path : cdrom0:\SLUS_...;1`, not `(null)`, and the
+port should go past the stop it had before (the ManipulatorMgr read at `0x795F94`).
