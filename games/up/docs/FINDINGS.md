@@ -924,3 +924,32 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   - no `vkQueuePresentKHR` or `vkAcquireNextImageKHR` failure, and no surface-lost line, so patch
     0015 is neither confirmed nor refuted by this run;
   - the swapchain is 1600x720 (earlier logs: 1528x672), so this is another screen or window size.
+
+### Patch 0019: the physical gap is a null handler; the stop moves to a read at 0xFFFFF000 (run 45819298381)
+
+- **The gap.** On the PS2, physical 0x02000000-0x0FFFFFFF has no memory (only 32 MB of RDRAM is
+  fitted). PCSX2 maps that range to a null handler (`memMapPhy` in `pcsx2/Memory.cpp`:
+  `vtlb_MapHandler(null_handler, Ps2MemSize::ExposedRam, 0x10000000 - Ps2MemSize::ExposedRam)`).
+  The engine faulted on it. Patch `0019-open-gap-is-a-null-handler.patch` (`host/src/memory.cpp`)
+  makes a read there return 0 and a write go nowhere, as PCSX2 does. The device registers from
+  0x10000000 on still fault when unmapped.
+- **The result.** Run 45819298381 (CI) no longer stops at the write to 0x02000000. It stops at
+  `a read at 0xFFFFF000, outside guest memory`, with the same 2083 functions and the same stack
+  (`0x00200008 -> 0x002DD240 -> 0x0032F1B0 -> 0x0032EAA0 -> 0x00426350 -> 0x00426E00 -> 0x00356A60
+  -> 0x0041B550 -> 0x004C49A0 -> 0x003078A0 -> 0x003079C0 -> 0x0032DE20 -> 0x0032DF60 -> 0x002DCC40
+  -> 0x004B66F0`). A read at -0x1000 is a list pointer that the game followed from an object it
+  had already corrupted. So the gap was a symptom: the game's data is wrong before that point.
+- **What the code shows (the CI's `ci-results/ee-funcs`, `ee-find.txt`):**
+  - `_CoreMainLoop` (`0x32EAA0`) calls the managers' updates. `0x426350` walks lists of objects
+    (`+0xA0`, `+0xB0`, `+0xC0`, `+0xD0`, `+0xD8`) found through the global `0x795F70`, and
+    `0x426E00` follows each list (`lw $s0, 0($a0)`, then `+0x10`).
+  - The global `0x795F94` (the ManipulatorManager, `ManipulatorManager_Z`, `Main_Z.cpp` line 491)
+    is set in `0x32F250` (`ParticlesManager_Z` and the other managers are created there) from an
+    allocation through `0x2DCB00 -> 0x2DC710 -> 0x4B68C0` (the game's own heap allocator, with the
+    block counters at 0x410/0x414). `0x331230` zeroes these globals.
+  - The heap is set by `SetupHeap(0x7B4C70, -1)`: the end is the stack base 0x1FA8800, which is
+    right (`kernel.cpp`, `case 0x3D`).
+- **Next.** The chain 0x0032DE20 -> 0x0032DF60 -> 0x002DCC40 -> 0x004B66F0 is where the bad read is
+  made, and its callers are under `0x3079C0`. Their dumps are in `ci-results/ee-chain/` (run
+  after 0019's CI run). The first write of a bad pointer must be found there, by the golden-trace
+  method above or by a write watch on the object's list head.
