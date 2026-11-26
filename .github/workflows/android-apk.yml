@@ -444,7 +444,9 @@ jobs:
           # constant tracked through lui/addiu/ori), and the calls after it: the
           # registration or bind the id goes to. scripts/ee_rpc_ids.py.
           rm -rf /tmp/ee-asm
-          timeout 900 python3 engine/tools/disasm.py --game games/up --all -o /tmp/ee-asm > /tmp/ee-asm.log 2>&1 || true
+          # --all writes its files at the end: a run past the limit leaves no directory.
+          timeout 1500 python3 engine/tools/disasm.py --game games/up --all -o /tmp/ee-asm > /tmp/ee-asm.log 2>&1 || true
+          { echo "disasm exit: see below; files: $(ls /tmp/ee-asm 2>/dev/null | wc -l)"; tail -n 40 /tmp/ee-asm.log; } > ci-results/ee-asm-log.txt 2>&1 || true
           python3 scripts/ee_rpc_ids.py /tmp/ee-asm 0x01000002 0x01000001 0x0044D4A0 0x003DD2A0 0x0044CDC0 0x0044CEE0 2>&1 | head -n 400 > ci-results/ee-rpc-ids.txt || true
           # The Deci2Call(0x10) kputs callers ([guest] lines) and every load or store of
           # the ManipulatorMgr pointer (0x795F94), the base tracked through lui/addiu.
