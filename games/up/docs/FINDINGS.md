@@ -900,3 +900,27 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   disc's boot path read, or a directory search that returns nothing in the port).
 - The run stopped on a write at `0x02000000`, 2083 functions, the same as before patch 0018. The
   argument fix did not move the stop; the crash is still the ManipulatorMgr pointer (`0x795F94`).
+
+### The GPU pipeline cache (gpu_pipeline_cache.bin-3.txt) and the phone run up-3.log
+
+- **The cache is a real binary.** It is 400377 bytes and is not UTF-8. Its Vulkan header
+  (VkPipelineCacheHeaderVersionOne): headerSize 32, version 1, vendorID 0x13B5 (ARM), deviceID
+  0x90910010 (Mali-G57), and a pipelineCacheUUID. The three uploaded copies (`bin.txt`, `bin-2`,
+  `bin-3`) share the header and differ from byte 77353 on, as the cache grows between runs.
+- **It is not committed, and it is not needed in the repository.** The root `.gitignore` ignores
+  `*.bin` on purpose ("anything derived from [the game's files] that contains the game's code or
+  assets"). A pipeline cache is derived from the game's shaders and draws. The README says the
+  repository holds no game material. The APK writes its own cache beside its settings on the
+  device (`SetPipelineCacheDir`, `OpenPipelineCache`, `SavePipelineCache`) and reads it at the
+  next start; the driver ignores a cache that is not its own.
+- **up-3.log (the phone, with patch 0018):**
+  - the build has the SetupThread line (`program args at 007AAF40`), so 0018 is in it;
+  - `[guest] Path : (null)` is still there (line 463);
+  - the run stops in the same place as the CI runs: `stopped: a write at 0x02000000`,
+    2083 functions, the same stack (`0x00200008 -> 0x002DD240 -> 0x0032F1B0 -> 0x0032EAA0 ->
+    0x00426350`). So the device fails the same way as the headless run;
+  - the frames: 0 draws up to frame 400, 562 draws per frame from frame 500, 694 MB of textures;
+  - the first start made 7 pipelines in 5.3 s; the pipelines known from the start took 13.9 s;
+  - no `vkQueuePresentKHR` or `vkAcquireNextImageKHR` failure, and no surface-lost line, so patch
+    0015 is neither confirmed nor refuted by this run;
+  - the swapchain is 1600x720 (earlier logs: 1528x672), so this is another screen or window size.
