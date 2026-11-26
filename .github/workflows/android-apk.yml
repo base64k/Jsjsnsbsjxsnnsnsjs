@@ -415,6 +415,13 @@ jobs:
           done > ci-results/ee-code-crash.txt 2>&1 || true
           # The caller of the crashing function: where its object comes from (0x32ED94).
           timeout 120 python3 engine/tools/disasm.py --game games/up --range 0x0032ED40 0x0032EDF0 2>&1 | head -n 200 >> ci-results/ee-code-crash.txt || true
+          # The game's own debug log (the strings "_CoreMainLoop(): Before ..." are passed to
+          # 0x3F45F8; the TTY write is 0x3DDB68). Retail code skips them: the golden-trace method
+          # (DQ8-Recompiled) needs their entry. ci-results/ee-code-log.txt.
+          { for a in 0x003F45F8 0x003DDB68 0x0030C3D0; do
+              echo "=== EE function at $a ==="
+              timeout 120 python3 engine/tools/disasm.py --game games/up --addr "$a" 2>&1 | head -n 120 || true
+            done; } > ci-results/ee-code-log.txt 2>&1 || true
           # Who writes the manager pointers the main loop uses (globals at 0x795F94, 0x795F98,
           # 0x795F70 - the $at 0x790000 offsets 0x5F94, 0x5F98, 0x5F70): the stores into them
           # (sw/sd with that offset), and the functions holding them. ci-results/ee-writers.txt.
