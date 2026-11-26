@@ -701,3 +701,25 @@ for the replies the engine already sends), and that the EE's registration sets
   smoke still stops at the time limit in the loop at `0x0047DB38`, with the same guest stack
   (`0x0047DAE0` ... `0x00200008`), 689 functions. Patch 0015 is not reached in the smoke
   (no surface is lost there); its effect is the phone's, and is not yet read from a phone run.
+
+### SDRDRV runs; the EE's sound code now crashes (runs 45745992539, 45748859929)
+
+- **Why SDRDRV never ran**: `RunModule` only names a module; a module starts only when the EE
+  loads it with `LoadFile` (`loadfile.cpp`). The EE loads six modules and not SDRDRV, so
+  the list entry did nothing. Patch `0016-sdrdrv-starts-with-libsd.patch`: when the EE
+  loads LIBSD, the host first starts SDRDRV from the disc (once).
+- **SDRDRV's start** (CI): it creates a thread that registers the RPC server `0x80000701` and
+  waits in `sceSifRpcLoop`. Its `_start` returns 2 (not 0 or 1; the engine only reports it).
+  Patch `0017-sdrdrv-host-imports.patch`: the four imports it takes at start, which the host
+  lacked (`loadcore#7`, `sifcmd#24`, `sifcmd#25`, `thbase#22`/`#23`), now answer.
+- **Progress**: the smoke test runs 2,083 functions (689 before), past the wait at
+  `0x0047DB38`; the EE's game thread runs (`ran 122`), and `0x007A982C` is not written.
+- **New stop**: a write at `0x02000000`, outside guest memory, from `func_00426350`
+  (`ci-results/ee-code-crash.txt`). It is the sound code: `sb $a1,0xF1($a0)` on an object
+  `$a0` taken from its caller `func_0032ED94` (not in the dump: the dump stops at 300 lines
+  of `func_0032EAA0`). Once the run it was a read at `0x08C20FB0` (timing varies), then
+  deterministically the write.
+- The EE's sound calls go to ZNASND (server `0x01000001`, procedures 772 and 1797-1812,
+  from `0x0044CEE0` and `0x0044D040`), not to SDRDRV's `0x80000701`, which the EE never calls.
+  So the bad object is probably built from a reply of ZNASND's. Next: dump `func_0032ED94`
+  and read what the reply carries into that object.
