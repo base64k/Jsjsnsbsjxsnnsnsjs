@@ -953,3 +953,25 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   made, and its callers are under `0x3079C0`. Their dumps are in `ci-results/ee-chain/` (run
   after 0019's CI run). The first write of a bad pointer must be found there, by the golden-trace
   method above or by a write watch on the object's list head.
+
+### Runs 45823459924 and 45826349148: the results push, and the stop at 0x10010000
+
+- Run 45823459924 finished, but its results were refused by the push (the branch had moved while it
+  ran; the rebase conflicted on `ci-results/port-report.txt`). The workflow now retries twice and lets
+  this run's results win (`-X theirs`). Run 45826349148 pushed its results (`d82b2d7`).
+- Its stop: `a read at 0x10010000, outside guest memory`. That is the first address past the EE
+  register window (0x10000000, 64 KB): a pointer the game built from an object it had corrupted.
+  Same 2083 functions, same chain up to `0x0032DE80 -> 0x0032DFA0` (the return addresses; the
+  functions there are not dumped yet). The timing varies between runs, so the stack's last frames
+  vary too.
+- **The working hypothesis (the arena).** The ManipulatorMgr's object was at `0x01FFFF0F` (the
+  write to `0x02000000` came from `0x795F94 + 0xF1`), i.e. inside the stack
+  (`0x1FA8800-0x2000000`, set by the entry's `SetupThread`). `SetupHeap(0x7B4C70, -1)` ends the heap
+  at the stack base, but the game's allocator hands out memory above it, so its arena must end at
+  the top of RAM (or be read from somewhere else). The arena's bounds are in the pool at
+  `0x7957B0` (counters at +0x410/+0x414, bitmaps at +0x428; `func_004B8800`). Next: who writes
+  `0x795BC0-0x795C00` (`ci-results/ee-find-arena.txt`), and what `func_003E5D58` and `func_003E4E68`
+  (named `GetMemorySize_or_rfu` by the analysis) return.
+- The watch (`UP_SMOKE_WATCH`) now takes several addresses: the flag `0x7A982C`, and the
+  ManipulatorMgr's globals `0x795F94` and `0x795F70`. Their `[write]` lines give the object's
+  address and the function that stored it (`ci-results/write-trace.txt`).
