@@ -995,3 +995,12 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   host-filled buffers (SIF replies of 64 bytes, the RPC answers of ZNASND, the DMA into RAM) reach
   that object, and whether any of them is filled from wall-clock time (the engine's wall-clock
   marks, patch 0012). Only the run-to-run variation of the stop separates these.
+
+### Runs 45862933405 to 45880604054: the determinism check (what makes two runs the same)
+
+- Two runs of the same binary with the same arguments differ from the first SIF reply on. Run 45859080626, and again 45862933405, 45867494664, 45872070165 and 45875917801: the first difference is at `268c268`, where the SIF reply is delivered at `663783095825 ns` in run 1 and `673855515906 ns` in run 2 (about 10.07 s of virtual time). The same two numbers come out of every run, so the gap is systematic, not noise.
+- Cleared as the cause: the settings file and the GPU pipeline cache beside the binary (the check now deletes `pc_settings.ini` and `gpu_pipeline_cache.bin` before each run; the difference stayed), and the wall clock in the engine's virtual clock (`ClockNs` is the scheduler's clock under `--virtual-time`, and `SetVirtualClock` takes the flag at `host.cpp:854`; the flag is parsed at `host.cpp:1031`). The VblankTimer thread is not started in a virtual-time run (`StartRealTimeThreads` runs only for `realtime`).
+- Not the cause, as tested: `--gs-inline --vif1-sync` (run 45875917801). The host's watchdog stopped run 1 with exit 3 ("the host is in a loop of its own", `host.cpp:830`) after 6397 lines. So `--gs-inline` cannot be part of a repeatable run; the check is back to `--virtual-time` alone.
+- Still open: what the second run does differently in its first 10 s of virtual time. Candidates not yet read: the order in which the timer and the IOP get their first slices (`threads.cpp` idle loops, `AddIdleLoop` in `overrides.cpp` 67–75), and the disc's first reads (`cdvd.cpp` 81–85).
+- Bug found in the check and fixed: a run without a report was reported as DIFFERENT with the old summary (the summary was not rewritten, and the copy step copied nothing). The check now always writes `summary.txt` with `FAILED: run N ended without a report (exit X)`, and it no longer deletes every `*.bin` beside the binary (only the pipeline cache).
+- The working menu is not affected by this: the stop at `0x10010000` (run 45859080626 and later) is still the game's blocker. The determinism check is for finding the repeatable trace, not for the port's fix.
