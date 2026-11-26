@@ -2,7 +2,7 @@
 -- 
 -- SDL3 was configured with the following options:
 -- 
--- Platform: Linux-7.0.0-1016-aws
+-- Platform: Linux-7.0.0-1020-azure
 -- 64-bit:   TRUE
 -- Compiler: /usr/bin/clang
 -- Revision: SDL-3.4.18-HEAD-HASH-NOTFOUND
