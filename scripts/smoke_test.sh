@@ -100,9 +100,10 @@ run_game() {
     local -a iop_trace=()
     [ "${UP_SMOKE_IOP_TRACE:-1}" = "1" ] && iop_trace=(--iop-trace)
     # Every store to one guest address, with the calls that make it (its writer):
-    # UP_SMOKE_WATCH=0x007A982C, for a wait on a flag. Logged as "[write]" lines.
-    local -a watch=()
-    [ -n "${UP_SMOKE_WATCH:-}" ] && watch=(--watch-write "$UP_SMOKE_WATCH")
+    # UP_SMOKE_WATCH=0x007A982C, for a wait on a flag (or 0x007A982C,0x00795F94). Logged as "[write]" lines.
+    # Several addresses separated by commas (or spaces): one --watch-write each.
+    local -a watch=() w
+    for w in ${UP_SMOKE_WATCH//,/ }; do watch+=(--watch-write "$w"); done
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
