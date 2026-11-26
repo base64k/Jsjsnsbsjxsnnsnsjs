@@ -2,7 +2,7 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: a write at 0x02000000, outside guest memory
+stopped: a read at 0xFFFFF000, outside guest memory
 functions executed: 2083 distinct
 guest call stack where it stopped (innermost last):
   0x00200008
@@ -16,8 +16,10 @@ guest call stack where it stopped (innermost last):
   0x004C49A0
   0x003078A0
   0x003079C0
-  0x0032DE80
-  0x0032DFA0
+  0x0032DE20
+  0x0032DF60
+  0x002DCC40
+  0x004B66F0
 threads:
   thread 1: running, priority 10, entry 0x00200008, ran 122 times
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
@@ -32,43 +34,43 @@ threads:
     0x00018FC0 x1114 (from 0x0001D560)
     0x00018FD8 x887 (from 0x0001DEA8)
     0x00018FF0 x821 (from 0x0001E344)
+    0x000190E8 x640 (from 0x0001C2B8)
     0x0001D2B4 x608 (from 0x0001D490)
     0x00018FF8 x556 (from 0x0001D5EC)
-    0x000190E8 x472 (from 0x0001C2B8)
-    0x00018FE0 x373 (from 0x00022274)
-    0x00019044 x311 (from 0x0001C2FC)
-    0x0001916C x218 (from 0x0001CBF8)
-    0x00019078 x185 (from 0x000222AC)
-    0x000221D4 x184 (from 0x0001C2F4)
-    0x00019070 x184 (from 0x000221E0)
-    0x0002228C x183 (from 0x0001C310)
-    0x00019164 x180 (from 0x0001CD30)
-    0x00019AB0 x161 (from 0x0001C318)
-    0x000190A4 x161 (from 0x00019AC0)
-    0x0001CDB4 x152 (from 0x0001C4B4)
-    0x0001CB3C x152 (from 0x0001CDBC)
-    0x00019184 x152 (from 0x0001CB44)
-    0x0001C0E4 x75 (from 0x0001A0D0)
-    0x0001A028 x74 (from 0x000196E4)
-    0x0001F18C x69 (from 0x0001C41C)
-    0x00019EF4 x69 (from 0x0001F1F0)
+    0x00018FE0 x305 (from 0x00022274)
+    0x00019044 x251 (from 0x0001C2FC)
+    0x0001916C x184 (from 0x0001CBF8)
+    0x00019078 x159 (from 0x000222AC)
+    0x000221D4 x150 (from 0x0001C2F4)
+    0x00019070 x150 (from 0x000221E0)
+    0x0002228C x149 (from 0x0001C310)
+    0x00019164 x146 (from 0x0001CD30)
+    0x00019AB0 x127 (from 0x0001C318)
+    0x000190A4 x127 (from 0x00019AC0)
+    0x0001CDB4 x118 (from 0x0001C4B4)
+    0x0001CB3C x118 (from 0x0001CDBC)
+    0x00019184 x118 (from 0x0001CB44)
+    0x0001C0E4 x103 (from 0x0001A0D0)
+    0x0001A028 x102 (from 0x000196E4)
+    0x0001F18C x58 (from 0x0001C41C)
+    0x00019EF4 x58 (from 0x0001F1F0)
     0x0001915C x33 (from 0x0001E550)
-    0x00018ED8 x32 (from 0x00019F3C)
-    0x00018ED0 x32 (from 0x00019F14)
+    0x00018ED8 x31 (from 0x00019E20)
+    0x00018ED0 x31 (from 0x00019E08)
     0x0001D230 x28 (from 0x0001D3F4)
     0x0001D33C x22 (from 0x0001D714)
     0x000221A4 x16 (from 0x0001F2D4)
   IOP thread 2: serving RPC, priority 24, entry 0x000104E0, at 0x00010574
   IOP thread 5: serving RPC, priority 30, entry 0x00019344, at 0x1FFFFFD0
   IOP thread 7: delayed, priority 30, entry 0x0001C2D0, at 0x0001C304
-VIF1 commands: NOP 26085 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 524 FLUSH 889 FLUSHA 296 STMASK 3 DIRECT 1633; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
-GS: 45110 primitives, 64531818 pixels written
-GIF tags: PATH1 0, PATH2 3207, PATH3 421; image 89408 quadwords; register writes: 00:1724 01:150 03:2960 04:296 05:50924 06:75 07:75 08:149 09:75 14:75 15:149 16:1 17:1 18:644 19:298 1A:496 1B:299 34:1 35:75 36:1 37:75 3B:150 3D:1 3F:149 40:792 41:298 42:75 43:75 44:75 45:347 46:122 47:792 48:298 49:1 4A:1 4B:1 4C:644 4D:298 4E:644 4F:298 50:224 51:3 52:224 53:224 7F:296
-time: 5.4 s; GS drawing 47.8%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.5%, waiting for the GS thread 45.7%
+VIF1 commands: NOP 35913 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 720 FLUSH 1225 FLUSHA 408 STMASK 3 DIRECT 2249; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
+GS: 61966 primitives, 88618616 pixels written
+GIF tags: PATH1 0, PATH2 4411, PATH3 533; image 121664 quadwords; register writes: 00:2368 01:206 03:4080 04:408 05:69964 06:103 07:103 08:205 09:103 14:103 15:205 16:1 17:1 18:840 19:410 1A:636 1B:411 34:1 35:103 36:1 37:103 3B:206 3D:1 3F:205 40:1044 41:410 42:103 43:103 44:103 45:431 46:122 47:1044 48:410 49:1 4A:1 4B:1 4C:840 4D:410 4E:840 4F:410 50:308 51:3 52:308 53:308 7F:408
+time: 5.1 s; GS drawing 43.3%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.3%, waiting for the GS thread 41.0%
 kernel services used:
-  -120  SifSetDChain             x234
+  -120  SifSetDChain             x276
   -119  SifSetDma                x1
-   -67  iSignalSema              x158
+   -67  iSignalSema              x172
    -52  iWakeupThread            x1
    -47  GetThreadId              x1
      2  ?                        x2
@@ -89,37 +91,35 @@ kernel services used:
     62  EndOfHeap                x2
     64  CreateSema               x177
     65  DeleteSema               x164
-    66  SignalSema               x176
+    66  SignalSema               x190
     68  WaitSema                 x302
-    69  PollSema                 x78
+    69  PollSema                 x106
     74  SetOsdConfigParam        x2
     75  GetOsdConfigParam        x7
     90  kCopy                    x3
     91  ?                        x12
-   100  FlushCache               x680
+   100  FlushCache               x792
    107  ?                        x1
    113  GsPutIMR                 x2
    115  SetVSyncFlag             x3
    116  SetSyscall               x18
-   118  SifDmaStat               x77
-   119  SifSetDma                x313
+   118  SifDmaStat               x105
+   119  SifSetDma                x383
    120  SifSetDChain             x2
    121  SifSetReg                x5
    122  SifGetReg                x6
    124  Deci2Call                x40
    131  ?                        x2
 most called:
-  0x0045B7F0                               x75
-  0x00456970                               x75
-  0x003AB7F0                               x75
-  0x002F6340                               x75
-  0x004E6340                               x74
-  0x002F6970                               x74
-  0x002F0CC0                               x74
-  0x00240CC0                               x74
-  0x004C49A0                               x73
-  0x002F49A0                               x72
-  0x004B68C0                               x37
-  0x00426870                               x27
+  0x0045B7F0                               x103
+  0x00456970                               x103
+  0x003AB7F0                               x103
+  0x002F6340                               x103
+  0x004E6340                               x102
+  0x002F6970                               x102
+  0x002F0CC0                               x102
+  0x00240CC0                               x102
+  0x004C49A0                               x101
+  0x002F49A0                               x100
 
 the pictures: 22
