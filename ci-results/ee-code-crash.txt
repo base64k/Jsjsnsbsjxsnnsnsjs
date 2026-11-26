@@ -445,3 +445,58 @@ glabel func_0032EAA0
   0032ef04  jal        func_003F45F8
   0032ef08  addiu      $a1, $a1, -0x45c0                       # delay slot; 0x0072ba40 "_CoreMainLoop(): Before UnpauseAppRequested()"
   0032ef0c  lui        $a0, 0x7a
+/**************************************************************************
+ * range_0032ED40
+ *
+ * address      : 0x0032ed40 .. 0x0032edf0  (176 bytes, 44 instructions)
+ * discovered by: --range
+ * called from  : no direct calls (indirect or unreferenced)
+ */
+glabel range_0032ED40
+  0032ed40  lw         $a0, 0x5f7c($at)
+  0032ed44  lw         $t9, 0x30($a0)
+  0032ed48  lw         $t9, 0x94($t9)
+  0032ed4c  jalr       $t9
+  0032ed50  lwc1       $f12, -0x743c($gp)                      # delay slot
+  0032ed54  lui        $a0, 0x7a
+  0032ed58  lui        $a1, 0x73
+  0032ed5c  addiu      $a0, $a0, -0x70a0
+  0032ed60  jal        func_003F45F8
+  0032ed64  addiu      $a1, $a1, -0x4720                       # delay slot; 0x0072b8e0 "_CoreMainLoop(): Before GameMgr->Update()"
+  0032ed68  lui        $at, 0x79
+  0032ed6c  lwc1       $f12, -0x743c($gp)
+  0032ed70  jal        func_00314DF0
+  0032ed74  lw         $a0, 0x5f98($at)                        # delay slot
+  0032ed78  lui        $a0, 0x7a
+  0032ed7c  lui        $a1, 0x73
+  0032ed80  addiu      $a0, $a0, -0x70a0
+  0032ed84  jal        func_003F45F8
+  0032ed88  addiu      $a1, $a1, -0x46f0                       # delay slot; 0x0072b910 "_CoreMainLoop(): Before ManipulatorMgr->Update()"
+  0032ed8c  lui        $at, 0x79
+  0032ed90  lwc1       $f12, -0x743c($gp)
+  0032ed94  jal        func_00426350
+  0032ed98  lw         $a0, 0x5f94($at)                        # delay slot
+  0032ed9c  lui        $a0, 0x7a
+  0032eda0  lui        $a1, 0x73
+  0032eda4  addiu      $a0, $a0, -0x70a0
+  0032eda8  jal        func_003F45F8
+  0032edac  addiu      $a1, $a1, -0x4910                       # delay slot; 0x0072b6f0 "_CoreMainLoop(): Before NetManager->Update()"
+  0032edb0  lui        $at, 0x79
+  0032edb4  lw         $v0, 0x5fd8($at)
+  0032edb8  beq        $v0, $zero, .L000
+  0032edbc  nop                                                # delay slot
+  0032edc0  lui        $a0, 0x79
+  0032edc4  jal        func_00338440
+  0032edc8  addiu      $a0, $a0, 0x5f60                        # delay slot
+  0032edcc  lui        $at, 0x79
+  0032edd0  lw         $a0, 0x5fd8($at)
+  0032edd4  lw         $t9, 0x0($a0)
+  0032edd8  lw         $t9, 0xc($t9)
+  0032eddc  jalr       $t9
+  0032ede0  mov.s      $f12, $f0                               # delay slot
+.L000:
+  0032ede4  lui        $a0, 0x7a
+  0032ede8  lui        $a1, 0x73
+  0032edec  addiu      $a0, $a0, -0x70a0
+/* end of range_0032ED40 */
+
