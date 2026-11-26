@@ -1,6 +1,37 @@
 == called from (func_0044D4A0):
 == called from (func_0044CDC0):
+func_002DEC40.s
 == called from (func_0044CEE0):
+func_002F8DD0.s
+func_002F93E0.s
+func_002F9C30.s
+func_002F9E30.s
+func_00305630.s
+func_00305770.s
+func_003057D0.s
+func_00305A50.s
+func_0041B2B0.s
+func_0041B3D0.s
+func_00424440.s
+func_00424510.s
+func_00424550.s
+func_00424650.s
+func_004248D0.s
+func_00424AA0.s
+func_00424B40.s
+func_00424BE0.s
+func_00424C10.s
+func_00424CA0.s
+func_00424D60.s
+func_00424F50.s
+func_00425040.s
+func_0042CAE0.s
+func_0044CDC0.s
+func_0044E020.s
+func_0044E0D0.s
 == called from (func_002DEC40):
+func_0032F250.s
 == called from (func_0032F250):
+func_0032F1B0.s
 == called from (func_0044D190):
+func_0044CDC0.s
