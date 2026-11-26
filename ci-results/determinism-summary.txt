@@ -1,21 +1,14 @@
 the two runs, the wall-clock lines taken out
-lines: run 1 14533, run 2 14472
-stop in run 1: stopped: a read at 0x10010000, outside guest memory
-stop in run 2: stopped: a read at 0x10010000, outside guest memory
-DIFFERENT: first difference at 268c268
+FAILED: run 1 ended without a report (exit 3)
+the first times in run 1: [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued|[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 3186516623 ns|[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued|
+the first times in run 2: 
+lines: run 1 6397, run 2 0
+stop in run 1: (none)
+stop in run 2: (none)
+DIFFERENT: first difference at 1,6397d0
 --- run 1 around it:
-[call] 0x003DF1C8
-[host] SIF: bound to IOP server 0x80000001
-[host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 663783095825 ns
-[call] 0x003DEE08
-[call] 0x003DC990 iSifSetDChain
-[host] kernel SifSetDChain (0x78) a0=0x00000000 a1=0x00000004 a2=0x2079B540 a3=0x2079B500
+[port] Up, version 0.1.0-alpha
+[host] SDK routine sceGsSyncPath runs on the host
+ALSA lib confmisc.c:855:(parse_card) [error.core] cannot find card '0'
+ALSA lib conf.c:5211:(_snd_config_evaluate) [error.core] function snd_func_card_inum returned error: No such file or directory
 --- run 2 around it:
-[call] 0x003DF1C8
-[host] SIF: bound to IOP server 0x80000001
-[host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 673855515906 ns
-[call] 0x003DEE08
-[call] 0x003DC990 iSifSetDChain
-[host] kernel SifSetDChain (0x78) a0=0x00000000 a1=0x00000004 a2=0x2079B540 a3=0x2079B500
