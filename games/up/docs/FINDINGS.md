@@ -885,3 +885,18 @@ the `args` block, with the program's path in its payload. The path is the disc's
 
 Check: the next smoke run should print `[guest] Path : cdrom0:\SLUS_...;1`, not `(null)`, and the
 port should go past the stop it had before (the ManipulatorMgr read at `0x795F94`).
+
+### Patch 0018 is delivered, and it does not change the "(null)" print (run 45793678244)
+
+- The entry `0x200008` (`ci-results/ee-entry.txt`) is the game's own start code: it clears bss,
+  calls `SetupThread` with `$a3 = args` (`0x7AAF40`), `SetupHeap(0x7AB390, ...)`, and then
+  `main(argc = lw [args], argv = args + 4)`. Our block has exactly that layout.
+- The engine log now shows `[host] SetupThread: program args at 007AAF40 (argc 1, argv[0] "\SLUS_218.64;1")`.
+  The path has no `cdrom0:` device prefix (`Disc::BootPath()` returns it without); the kernel's
+  argv[0] has one. That is a small thing to fix in the next patch.
+- `[guest] Path : (null)` remains. So the `(null)` is not `argv[0]`. The print reads the buffer
+  `0x797280`, which `func_002DD6B0` copies from (`func_003F4C88`), and nothing in the dumps writes
+  that buffer directly. The next question is who fills `0x797280` before `func_002DD6B0` runs (the
+  disc's boot path read, or a directory search that returns nothing in the port).
+- The run stopped on a write at `0x02000000`, 2083 functions, the same as before patch 0018. The
+  argument fix did not move the stop; the crash is still the ManipulatorMgr pointer (`0x795F94`).
