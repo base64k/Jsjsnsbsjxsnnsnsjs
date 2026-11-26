@@ -2,8 +2,8 @@ the run ended with the code 2
 the places with code copied at run time: 2
 
 === host report ===
-stopped: a read at 0x08C20FB0, outside guest memory
-functions executed: 2084 distinct
+stopped: a write at 0x02000000, outside guest memory
+functions executed: 2083 distinct
 guest call stack where it stopped (innermost last):
   0x00200008
   0x002DD240
@@ -15,9 +15,9 @@ guest call stack where it stopped (innermost last):
   0x0041B550
   0x004C49A0
   0x003078A0
-  0x003078F0
-  0x0030A240
-  0x003097C0
+  0x003079C0
+  0x0032DE80
+  0x0032DFA0
 threads:
   thread 1: running, priority 10, entry 0x00200008, ran 122 times
   thread 2: waiting on a semaphore, priority 0, entry 0x003DD2A0, ran 1 times
@@ -35,36 +35,36 @@ threads:
     0x0001D2B4 x608 (from 0x0001D490)
     0x00018FF8 x556 (from 0x0001D5EC)
     0x000190E8 x472 (from 0x0001C2B8)
-    0x00018FE0 x399 (from 0x00022274)
-    0x00019044 x338 (from 0x0001C2FC)
-    0x0001916C x231 (from 0x0001CBF8)
-    0x00019078 x199 (from 0x000222AC)
-    0x000221D4 x197 (from 0x0001F0F8)
-    0x00019070 x197 (from 0x000221E0)
-    0x0002228C x196 (from 0x0001F0AC)
-    0x00019164 x193 (from 0x0001CD30)
-    0x00019AB0 x174 (from 0x0001C318)
-    0x000190A4 x174 (from 0x00019AC0)
-    0x0001CDB4 x165 (from 0x0001C4B4)
-    0x0001CB3C x165 (from 0x0001CDBC)
-    0x00019184 x165 (from 0x0001CB44)
-    0x0001F18C x83 (from 0x0001C41C)
-    0x00019EF4 x83 (from 0x0001F1F0)
+    0x00018FE0 x373 (from 0x00022274)
+    0x00019044 x311 (from 0x0001C2FC)
+    0x0001916C x218 (from 0x0001CBF8)
+    0x00019078 x185 (from 0x000222AC)
+    0x000221D4 x184 (from 0x0001C2F4)
+    0x00019070 x184 (from 0x000221E0)
+    0x0002228C x183 (from 0x0001C310)
+    0x00019164 x180 (from 0x0001CD30)
+    0x00019AB0 x161 (from 0x0001C318)
+    0x000190A4 x161 (from 0x00019AC0)
+    0x0001CDB4 x152 (from 0x0001C4B4)
+    0x0001CB3C x152 (from 0x0001CDBC)
+    0x00019184 x152 (from 0x0001CB44)
     0x0001C0E4 x75 (from 0x0001A0D0)
     0x0001A028 x74 (from 0x000196E4)
+    0x0001F18C x69 (from 0x0001C41C)
+    0x00019EF4 x69 (from 0x0001F1F0)
     0x0001915C x33 (from 0x0001E550)
-    0x00018ED8 x30 (from 0x00019F3C)
-    0x00018ED0 x30 (from 0x00019F14)
+    0x00018ED8 x32 (from 0x00019F3C)
+    0x00018ED0 x32 (from 0x00019F14)
     0x0001D230 x28 (from 0x0001D3F4)
     0x0001D33C x22 (from 0x0001D714)
-    0x00018EA4 x16 (from 0x0001DDDC)
+    0x000221A4 x16 (from 0x0001F2D4)
   IOP thread 2: serving RPC, priority 24, entry 0x000104E0, at 0x00010574
   IOP thread 5: serving RPC, priority 30, entry 0x00019344, at 0x1FFFFFD0
   IOP thread 7: delayed, priority 30, entry 0x0001C2D0, at 0x0001C304
 VIF1 commands: NOP 26085 STCYCL 3 OFFSET 3 BASE 3 ITOP 3 STMOD 3 MSKPATH3 524 FLUSH 889 FLUSHA 296 STMASK 3 DIRECT 1633; VU: 0 instruction pairs (0 compiled: 0 entered, 0 stale, 0 MB checked), 0 XGKICKs; started at
-GS: 45110 primitives, 64527746 pixels written
+GS: 45110 primitives, 64531818 pixels written
 GIF tags: PATH1 0, PATH2 3207, PATH3 421; image 89408 quadwords; register writes: 00:1724 01:150 03:2960 04:296 05:50924 06:75 07:75 08:149 09:75 14:75 15:149 16:1 17:1 18:644 19:298 1A:496 1B:299 34:1 35:75 36:1 37:75 3B:150 3D:1 3F:149 40:792 41:298 42:75 43:75 44:75 45:347 46:122 47:792 48:298 49:1 4A:1 4B:1 4C:644 4D:298 4E:644 4F:298 50:224 51:3 52:224 53:224 7F:296
-time: 5.7 s; GS drawing 44.3%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.4%, waiting for the GS thread 42.5%
+time: 5.4 s; GS drawing 47.8%, GS image transfers 0.0%, VU1 0.0%, VU0 0.0%, DMA and VIF 0.0%, IOP 0.1%, SPU2 0.5%, waiting for the GS thread 45.7%
 kernel services used:
   -120  SifSetDChain             x234
   -119  SifSetDma                x1
