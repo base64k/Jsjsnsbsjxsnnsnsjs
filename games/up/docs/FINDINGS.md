@@ -830,3 +830,15 @@ behaviour. So the phone's build predates 0015, and 0015 is still unverified on a
   which does `sw $zero, 0x5F94`. So the pointer is valid only during the loop, and the crash is a
   read through it after something other than the loop exit has run.
 - **Run 45767596301 stopped on `0x08C20FB0`** (the crash address varies between runs, as before).
+
+### Run 45770284829: the print chain
+
+- `func_003DD900(p)` is the kputs wrapper: it stores `p` on the stack and calls the Deci2Call
+  wrapper `func_003DC9D0` with `$a0 = 0x10` (kputs) and the string's address. Its only caller in
+  the dump is `func_003DDEB0`.
+- `func_002DC710` is not the allocator. It is a short function that calls `func_004B68C0` with
+  `a0 + 0x24` and bumps two counters. The allocator body is therefore one step further (the
+  dump of `func_004B68C0` is added to the next run).
+- Run 45770284829 stopped on `0xFFFFF000`, outside guest memory: the crash address varies per
+  run (`0x02000000`, `0x08C20FB0`, `0xF6FFFF42`, `0xFFFFF000`).
+- Open: who calls `func_003DDEB0` with a null `Path` (the next run dumps it and its callers).
