@@ -61,6 +61,7 @@ for i in 1 2; do
     rm -rf "$BUILD_DIR/captures"
     rm -f "$BUILD_DIR/pc_settings.ini" "$BUILD_DIR"/*.bin
     log "run $i of 2: ${SECONDS_TO_RUN}s"
+    echo "command: $BUILD $ELF --disc ... --no-memcard --audio --iop-trace ${det_flags[*]:-} ${local_watch[*]:-} --timeout $SECONDS_TO_RUN" > "$OUT/command-$i.txt"
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
         "${headless[@]+"${headless[@]}"}" "$BUILD" "$ELF" \
@@ -85,8 +86,16 @@ for i in 1 2; do
     grep -v "(wall)" "$OUT/run-$i.txt" > "$OUT/run-$i.nowall.txt" || true
 done
 
+# The first times each run printed (the clock's base) and the head of each report.
+for i in 1 2; do
+    grep -m 12 " ns" "$OUT/run-$i.nowall.txt" > "$OUT/times-$i.txt" || true
+    head -n 400 "$OUT/run-$i.nowall.txt" > "$OUT/head-$i.txt"
+done
+
 {
     echo "the two runs, the wall-clock lines taken out"
+    echo "the first times in run 1: $(head -n 3 "$OUT/times-1.txt" | tr '\n' '|')"
+    echo "the first times in run 2: $(head -n 3 "$OUT/times-2.txt" | tr '\n' '|')"
     echo "lines: run 1 $(wc -l < "$OUT/run-1.nowall.txt"), run 2 $(wc -l < "$OUT/run-2.nowall.txt")"
     echo "stop in run 1: $(grep -m1 '^stopped' "$OUT/run-1.txt" || echo '(none)')"
     echo "stop in run 2: $(grep -m1 '^stopped' "$OUT/run-2.txt" || echo '(none)')"

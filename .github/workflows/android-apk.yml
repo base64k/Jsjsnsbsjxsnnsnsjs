@@ -377,6 +377,7 @@ jobs:
           if [ -f games/up/build/determinism/summary.txt ]; then
             cp games/up/build/determinism/summary.txt ci-results/determinism-summary.txt
             for i in 1 2; do tail -n 1500 games/up/build/determinism/run-$i.nowall.txt > ci-results/determinism-run-$i.txt 2>/dev/null || true; done
+            for i in 1 2; do cp games/up/build/determinism/head-$i.txt ci-results/determinism-head-$i.txt 2>/dev/null || true; cp games/up/build/determinism/command-$i.txt ci-results/determinism-command-$i.txt 2>/dev/null || true; done
           fi
           # The report, cut to its head and tail (a trace of a whole run is
           # big); the full one is in the smoke test's artifact.
