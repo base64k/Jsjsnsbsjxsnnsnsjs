@@ -283,6 +283,18 @@ jobs:
           UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70"   # the flag the main thread waits on at 0x47DB38; the ManipulatorMgr's globals (0x795F94 its object, 0x795F70 the one the update walks)
         run: bash scripts/smoke_test.sh
 
+      # The determinism check: the same build run twice with the same arguments.
+      # The first line where the two reports differ is where the run stops being
+      # repeatable (scripts/determinism_check.sh). continue-on-error: the report
+      # is worth more than the check.
+      - name: Determinism check (the same run twice)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        env:
+          UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70"
+          UP_DET_SECONDS: "150"
+        run: bash scripts/determinism_check.sh
+
       # The APK's stage, when it was asked for. (The check is in the shell:
       # GitHub's expressions have no way to ask whether a word is in a list.)
       - name: Build the APK
@@ -361,6 +373,11 @@ jobs:
           mkdir -p ci-results
           cp games/up/build/smoke/summary.txt ci-results/smoke-summary.txt 2>/dev/null || true
           cp games/up/build/disc-modules.txt ci-results/disc-modules.txt 2>/dev/null || true
+          # The determinism check (scripts/determinism_check.sh): its summary, and the tail of each run.
+          if [ -f games/up/build/determinism/summary.txt ]; then
+            cp games/up/build/determinism/summary.txt ci-results/determinism-summary.txt
+            for i in 1 2; do tail -n 1500 games/up/build/determinism/run-$i.nowall.txt > ci-results/determinism-run-$i.txt 2>/dev/null || true; done
+          fi
           # The report, cut to its head and tail (a trace of a whole run is
           # big); the full one is in the smoke test's artifact.
           if [ -f games/up/build/port/report.txt ]; then
