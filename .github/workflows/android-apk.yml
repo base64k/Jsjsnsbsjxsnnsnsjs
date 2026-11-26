@@ -280,7 +280,7 @@ jobs:
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         env:
-          UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70"   # the flag the main thread waits on at 0x47DB38; the ManipulatorMgr's globals (0x795F94 its object, 0x795F70 the one the update walks)
+          UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70,0x009E4150,0x009E4160,0x009E4170,0x009E4180,0x009E4188,0x009E41A0,0x009E41A1,0x009E41A4,0x009E41A8"   # the flag the main thread waits on at 0x47DB38; the ManipulatorMgr's globals (0x795F94 its object at 0x9E40B0 in run 45835554148, 0x795F70 the one the update walks); the object's lists (+0xA0..+0xD8), flags (+0xF0/F1), +0xF4 and its vtable (+0xF8)
         run: bash scripts/smoke_test.sh
 
       # The APK's stage, when it was asked for. (The check is in the shell:
