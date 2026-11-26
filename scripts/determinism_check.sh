@@ -9,7 +9,7 @@
 #
 #   UP_DET_SECONDS  how long each run goes (default 150)
 #   UP_SMOKE_WATCH  the same watched addresses as the smoke run (optional)
-#   UP_DET_FLAGS    the engine's flags for the runs (default --virtual-time)
+#   UP_DET_FLAGS    the engine's flags for the runs (default --virtual-time; --gs-inline makes the host watchdog stop the run: exit 3)
 #
 # Each run starts with the settings file, the GPU pipeline cache and the
 # captures removed (they sit beside the binary and carry over from one run to the next).
@@ -37,7 +37,7 @@ mkdir -p "$OUT"
 # The engine\'s own switch for a repeatable run: --virtual-time keeps the clock
 # (timers, the SIF replies\' due times) in the scheduler, not in the wall clock.
 # Without it the runs differ by their real timing (ClockNs in timers.cpp).
-read -r -a det_flags <<< "${UP_DET_FLAGS:---virtual-time --gs-inline --vif1-sync}"
+read -r -a det_flags <<< "${UP_DET_FLAGS:---virtual-time}"
 
 local_watch=()
 WATCH_LIST="${UP_SMOKE_WATCH:-}"
