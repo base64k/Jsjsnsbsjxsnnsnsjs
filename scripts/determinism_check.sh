@@ -17,13 +17,14 @@ cd "$REPO_ROOT"
 
 GAME="games/up"
 SECONDS_TO_RUN="${UP_DET_SECONDS:-150}"
-BUILD="$GAME/build/linux/up"
+BUILD="$GAME/build/linux/up/up"   # the smoke test runs "$BUILD_DIR/up"
 OUT="$GAME/build/determinism"
 ELF="$GAME/extracted/$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["executable"])' "$GAME/game.json")"
 
 log() { printf '\033[1;34m[determinism]\033[0m %s\n' "$*"; }
 
 [ -x "$BUILD" ] || { log "no build at $BUILD (the smoke run builds it)"; exit 1; }
+[ -f "$BUILD" ] || { log "$BUILD is not a file"; exit 1; }
 [ -f "$ELF" ] || { log "no program at $ELF"; exit 1; }
 
 rm -rf "$OUT"
@@ -53,6 +54,12 @@ for i in 1 2; do
             > "$OUT/run-$i.txt" 2>&1
     echo "exit $?" >> "$OUT/run-$i.txt"
     set -e
+    # A run that did not get to the game (a missing binary, a bad argument) is a failure, not a result.
+    if ! grep -q -E '^(stopped:|functions executed)' "$OUT/run-$i.txt"; then
+        log "run $i ended without a report of its stop: see $OUT/run-$i.txt"
+        tail -n 20 "$OUT/run-$i.txt"
+        exit 1
+    fi
 done
 
 # The lines that differ run to run by the clock alone are taken out: the IOP's
