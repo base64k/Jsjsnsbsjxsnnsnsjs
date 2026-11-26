@@ -1,5 +1,21 @@
 the two runs, the wall-clock lines taken out
-lines: run 1 2, run 2 2
-stop in run 1: (none)
-stop in run 2: (none)
-IDENTICAL: the runs are the same
+lines: run 1 14533, run 2 14472
+stop in run 1: stopped: a read at 0x10010000, outside guest memory
+stop in run 2: stopped: a read at 0x10010000, outside guest memory
+DIFFERENT: first difference at 268c268
+--- run 1 around it:
+[call] 0x003DF1C8
+[host] SIF: bound to IOP server 0x80000001
+[host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 663783095825 ns
+[call] 0x003DEE08
+[call] 0x003DC990 iSifSetDChain
+[host] kernel SifSetDChain (0x78) a0=0x00000000 a1=0x00000004 a2=0x2079B540 a3=0x2079B500
+--- run 2 around it:
+[call] 0x003DF1C8
+[host] SIF: bound to IOP server 0x80000001
+[host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 673855515906 ns
+[call] 0x003DEE08
+[call] 0x003DC990 iSifSetDChain
+[host] kernel SifSetDChain (0x78) a0=0x00000000 a1=0x00000004 a2=0x2079B540 a3=0x2079B500
