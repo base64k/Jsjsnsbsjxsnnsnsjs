@@ -415,6 +415,16 @@ jobs:
           done > ci-results/ee-code-crash.txt 2>&1 || true
           # The caller of the crashing function: where its object comes from (0x32ED94).
           timeout 120 python3 engine/tools/disasm.py --game games/up --range 0x0032ED40 0x0032EDF0 2>&1 | head -n 200 >> ci-results/ee-code-crash.txt || true
+          # Who writes the manager pointers the main loop uses (globals at 0x795F94, 0x795F98,
+          # 0x795F70 - the $at 0x790000 offsets 0x5F94, 0x5F98, 0x5F70): the stores into them
+          # (sw/sd with that offset), and the functions holding them. ci-results/ee-writers.txt.
+          { for off in 5f94 5f98 5f70; do
+              echo "== stores to 0x79$off"
+              grep -lE '(sw|sd|swc1|sq) +[$][a-z0-9]+, -?0x'"$off"'[(][$][a-z0-9]+[)]' /tmp/ee-asm/*.s 2>/dev/null | head -20 || true
+              grep -hE '(sw|sd|swc1|sq) +[$][a-z0-9]+, -?0x'"$off"'[(][$][a-z0-9]+[)]' /tmp/ee-asm/*.s 2>/dev/null | head -20 || true
+            done; } > ci-results/ee-writers.txt 2>&1 || true
+          mkdir -p ci-results/ee-writers
+          grep -lE '(sw|sd|swc1|sq) +[$][a-z0-9]+, -?0x(5f94|5f98|5f70)[(][$][a-z0-9]+[)]' /tmp/ee-asm/*.s 2>/dev/null | head -12 | xargs -r -n1 -I{} cp {} ci-results/ee-writers/ || true
           timeout 300 python3 engine/tools/disasm.py --game games/up --range 0x0047DA80 0x0047DB80 2>&1 | head -n 400 > ci-results/ee-code-47.txt || true
           # The functions around the wait (its caller 0x301B80, the one that clears the
           # flag 0x47C300) and every function that touches the flag's word or its
