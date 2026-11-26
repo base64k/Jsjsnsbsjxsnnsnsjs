@@ -723,3 +723,13 @@ for the replies the engine already sends), and that the EE's registration sets
   from `0x0044CEE0` and `0x0044D040`), not to SDRDRV's `0x80000701`, which the EE never calls.
   So the bad object is probably built from a reply of ZNASND's. Next: dump `func_0032ED94`
   and read what the reply carries into that object.
+
+- **The crash is in the main loop's manager update** (`ci-results/ee-code-crash.txt`, run
+  45751647187): `func_0032ED40` is `_CoreMainLoop`; it logs "Before ManipulatorMgr->Update()"
+  and calls `func_00426350` with the global at `0x795F94` as `$a0`. That object pointer is
+  bad (the write goes to `0x795F94 + 0xF1 = 0x02000000`), and it is the same each run now.
+- The stores into `0x795F94` were not found by the literal offset search (run 45755111967,
+  `ci-results/ee-writers.txt`: no matches for `sw/sd` at 0x5F94/0x5F98/0x5F70). They are
+  probably aligned `sq` stores at `0x5F90`, or a store through another base register. Next:
+  search `sq` at `0x5F90`/`0x5F80` and the global's other readers, or find who builds the
+  ManipulatorMgr (the game's init, near the heap that `SetupHeap` gave it).
