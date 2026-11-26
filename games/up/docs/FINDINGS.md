@@ -975,3 +975,23 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - The watch (`UP_SMOKE_WATCH`) now takes several addresses: the flag `0x7A982C`, and the
   ManipulatorMgr's globals `0x795F94` and `0x795F70`. Their `[write]` lines give the object's
   address and the function that stored it (`ci-results/write-trace.txt`).
+
+### Run 45840674608: the object is not overlapped; the bad pointer changes from run to run
+
+- The ManipulatorMgr's object is at `0x9E40B0` (its global `0x795F94` is set to it in `0x32F250`,
+  from the allocator). Its fields at `+0xA0..+0xA8` and `+0xF0..+0xF8` are written by `0x2E05B0`
+  during the same creation (`0x32F250 -> 0x43E880 -> 0x43EB40 -> 0x2DCC10 -> 0x2DCE50 -> 0x2DC7F0
+  -> 0x4B7080 -> 0x4B6DB0 -> 0x2E05B0`). The stored values are pairs of 16-bit coordinates
+  (`0x0170/0x0140/0x0110/0x0080/0x0050/0x0020`, `0x0172/0x0142/...`, a step of 0x30): a UI layout
+  table, written by the object's own init. So the object is not overlapped by another allocation,
+  and the list-head reading (`+0xA0` as a list) was wrong: it is an embedded table.
+- **The bad read is not the same in each run:** `0xFFFFF000` (45819298381), `0x10010000` (45826349148,
+  45835554148), `0x14F74845` (45840674608), and the write to `0x02000000` before patch 0019. A pointer
+  that changes between runs is read from memory that holds different data each time: uninitialised
+  memory, a reply or a DMA buffer the host filled differently, or a value from the clock. It is not
+  a fixed bug in the game's list.
+- **Next:** find what feeds the bad pointer. The reads are in `0x426E00` (the list walk) and the
+  update it calls (`0x356A60`), so the pointer comes from an object the update reads. Check which
+  host-filled buffers (SIF replies of 64 bytes, the RPC answers of ZNASND, the DMA into RAM) reach
+  that object, and whether any of them is filled from wall-clock time (the engine's wall-clock
+  marks, patch 0012). Only the run-to-run variation of the stop separates these.
