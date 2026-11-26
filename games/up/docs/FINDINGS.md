@@ -781,3 +781,38 @@ playing; the stop is `vkQueuePresentKHR failed (-1000000000)`, the surface loss 
 address. So the crash belongs to the headless run, not to the game on a phone. Next: find
 out what differs between the two (timing, the stop condition, or the uninitialised
 `Path` value) before chasing the `0x795F94` writer.
+
+### Three checks, done in parallel (after c1cca2d)
+
+**1. The EE debug stubs.** The game's debug output is `Deci2Call` (syscall 0x7C) with
+`$a0 = 0x10`, which the engine shows as `[guest]`. `scripts/ee_find.py` lists the functions
+with that call and their callers over the whole-disc disassembly (`ci-results/ee-find.txt`).
+The phone run's `Path : (null)` comes from there, not from a `[tty]` line.
+
+**2. The writer of the ManipulatorMgr pointer (0x795F94).** Found by `scripts/ee_find.py`
+(the base register is tracked through `lui $at, 0x79`, which the earlier offset search missed).
+`func_0032F250` (the "ParticlesManager_Z" init, called from `func_0032F1B0`) does:
+
+    if (g_0x795F94 == 0) {                       // 0x330380
+        v0 = func_002DCB00(0xFC, "ManipulatorManager_Z", "Main_Z.cpp", 0x1EB);  // 0x3303A0
+        if (v0 != 0) { ...init the object... }   // 0x3303A8 skips the init when v0 == 0
+    }
+    g_0x795F94 = v0;                             // 0x330444
+    ...
+
+So the pointer is whatever the allocator `func_002DCB00` returns, unless it was already set. The
+crash is a read through that pointer. The allocator's dump is added to CI (`ci-results/ee-funcs/`).
+Open question: whether `func_002DCB00` returns a valid address in the headless run.
+
+**3. `start returned 2` is not an error.** In ps2sdk, a module's `_start` returns
+`MODULE_RESIDENT_END` (0) or `MODULE_NO_RESIDENT_END` (1). The success path of `mcserv`
+(ps2sdk source, `mcserv.c`) returns `MODULE_REMOVABLE_END`, which is 2. So SDRDRV started
+normally; patch 0017 is not involved in this.
+
+**4. Patch 0015 is not in the phone build yet.** A surface loss is `VK_ERROR_SURFACE_LOST_KHR`,
+which is `-1000000000`. Patch 0015 handles it silently (`surface_lost_`, then `RecreateSurface`)
+and logs `the surface made again`. `up-2.log` has neither the recovery line nor the silence:
+it logs `vkQueuePresentKHR failed (-1000000000)` through `Check()`, which is the pre-0015
+behaviour. So the phone's build predates 0015, and 0015 is still unverified on a device.
+
+**5. The GPU pipeline cache.** `*.bin` is in `.gitignore`, and no `.bin` is tracked.
