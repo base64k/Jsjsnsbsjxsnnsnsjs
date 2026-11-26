@@ -497,10 +497,11 @@ jobs:
             # next change): rebase onto it and push again, a few times.
             BRANCH="${GITHUB_REF#refs/heads/}"
             # The results of this run win a conflict with an earlier run's results
-            # (-X theirs: the commit being replayed is this run's).
+            # (-X theirs). A merge, not a rebase: a rebase refuses to start while the
+            # engine submodule has the patches on it (its content is modified).
             git push -q origin "HEAD:refs/heads/$BRANCH" \
-              || { git fetch -q origin "$BRANCH" && git rebase -q -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
-              || { git fetch -q origin "$BRANCH" && git rebase -q -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+              || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+              || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
               || echo "::warning title=results::the results could not be pushed to $BRANCH"
           fi
           # The key lines of the run, as annotations too (they are kept by the
