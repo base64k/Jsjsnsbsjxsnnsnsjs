@@ -10,6 +10,9 @@
 #   UP_DET_SECONDS  how long each run goes (default 150)
 #   UP_SMOKE_WATCH  the same watched addresses as the smoke run (optional)
 #   UP_DET_FLAGS    the engine's flags for the runs (default --virtual-time)
+#
+# Each run starts with the settings file, the GPU pipeline cache and the
+# captures removed (they sit beside the binary and carry over from one run to the next).
 
 set -euo pipefail
 
@@ -49,6 +52,14 @@ for i in 1 2; do
     else
         : > "$OUT/discovered-$i.txt"
     fi
+    # The state a run leaves beside the binary (the settings file, the GPU
+    # pipeline cache, the captures) would start the next run differently: the
+    # first run's cache is the second run's warm start. Both runs start from
+    # nothing; what was there is listed in state-before-$i.txt.
+    BUILD_DIR="$(dirname "$BUILD")"
+    ls -la "$BUILD_DIR" > "$OUT/state-before-$i.txt" 2>&1 || true
+    rm -rf "$BUILD_DIR/captures"
+    rm -f "$BUILD_DIR/pc_settings.ini" "$BUILD_DIR"/*.bin
     log "run $i of 2: ${SECONDS_TO_RUN}s"
     set +e
     SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
