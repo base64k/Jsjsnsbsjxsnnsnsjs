@@ -29,7 +29,7 @@ index ef94d7f..f17db64 100644
          RunThreads(c, entry, options.loop_budget);
      } catch (const GuestExit& exit) {
 diff --git a/host/src/kernel.cpp b/host/src/kernel.cpp
-index a89aa3a..13b9857 100644
+index a89aa3a..ab13086 100644
 --- a/host/src/kernel.cpp
 +++ b/host/src/kernel.cpp
 @@ -9,7 +9,9 @@
@@ -52,7 +52,7 @@ index a89aa3a..13b9857 100644
  namespace {
  
  struct Kernel {
-@@ -97,6 +102,22 @@ const char* SyscallName(s32 service) {
+@@ -97,6 +102,23 @@ const char* SyscallName(s32 service) {
      return "?";
  }
  
@@ -70,12 +70,13 @@ index a89aa3a..13b9857 100644
 +    const u32 argc = 1, argv0 = args + kPayload;
 +    std::memcpy(block, &argc, 4);
 +    std::memcpy(block + kArgv, &argv0, 4);
++    std::fprintf(stderr, "[host] SetupThread: program args at %08X (argc 1, argv[0] \"%s\")\n", unsigned(args), g_program_path.c_str());
 +}
 +
  void KernelSyscall(lifted::Context& c) {
      const s32 service = s32(u32(c.r[3]));
      const s32 number = service < 0 ? -service : service;
-@@ -147,6 +168,7 @@ void KernelSyscall(lifted::Context& c) {
+@@ -147,6 +169,7 @@ void KernelSyscall(lifted::Context& c) {
              // is the top of its stack, less the kernel's argument area.
              const u32 base = stack == 0xFFFFFFFFu ? kRdramSize - size : stack;
              k.stack_base = base;
