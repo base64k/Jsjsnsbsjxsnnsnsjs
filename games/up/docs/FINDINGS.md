@@ -733,3 +733,28 @@ for the replies the engine already sends), and that the EE's registration sets
   probably aligned `sq` stores at `0x5F90`, or a store through another base register. Next:
   search `sq` at `0x5F90`/`0x5F80` and the global's other readers, or find who builds the
   ManipulatorMgr (the game's init, near the heap that `SetupHeap` gave it).
+
+### The proven method: a golden trace (what DQ8-Recompiled does)
+
+DQ8-Recompiled checks its port against a golden trace: the log of the real, unmodified
+game run in PCSX2 with its own debug log enabled. The log is produced by a pnach that
+restores compile-time-stubbed debug call sites (their entries replaced with a jump into the
+game's own printf path, whose TTY output PCSX2 shows). `tools/oracle/logdiff.py` then
+reports the first divergence between the golden log and the port's log.
+
+For Up this needs three things we do not have yet:
+
+1. **The stubs.** The game's debug printf path is stubbed in the retail code. Our logs have
+   no `[tty]` line in any run: the TTY write (`0x3DDB68`, a ring-buffer writer; its caller is
+   `0x3DCBB8`) is never called. `0x3F45F8` is not a log routine: it copies a string
+   (memcpy/strcpy with a 16-byte loop). So the entries to restore are elsewhere: stubbed
+   printf-like functions (a `jr $ra` body) with many call sites whose first argument is a
+   string. A CI pass listing those (from `/tmp/ee-asm`) would give the candidates.
+2. **A golden trace**, from PCSX2 with the BIOS and the user's disc (SLUS-21864). It cannot
+   be made in this sandbox (no BIOS, no PCSX2 run, the disc is on Google Drive).
+3. **The comparison**: the port's `[tty]` lines (the same text) against the golden log, first
+   divergence first. `logdiff.py`'s categories are DQ8's; Up's would be the same idea.
+
+Until (1) and (2) exist, the crash in `_CoreMainLoop` (the manager pointer at `0x795F94`)
+stays unexplained. Its address and value also vary between runs (`0x02000000`,
+`0x08C20FB0`, `0xF6FFFF42`), so it depends on timing or on uninitialised memory.
