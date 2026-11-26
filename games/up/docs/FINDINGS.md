@@ -758,3 +758,26 @@ For Up this needs three things we do not have yet:
 Until (1) and (2) exist, the crash in `_CoreMainLoop` (the manager pointer at `0x795F94`)
 stays unexplained. Its address and value also vary between runs (`0x02000000`,
 `0x08C20FB0`, `0xF6FFFF42`), so it depends on timing or on uninitialised memory.
+
+### Correction: the game's own debug output does run (kputs)
+
+The earlier note "no debug output runs" was wrong. The engine turns the EE kernel's `kputs`
+(service 0x10) into `[guest]` lines (`engine/host/src/kernel.cpp`), and Up calls it once,
+right after the `_CoreMainLoop` startup:
+
+    [guest] Path : (null)
+
+It appears in CI port-report.txt (run 45759204670 and earlier) and in the phone log
+`up-2.log`. The string pointer is null when the game prints it, so something it expects
+to be set is not, before it calls `0x00231510`. Only one line in a whole run means the
+game rarely calls `kputs`; the absence of other lines proves nothing. The `[tty]` ring
+buffer (`0x3DDB68`) is a separate path.
+
+### The phone run does not crash where the headless run does
+
+`up-2.log` (Mali-G57) goes on to frame 1100 with the same 562 draws per frame and audio
+playing; the stop is `vkQueuePresentKHR failed (-1000000000)`, the surface loss that patch
+0015 addresses. The CI smoke run stops in `ManipulatorMgr->Update` instead, at a varying
+address. So the crash belongs to the headless run, not to the game on a phone. Next: find
+out what differs between the two (timing, the stop condition, or the uninitialised
+`Path` value) before chasing the `0x795F94` writer.
