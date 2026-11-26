@@ -44,9 +44,9 @@ void RegisterGameOverrides() {
     // driver's remote): its RPC server is the one ZNASND binds (0x01000002),
     // which the host's own library lacks. The EE loads LIBSD before ZNASND.
     ps2host::iop::RunModule("LIBSD.IRX");
-    // SDRDRV is the sound driver's own IOP module (on the disc, never loaded by the
-    // EE's six LoadFile calls): it registers the RPC server 0x01000002, the one ZNASND
-    // binds and the EE waits on (its code at 0x113 has the word). Run before ZNASND.
+    // SDRDRV is the sound driver's own IOP module: the EE never loads it, so it starts
+    // with the EE's load of LIBSD (engine patch 0016, loadfile.cpp). It registers the RPC
+    // server 0x01000002 that ZNASND binds and the EE waits on.
     ps2host::iop::RunModule("SDRDRV.IRX");
     ps2host::iop::RunModule("ZNASND.IRX");
 
