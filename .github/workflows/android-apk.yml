@@ -453,6 +453,8 @@ jobs:
           python3 scripts/ee_find.py /tmp/ee-asm > ci-results/ee-find.txt 2>&1 || true
           # Who writes the allocator's pool (0x7957B0 and the words round it).
           python3 scripts/ee_find.py /tmp/ee-asm 0x795790 0x7957C0 > ci-results/ee-find-pool.txt 2>&1 || true
+          # Who writes the boot path buffer (0x797280) that the game prints as "Path : %s".
+          python3 scripts/ee_find.py /tmp/ee-asm 0x797270 0x797290 > ci-results/ee-find-path-buf.txt 2>&1 || true
           # The string the game prints as "Path : %s": the disassembly writes each string
           # it loads as a comment, so the function that loads it is the one that prints it.
           grep -rn -- '"Path' /tmp/ee-asm > ci-results/ee-string-path.txt 2>&1 || true

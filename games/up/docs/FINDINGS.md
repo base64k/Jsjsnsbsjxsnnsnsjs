@@ -853,3 +853,20 @@ behaviour. So the phone's build predates 0015, and 0015 is still unverified on a
 - `(null)` is what `printf` writes for a null `%s`, so the caller that passed a null `Path` is the
   one to find. The disassembly writes the strings it loads as comments, so the next run greps for
   the `"Path` string (`ci-results/ee-string-path.txt`, `ci-results/ee-path/`).
+
+### The "Path : (null)" print, found in the disassembly (run 45778783877)
+
+The disassembly writes each string it loads as a comment, so the grep for `"Path` found the
+print directly (`ci-results/ee-string-path.txt`):
+
+- `func_002DD6B0` (called from `main`, `func_002DD240`, at `0x2DD3E4`; its string hint is
+  "Game is in PAL mode") builds the boot path at `0x797280`. It scans back from the end of that
+  string for the last `\` (`0x5C`), writes a NUL after it, copies two bytes with `func_003F4C88`,
+  and then calls `printf("Path : %s\n", 0x797280)` (`0x2DD94C..0x2DD954`). It calls the same
+  print a second time at `0x2DD988`, after `func_003DE7C8`.
+- So the text is the game's own boot path, and `(null)` is what printf writes for the buffer as the
+  game left it at that point. The writers of `0x797280` are the next question
+  (`ci-results/ee-find-path-buf.txt`).
+- The chain, from the game's `printf` to the engine: `printf` (`0x3F2AF8`) calls `0x3DDEB0` per
+  character, which sends each line through `0x3DD900` (`kputs`, `Deci2Call(0x10)`), which the
+  engine prints as `[guest]`.
