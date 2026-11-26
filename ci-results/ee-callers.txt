@@ -40,3 +40,6 @@ func_0044CDC0.s
 func_0032F1B0.s
 == called from (func_002DD6A0):
 func_0032F1B0.s
+== called from (func_003DD900):
+func_003DDEB0.s
+== called from (func_002DC710):

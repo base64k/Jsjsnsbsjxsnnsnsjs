@@ -31,7 +31,7 @@
 [host] SIF: the EE receives at 0x0079B500
 [host] SIF: bound to IOP server 0x80000001
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 608741353944 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 872806196002 ns
 [host] kernel SifSetDChain (0x78) a0=0x00000000 a1=0x00000004 a2=0x2079B540 a3=0x2079B500
 [host] kernel iSignalSema (0x43) a0=0x00000005 a1=0x0079D000 a2=0x003DF300 a3=0x2079B500
 [host] DMAC: channel 5 interrupt delivered
@@ -39,11 +39,11 @@
 [host] kernel SignalSema (0x42) a0=0x00000006 a1=0x00000001 a2=0x2079B800 a3=0x00000040
 [host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 255, 8 bytes sent; from 0x003E0720 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 608741413343 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 872806238452 ns
 [host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 0, 1048 bytes sent; from 0x003E09F0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] file I/O: open rom0:ROMVER (not found)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 608741438882 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 872806255255 ns
 [host] kernel EndOfHeap (0x3E) a0=0x00000420 a1=0x00000420 a2=0x00000000 a3=0x01FFFBB8
 [host] kernel Deci2Call (0x7C) a0=0x00000001 a1=0x01FFF7A0 a2=0x003DD9D0 a3=0x0000000C
 [host] kernel GsPutIMR (0x71) a0=0x0000FF00 a1=0x00010000 a2=0x00020000 a3=0x00000000
@@ -54,10 +54,10 @@
 [host] DMAC: channel 0 completed while its interrupt is disabled
 [host] SIF: bound to IOP server 0x80000592
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309262596 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374347340 ns
 [host] SIF: EE call, server 0x80000592 (at 0x00180800), procedure 0, 4 bytes sent; from 0x003F9FE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309283087 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374363367 ns
 [host] kernel _DisableDmac (0x17) a0=0x00000005 a1=0x00729A40 a2=0xFFFFFFFF a3=0x00729A40
 [host] kernel RemoveDmacHandler (0x13) a0=0x00000005 a1=0x00000002 a2=0xFFFFFFFF a3=0x00729A40
 [host] kernel ? (0x6B) a0=0x00000001 a1=0x00000000 a2=0xFFFFFFFF a3=0x00729A40
@@ -65,558 +65,647 @@
 [host] SIF: IOP reboot: rom0:UDNL cdrom0:\MODULES\IOPRP280.IMG;1
 [host] IOP: rebooted with cdrom0:\MODULES\IOPRP280.IMG;1: loadfile 2800
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309539984 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374572604 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309549117 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374579052 ns
 [host] kernel PollSema (0x45) a0=0x0000000F a1=0x0079BB70 a2=0x00000000 a3=0x003F96A0
 [host] kernel ReferThreadStatus (0x30) a0=0x00000001 a1=0x007A25A0 a2=0x00000000 a3=0x003F96A0
 [host] SIF: bound to IOP server 0x80000593
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309573083 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374592206 ns
 [host] SIF: EE call, server 0x80000593 (at 0x00180C00), procedure 34, 4 bytes sent; from 0x003FA970 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309585863 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374599316 ns
 [host] SIF: bound to IOP server 0x80000003
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309599233 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374606911 ns
 [host] SIF: bound to IOP server 0x80000006
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309619033 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374618208 ns
 [host] SIF: EE call, server 0x80000006 (at 0x00181400), procedure 255, 0 bytes sent; from 0x003E3CF8 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309629478 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374624228 ns
 [host] SIF: EE call, server 0x80000006 (at 0x00181400), procedure 0, 512 bytes sent; from 0x003E44D0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: module cdrom0:\MODULES\SIO2MAN.IRX;1 loaded as 1 (its services are the host's)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309667696 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374653790 ns
 [host] IOP: module cdrom0:\MODULES\PADMAN.IRX;1 loaded as 2 (its services are the host's)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309684751 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374665886 ns
 [host] IOP: module cdrom0:\MODULES\MCMAN.IRX;1 loaded as 3 (its services are the host's)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309700185 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374676498 ns
 [host] IOP: module cdrom0:\MODULES\MCSERV.IRX;1 loaded as 4 (its services are the host's)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610309715327 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874374686942 ns
 [host] IOP: running cdrom0:\MODULES\SDRDRV.IRX;1 at 0x00010000 (7368 bytes), entry 0x000103A0
-[host] IOP: cdrom0:\MODULES\SDRDRV.IRX;1 start begins, at 610310 ms (wall)
+[host] IOP: cdrom0:\MODULES\SDRDRV.IRX;1 start begins, at 874375 ms (wall)
 [host] IOP: a module exports the library sdrdrv
 [host] IOP: a module serves RPC 0x80000701 (function 0x00010588)
 [host] IOP: cdrom0:\MODULES\SDRDRV.IRX;1's start returned 2; running the IOP until it waits
-[host] IOP: cdrom0:\MODULES\SDRDRV.IRX;1 loaded, at 610310 ms (wall)
+[host] IOP: cdrom0:\MODULES\SDRDRV.IRX;1 loaded, at 874375 ms (wall)
 [host] IOP: running cdrom0:\MODULES\LIBSD.IRX;1 at 0x00013500 (22912 bytes), entry 0x000135B0
-[host] IOP: cdrom0:\MODULES\LIBSD.IRX;1 start begins, at 610310 ms (wall)
+[host] IOP: cdrom0:\MODULES\LIBSD.IRX;1 start begins, at 874375 ms (wall)
 [host] IOP: a module exports the library libsd
 [host] IOP: cdrom0:\MODULES\LIBSD.IRX;1's start returned 0; running the IOP until it waits
-[host] IOP: cdrom0:\MODULES\LIBSD.IRX;1 loaded, at 610310 ms (wall)
+[host] IOP: cdrom0:\MODULES\LIBSD.IRX;1 loaded, at 874375 ms (wall)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610310675031 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874375598385 ns
 [host] IOP: running cdrom0:\MODULES\ZNASND.IRX;1 at 0x00018E80 (92256 bytes), entry 0x0001919C
-[host] IOP: cdrom0:\MODULES\ZNASND.IRX;1 start begins, at 610310 ms (wall)
+[host] IOP: cdrom0:\MODULES\ZNASND.IRX;1 start begins, at 874375 ms (wall)
 [host] IOP: a module serves RPC 0x01000001 (function 0x000193A8)
 [host] IOP: cdrom0:\MODULES\ZNASND.IRX;1's start returned 0; running the IOP until it waits
-[host] IOP: cdrom0:\MODULES\ZNASND.IRX;1 loaded, at 610320 ms (wall)
+[host] IOP: cdrom0:\MODULES\ZNASND.IRX;1 loaded, at 874380 ms (wall)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 610320926210 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 874380818350 ns
 [host] DMA VIF1 started: CHCR=0x00000145 MADR=0x00000000 QWC=0 TADR=0x009AFAC0 (completed at once): 1304 quadwords, 6 tags
 [host] DMAC: channel 1 interrupt delivered
 [host] kernel SleepThread (0x32) a0=0x00000000 a1=0x01000002 a2=0x0044D3A0 a3=0x007A8400
 [host] SIF: bound to IOP server 0x01000001 (a module the host runs)
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377188760 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442030086 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 513, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 513 (32 bytes in, 32 out) served by a module
 [host] IOP: binds RPC 0x01000002 on the EE (client 0x00023D54)
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377261900 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442079416 ns
 [host] kernel SifSetDma (0x77) a0=0x01F7FE90 a1=0x00000001 a2=0x2079C000 a3=0x00000040
 [host] IOP: the EE's bind answer: server 0x009D81D0 (client 0x00023D54)
 [host] IOP: RPC procedure 513 on the EE (64 bytes in, 64 out, client 0x00023D54)
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377384795 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442217449 ns
 [host] kernel GetThreadId (0x2F) a0=0x00000003 a1=0x009D81D0 a2=0x009D81B0 a3=0x2079B500
 [host] kernel iWakeupThread (0x34) a0=0x00000003 a1=0x009D81D0 a2=0x009D81B0 a3=0x2079B500
 [host] IOP: the EE answered the call of client 0x00023D54
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377417754 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442235472 ns
 [host] SIF: EE call, server 0x80000003 (at 0x00181000), procedure 1, 4 bytes sent; from 0x003E3830 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP heap: 272 bytes at 0x00011D60 for the EE
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377439747 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442251549 ns
 [host] SIF: bound to IOP server 0x80000100
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377484895 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442285416 ns
 [host] SIF: bound to IOP server 0x80000101
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377492597 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442291424 ns
 [host] SIF: EE call, server 0x80000100 (at 0x00181800), procedure 1, 128 bytes sent; from 0x003FBDF0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377509532 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442301454 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377520729 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442309508 ns
 [host] PAD: port 0 slot 0 open (pad area 0x007976C0)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377540669 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442323868 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377550364 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442331301 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377559547 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442337204 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377568531 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442342850 ns
 [host] PAD: port 1 slot 0 open (pad area 0x00797BC0): nothing plugged in
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377579207 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442349380 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377588271 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442355184 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377597114 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442360810 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377606278 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442366337 ns
 [host] PAD: padman command 0xD (answered done)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377618296 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442373506 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377626648 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442378824 ns
 [host] IOP heap: 1040 bytes at 0x00011E70 for the EE
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377719258 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442455473 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 768, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 768 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377812818 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442499433 ns
 [host] IOP heap: 8192 bytes at 0x000C2FE0 for the EE
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377851507 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442528141 ns
 [host] SIF: EE call, server 0x80000003 (at 0x00181000), procedure 2, 4 bytes sent; from 0x003E3920 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377870075 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442539447 ns
 [host] SIF: bound to IOP server 0x80000400
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377898988 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442561308 ns
 [host] SIF: EE call, server 0x80000400 (at 0x00182000), procedure 254, 48 bytes sent; from 0x003FBEC0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611377921922 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875442574324 ns
 [host] SIF reply queued for the EE: procedure-answer 80000009, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611411571222 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875452343557 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611411586515 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875452356417 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611411601427 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875452369874 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1797, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1797 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611411683360 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875452466157 ns
 [host] SIF: EE call, server 0x80000400 (at 0x00182000), procedure 1, 48 bytes sent; from 0x003FC9F0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611411778864 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875452557350 ns
 [host] file I/O: open cdrom0:\USER.TSC;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415404398 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455575775 ns
 [host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 4, 28 bytes sent; from 0x003E0DF8 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415428934 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455590657 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415437908 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455596578 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415445700 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455601544 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415453331 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455606341 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1808, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1808 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415554553 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455673889 ns
 [host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 2, 32 bytes sent; from 0x003E1030 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415571759 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455684330 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1809, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1809 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415601153 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455703934 ns
 [host] SIF: EE call, server 0x80000001 (at 0x00180400), procedure 1, 20 bytes sent; from 0x003E0C78 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415616186 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455713832 ns
 [host] file I/O: open cdrom0:\PARAM\PP001.TSC;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415848045 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455898449 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415857509 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455904941 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415865221 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455909984 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415872802 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455914808 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415880353 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455919581 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415908095 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455937885 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415929978 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455956057 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415950579 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455968051 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611415958571 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875455974845 ns
 [host] file I/O: open cdrom0:\INIT.TSC;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422396996 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875461808330 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422407391 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875461815555 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422415143 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875461820415 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422422694 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875461825131 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422430225 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875461829825 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422520692 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875462947328 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422531448 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875462955248 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422551227 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875462978251 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422559750 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875462983774 ns
 [host] file I/O: open cdrom0:\LANGDEF.TSC;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422596065 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463027855 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422604638 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463033844 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422612309 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463038755 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422624037 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463043570 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422631719 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463048496 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422655945 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463064871 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422665850 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463071276 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422684959 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463082607 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422692700 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463087846 ns
 [host] file I/O: open cdrom0:\INPUT\INPUT.PS2;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422909456 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463263536 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422918610 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463269233 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422926302 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463275844 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422934053 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463280770 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422941785 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463285548 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422967003 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463300920 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611422979131 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463308607 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611423016347 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463319873 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611423024579 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875463325046 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425231749 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472596218 ns
 [host] kernel SifDmaStat (0x76) a0=0x00000001 a1=0x00000001 a2=0x00000100 a3=0x00000000
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1805, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1805 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425475797 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472810500 ns
 [host] file I/O: open cdrom0:\INITLIB.TSC;1
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425669999 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472976596 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425683098 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472984588 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425691080 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472989789 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425698662 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875472994576 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425706233 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875473017853 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425733574 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474127208 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425743890 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474135801 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425763259 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474159600 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425771451 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474165401 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425949910 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474316005 ns
 [host] PAD: padman command 0x6 (answered done)
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611425984752 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474341053 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1810, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1810 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611426404894 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474571627 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 772, 32 bytes sent; from 0x0044D040 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 772 (32 bytes in, 64 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611426513477 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875474683336 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611427319951 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875475254663 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611427532600 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875475444215 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611427765741 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875475640234 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611428306054 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875476061738 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611428572364 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875476254891 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611428831815 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875476446771 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611429316994 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875476790790 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611429569855 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875476967203 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875477171252 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875477530684 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875477708028 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1811, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1811 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611429847573 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875477856194 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611429923156 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875477917949 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611430440254 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875478367526 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611430662608 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875478556330 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611430891963 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875478727152 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611431376953 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875479099475 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611431584836 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875479269606 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611431812548 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875479445600 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611432313101 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875479757410 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611793561971 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875479915002 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611793755743 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875480108542 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611794231859 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875480440779 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611794538149 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875480600387 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611794685120 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875480779233 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611794857340 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875481552844 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611795168668 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875481605653 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611795315559 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875481780189 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611795480857 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875481963683 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611795763222 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875482318323 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611795906197 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875482477597 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611797550350 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875482654158 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611797875860 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875482966773 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611798052876 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875483144786 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611798232626 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875483325336 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875483638287 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875483792111 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 875485088484 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876109092155 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876109389820 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876109654503 ns
 [host] SIF: EE call, server 0x00000000 (at 0x0003168C), procedure 1812, 32 bytes sent; from 0x0044CEE0 0x003DF968 0x003DED88 0x003DEC50 0x003DC960
 [host] IOP: RPC 0x01000001 procedure 1812 (32 bytes in, 32 out) served by a module
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611798509423 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876110046352 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 611798585627 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876110159075 ns
 [host] kernel SetVSyncFlag (0x73) a0=0x01FFFB50 a1=0x01FFFB58 a2=0x00798F90 a3=0x00798F60
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612056431767 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876159290134 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612056708834 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876159657615 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612082279937 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876188028178 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612107914796 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876210870515 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612108833849 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876211398152 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612108895381 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876211728138 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612109241312 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876212195134 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612109389805 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876212376646 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612109565579 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876212570280 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612109869817 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876212901706 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612110044770 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876213074765 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612260566471 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876213244102 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261053473 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876213563257 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261111540 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876213707942 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261278211 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876213903799 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261423650 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876214239631 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261742019 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876214393806 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612261902680 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876214574302 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612262071024 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876214885508 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612262386899 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215051068 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612262540830 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215242418 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612262683565 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215298364 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612263041343 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215614296 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612263201554 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215771485 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612263324509 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876215951404 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612263372732 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876216288711 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612264783073 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876216440210 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612264944175 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876216606625 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612265114722 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876216928021 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612265439240 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876217096707 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612265594774 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876217262353 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612265739051 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876217612208 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612266077640 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876217766727 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612266234136 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876756600469 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612266395338 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876756679605 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612268624761 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757091845 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612271953358 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757228113 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612272142974 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757358131 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612272295874 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757591163 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612272614964 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757702890 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612272772521 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876757810895 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612272923187 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758051268 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612274385977 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758166411 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612275943560 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758279808 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612276126025 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758495978 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612276275840 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758604110 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612276724635 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876758736184 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612276933880 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876932095057 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612830037146 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876932526780 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612831478585 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876932668861 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612836988633 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876933615881 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612837245749 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876934876686 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612837520433 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876935172859 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612837944601 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876935303290 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612838179854 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876935420104 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612839058376 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876935638657 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612841620560 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 876935746897 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612842097597 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877097082698 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612842321454 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877097559157 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612843697414 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877103122489 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 612844154041 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877103363429 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613077595837 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877103575704 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613194828905 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877103925412 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613196340329 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877104104552 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613201633320 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877104287254 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613201890267 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877104600741 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613202184249 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877104752741 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613202610951 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877104925414 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613202822960 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877105264331 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613204870940 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877105420867 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613207533125 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877105565439 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613207972085 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877108143794 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613208204194 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877108545553 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613208460089 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877108718591 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613208882795 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877108904214 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613209116236 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877109387438 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613210292676 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877360947377 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613414552998 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877361163830 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613414988733 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877361557109 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613417090194 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877361687425 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613417270365 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877361808602 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613417426220 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362071051 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613418197710 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362186835 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613418348176 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362296577 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613418496459 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362525777 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613418799505 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362632996 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613418942631 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362739725 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613419111184 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877362933270 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613419421871 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877365969020 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613419596474 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877511768084 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613419741783 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877512097782 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613420656899 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877512467376 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613422993524 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877516264443 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613423173064 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877516480039 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613423323761 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877516676671 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613423648068 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877517048648 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613423795961 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877517205096 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613423938996 ns
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877517395742 ns
 [host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
-[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 613425270038 ns
-[host] code at 0x00000000 is a copy of 0x00207398; running its translation
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877517712991 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877671046164 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877671306457 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877671587653 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877674936087 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675114013 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675244177 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675494673 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675605133 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675719357 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877675929464 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877676056740 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877676179621 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877676477135 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877676612955 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877676769794 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877911028766 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877912712520 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877912892262 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877913039148 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877913276335 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877913384883 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877913919870 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877914207694 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 877914321730 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878054184248 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878054645524 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878058779526 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878059029770 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878059247507 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878059620753 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878059785154 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878059957444 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878060304199 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878060456769 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878194255578 ns
+[host] SIF reply queued for the EE: procedure-answer 8000000A, due 0 ns, 1 queued
+[host] SIF reply delivered to the EE: 64 bytes, 0 left, at 878195346463 ns
