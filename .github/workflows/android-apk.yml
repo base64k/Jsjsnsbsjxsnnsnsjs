@@ -294,8 +294,10 @@ jobs:
       # Every lifted function, verified the same way (no --emit: the code is not changed).
       # Its outcomes are saved per function: which ones disagree with the original is the
       # list to look at first. ci-results/verify-all.txt, ci-results/all-outcomes.json.
+      # Off: the full verification in one process ran for two hours on every
+      # smoke run and did not finish. The sharded mode (verify=true) does it.
       - name: Every lifted function verified against the original (the engine's method)
-        if: ${{ always() }}
+        if: ${{ false }}
         continue-on-error: true
         timeout-minutes: 120
         run: |
