@@ -59,8 +59,9 @@ for i in 1 2; do
     # nothing; what was there is listed in state-before-$i.txt.
     BUILD_DIR="$(dirname "$BUILD")"
     ls -la "$BUILD_DIR" > "$OUT/state-before-$i.txt" 2>&1 || true
-    rm -rf "$BUILD_DIR/captures"
-    rm -f "$BUILD_DIR/pc_settings.ini" "$BUILD_DIR/gpu_pipeline_cache.bin"
+    # (Not removed: a run without the settings file the smoke run leaves goes into the
+    # host watchdog's loop - run 45941747782 - and the earlier stop at 0x10010000 was
+    # the same run with them.)
     log "run $i of 2: ${SECONDS_TO_RUN}s"
     echo "command: $BUILD $ELF --disc ... --no-memcard --audio --iop-trace ${det_flags[*]:-} ${local_watch[*]:-} --timeout $SECONDS_TO_RUN" > "$OUT/command-$i.txt"
     set +e
