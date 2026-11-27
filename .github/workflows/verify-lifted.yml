@@ -1,0 +1,179 @@
+# Up (PS2) - verify every lifted function against the original, in shards.
+#
+# The engine's own check (engine/docs/METHODOLOGY.md): each lifted function is
+# run against the original machine code on test cases, and its whole register
+# file and memory must agree. Patches 0022 and 0023 let it build with g++ on
+# Linux. The functions are split across the shards (scripts/verify_shard.py),
+# each shard runs lift.py on its own, and the merge job writes the outcomes to
+# ci-results/verify/: summary.txt names every function that disagrees.
+#
+# It reads the caches the build workflow (android-apk.yml) saved for this
+# branch: run that first. Nothing here changes the game's code.
+
+name: Up (PS2) - verify the lifted functions
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # The player's own Drive file (the same one the build reads).
+  UP_DRIVE_FILE_ID: 1LIzZFzNoXUteK5fnJLT1P6vGoIxg1fDA
+
+concurrency:
+  group: up-verify-lifted
+  cancel-in-progress: false
+
+jobs:
+  shard:
+    name: Verify shard ${{ matrix.shard }} of 6
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    env:
+      SHARDS: 6
+    steps:
+      - name: Check out the repository (with the engine)
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      # The same patches the build applies, in the same order (games/up/engine-patches).
+      - name: The engine's patches for this game
+        run: |
+          set -e
+          for patch in "$GITHUB_WORKSPACE"/games/up/engine-patches/*.patch; do
+            [ -f "$patch" ] || continue
+            echo "applying $(basename "$patch")"
+            git -C engine apply --verbose "$patch"
+          done
+
+      - name: The engine's commit (the caches' key)
+        id: engine
+        run: echo "sha=$(git -C engine rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: The disc image - the cache
+        id: disc_cache
+        uses: actions/cache/restore@v6
+        with:
+          path: disc
+          key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
+
+      - name: The disc image (fetched only when the cache has none)
+        if: ${{ steps.disc_cache.outputs.cache-hit != 'true' }}
+        run: |
+          python -m pip install --disable-pip-version-check gdown
+          bash scripts/fetch_disc.sh
+
+      - name: The disc image's sha (the derived cache's key, as the build computes it)
+        id: fetch
+        run: |
+          IMAGE="disc/up.iso"
+          if [ -f "$IMAGE" ]; then
+            echo "sha=$(sha256sum "$IMAGE" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=raw" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The lifted code, the analysis and the verdicts the build saved. A miss
+      # fails here with a clear message: run the build workflow first.
+      - name: The decompiled code - the cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            games/up/src
+            games/up/config
+            games/up/build/functions.json
+            games/up/build/verdicts.json
+            games/up/build/lift_outcomes.json
+            games/up/build/lift
+          key: derived-${{ steps.engine.outputs.sha }}-${{ steps.fetch.outputs.sha }}
+          fail-on-cache-miss: true
+
+      # lift.py reads the program's image: take it out of the disc, as the build does.
+      - name: The program out of the disc
+        run: |
+          set -e
+          EXE="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["executable"])' games/up/game.json)"
+          mkdir -p games/up/extracted
+          if [ ! -f "games/up/extracted/$EXE" ]; then
+            python3 engine/tools/isotool.py extract disc/up.iso "$EXE" -o games/up/extracted/
+          fi
+          test -f "games/up/extracted/$EXE"
+
+      - name: Verify this shard's functions against the original
+        run: |
+          set -u
+          OUT="verify-out/shard-${{ matrix.shard }}"
+          mkdir -p "$OUT"
+          ONLY="$(python3 scripts/verify_shard.py games/up/build/functions.json "${{ matrix.shard }}" "$SHARDS")"
+          echo "$ONLY" | head -c 300; echo
+          # lift.py without --emit: the code is not changed, only checked.
+          set +e
+          python3 engine/tools/lift.py --game games/up $ONLY --jobs "$(nproc)" > "$OUT/log.txt" 2>&1
+          echo "lift.py exit $?" >> "$OUT/log.txt"
+          set -e
+          cp games/up/build/lift_outcomes.json "$OUT/lift_outcomes.json" 2>/dev/null || echo "no outcomes written" >> "$OUT/log.txt"
+          tail -n 40 "$OUT/log.txt"
+
+      - name: The shard's outcomes
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-shard-${{ matrix.shard }}
+          path: verify-out/
+          if-no-files-found: warn
+          retention-days: 14
+
+  merge:
+    name: Merge the shards' outcomes
+    needs: shard
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: The shards' outcomes
+        uses: actions/download-artifact@v4
+        with:
+          pattern: verify-shard-*
+          path: verify-in
+
+      - name: The merged report
+        run: |
+          set -e
+          python3 scripts/verify_merge.py verify-in ci-results/verify | tee -a "$GITHUB_STEP_SUMMARY"
+          cp -r verify-in/. ci-results/verify/ 2>/dev/null || true
+
+      - name: Save the report to the repository
+        run: |
+          git config user.email "agent@arena.ai"
+          git config user.name "Arena Agent"
+          git add ci-results/verify/
+          git commit -m "ci(up): verification of the lifted functions, run ${{ github.run_id }}" || exit 0
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          git push -q origin "HEAD:refs/heads/$BRANCH" \
+            || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+            || echo "::warning title=verify::the report could not be pushed to $BRANCH"
