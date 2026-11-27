@@ -4,4 +4,4 @@ lifted 15 of 15 functions; refused 0
   building and verifying took 0s (4 processes)
 lifted and verified: 0 functions, 0 bytes (0.00% of code)
      15  not verified: no C++ compiler (vswhere not found; no Visual Studio installed)
-  elapsed 25s
+  elapsed 28s
