@@ -1021,3 +1021,11 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - `GetMemorySize` (syscall 0x7F) is never called by the game (no `kernel ... (0x7F)` note), so it is not the cause.
 - Next suspects, in order: (1) the SIF DMA copies (`SetDma`, `iop_libs.cpp` ~1130, and `SifDma`, `iop.cpp` ~239): a destination in `0x02000000–0x0FFFFFFF` drops the bytes silently (patch 0019); (2) where the 0x10010000 comes from in `0x3079C0`'s `s2` table.
 - The determinism check is off in the workflow (`if: ${{ false }}`): it costs ~6 minutes per run and gave no new result since 45872070165.
+
+### The engine's own verification now runs on Linux (patches 0022, 0023)
+
+- Until now `lift.py` verified nothing on Linux: its C++ check needs MSVC, so every lifted function was marked `NOT VERIFIED` ("nothing is verified"). Patches 0022 (`cppcheck.py`) and 0023 (`liftcheck.py`) build the same check with g++ (`-O2`, shared library). Checked locally on toy functions; CI confirmed it (run 46008029161: 14 of 15 verified).
+- Crash chain (`ci-results/chain-outcomes.json`, run 46010074964): `0x3078A0`, `0x3078F0`, `0x3079C0`, `0x3097C0`, `0x30A240`, `0x32DE80`, `0x32DFA0` (the LZ unpacker), `0x32EAA0`, `0x356A60`, `0x41B550`, `0x426350`, `0x426E00`, `0x4C49A0`, `0x4C4F40`: **verified** (the whole register file and memory agree with the original on random cases). `0x32F1B0`: untestable (the main loop; the original does not end on random inputs). So the translation of the crash chain is not the bug, on the cases tested. The unpacker hypothesis of the earlier runs is refuted.
+- `AddIdleLoop` (`overrides.cpp`, `0x356AF0` in `0x356A60`) changes only the time slice (`threads.cpp` ~696), not the state.
+- Full verification (`ci-results/verify-all.txt`, 19,492 functions, 4 cores): did not finish in 120 minutes (3,500 of 4,873 per worker). Per-function outcomes are only written at the end, so a timeout loses them. Next: shard it (`--only` lists, one job each) so each shard finishes; every `disagrees` outcome then names a real translation bug to fix by the method.
+- Where the bug must be, if the translation is right: the runtime around the code. Candidates: the SIF DMA (`SetDma`, `iop_libs.cpp`; writes above 32 MB dropped by patch 0019), the threads (a second thread writing the same object), or inputs the random cases do not reach.
