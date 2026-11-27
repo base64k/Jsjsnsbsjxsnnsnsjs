@@ -1,6 +1,16 @@
 --- a/host/src/threads.cpp
 +++ b/host/src/threads.cpp
-@@ -1501,6 +1501,23 @@
+@@ -199,6 +199,9 @@
+     try {
+         Dispatch(t.context, t.entry);
+         t.state = State::Dormant;               // returning from its entry ends a thread
++    } catch (const MemoryFault&) {
++        ReportRunningRegisters();               // the registers of the fault, while the thread is still current
++        S().stop = std::current_exception();
+     } catch (...) {
+         S().stop = std::current_exception();
+     }
+@@ -1501,6 +1504,23 @@
  
  u64 LastVblankNs() { return g_last_vblank_ns.load(std::memory_order_relaxed); }
  
@@ -24,16 +34,6 @@
  void SetRefreshLead(u64 ns) { g_refresh_lead.store(ns, std::memory_order_relaxed); }
  
  void SetHostPriority(HostPriority priority) {
---- a/host/src/host.cpp
-+++ b/host/src/host.cpp
-@@ -970,6 +970,7 @@
-     } catch (const Unimplemented& missing) {
-         outcome = "stopped: " + missing.what;
-     } catch (const MemoryFault& fault) {
-+        ReportRunningRegisters();
-         outcome = std::string("stopped: a ") + (fault.write ? "write" : "read") +
-                   " at " + Hex(fault.address) + ", outside guest memory";
-     } catch (const lifted::Abort& abort) {
 --- a/host/include/ps2host/run.h
 +++ b/host/include/ps2host/run.h
 @@ -327,6 +327,8 @@
