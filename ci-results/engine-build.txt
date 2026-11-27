@@ -1,10 +1,11 @@
-run 46010074964 (the engine at 65c46e9)
+run 46076146788 (the engine at 65c46e9)
 the engine's patches on the checkout:
  M android/java/org/ps2port/PortActivity.java
  M gpu/src/vulkan_display.cpp
  M host/include/ps2host/disc.h
  M host/include/ps2host/iop_vm.h
  M host/include/ps2host/run.h
+ M host/src/cdvd.cpp
  M host/src/disc.cpp
  M host/src/host.cpp
  M host/src/iop.cpp
@@ -22,10 +23,11 @@ the engine's patches on the checkout:
  gpu/src/vulkan_display.cpp                 |  31 +++
  host/include/ps2host/disc.h                |   1 +
  host/include/ps2host/iop_vm.h              |  13 ++
- host/include/ps2host/run.h                 |   2 +
+ host/include/ps2host/run.h                 |   6 +
+ host/src/cdvd.cpp                          |  11 +-
  host/src/disc.cpp                          |  26 +++
  host/src/host.cpp                          |  12 ++
- host/src/iop.cpp                           |  24 +++
+ host/src/iop.cpp                           |  36 +++-
  host/src/iop_libs.cpp                      | 245 +++++++++++++++++++++-
  host/src/iop_vm.cpp                        | 315 ++++++++++++++++++++++++++++-
  host/src/iop_vm_internal.h                 |  40 +++-
@@ -36,4 +38,4 @@ the engine's patches on the checkout:
  ps2decomp/cppcheck.py                      |  60 ++++--
  ps2decomp/liftcheck.py                     |  79 ++++++--
  tools/android.py                           |   4 +
- 18 files changed, 908 insertions(+), 51 deletions(-)
+ 19 files changed, 930 insertions(+), 56 deletions(-)
