@@ -31,61 +31,12 @@
 
 #include "ps2host/host.h"
 #include "ps2host/iop_vm.h"
-#include "ps2host/memory.h"
 #include "ps2host/run.h"
 #include "ps2host/settings.h"
 
 #include "gpu_pipelines.h"
 
-#include <cstdio>
-
-// The original of 0x3078A0 (the translated function): called through the override below.
-void F_003078A0(lifted::Context& c);
-// The original of 0x32DE80 (UnPack_Z: the unpacker's entry).
-void F_0032DE80(lifted::Context& c);
-
-namespace {
-
-// Diagnostic (the stop at a read of 0x10010000, the resource loader's input).
-// 0x3078A0 is handed the object's field at +0x2c (its resource entry); when that
-// entry is not a plausible RAM pointer, it is logged with its object and its
-// index, and the original runs as it would.
-int g_suspicious_3078A0 = 0;
-
-void Diag3078A0(lifted::Context& c) {
-    const u32 field = u32(c.r[5]);
-    const u32 entry = u32(ps2host::GuestMemory().Read(field, 4));
-    if ((entry < 0x00100000u || entry >= 0x02000000u) && g_suspicious_3078A0 < 40) {
-        const u32 index = u32(ps2host::GuestMemory().Read(field - 4, 4));
-        std::fprintf(stderr, "[diag] 3078A0 field %08X entry %08X index %08X ra %08X global %08X\n",
-                     unsigned(field), unsigned(entry), unsigned(index), unsigned(c.r[31]), unsigned(c.r[4]));
-        ++g_suspicious_3078A0;
-    }
-    F_003078A0(c);
-}
-
-// Diagnostic: the unpacker's entry (a0 its struct, a1 the packed data's header,
-// a2 the output). Logged when the header or the output is not a plausible RAM address.
-int g_suspicious_32DE80 = 0;
-
-void Diag32DE80(lifted::Context& c) {
-    const u32 input = u32(c.r[5]), output = u32(c.r[6]);
-    const bool plausible_in = input >= 0x00100000u && input < 0x02000000u;
-    const bool plausible_out = output == 0 || (output >= 0x00100000u && output < 0x02000000u);
-    if ((!plausible_in || !plausible_out) && g_suspicious_32DE80 < 40) {
-        std::fprintf(stderr, "[diag] 32DE80 in %08X out %08X head %08X %08X struct %08X ra %08X\n",
-                     unsigned(input), unsigned(output), unsigned(ps2host::GuestMemory().Read(input, 4)),
-                     unsigned(ps2host::GuestMemory().Read(input + 4, 4)), unsigned(c.r[4]), unsigned(c.r[31]));
-        ++g_suspicious_32DE80;
-    }
-    F_0032DE80(c);
-}
-
-}  // namespace
-
 void RegisterGameOverrides() {
-    ps2host::Override(0x003078A0u, Diag3078A0, "diagnostic: the resource entry handed to the loader");
-    ps2host::Override(0x0032DE80u, Diag32DE80, "diagnostic: the unpacker's entry");
     // The game's own sound driver, from the disc, in the IOP interpreter. The
     // sound library (LIBSD.IRX) stays the host's: its exports are the host's
     // libsd, which ZNASND imports.
