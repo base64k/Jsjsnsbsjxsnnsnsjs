@@ -381,6 +381,8 @@ jobs:
           fi
           # The report, cut to its head and tail (a trace of a whole run is
           # big); the full one is in the smoke test's artifact.
+          # The diagnostic lines of the whole report (the head and tail above keep only the ends).
+          grep -a '^\[diag\]' games/up/build/port/report.txt > ci-results/diag.txt 2>/dev/null || true
           if [ -f games/up/build/port/report.txt ]; then
             LINES=$(wc -l < games/up/build/port/report.txt)
             if [ "$LINES" -gt 9000 ]; then
