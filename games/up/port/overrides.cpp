@@ -41,6 +41,8 @@
 
 // The original of 0x3078A0 (the translated function): called through the override below.
 void F_003078A0(lifted::Context& c);
+// The original of 0x32DE80 (UnPack_Z: the unpacker's entry).
+void F_0032DE80(lifted::Context& c);
 
 namespace {
 
@@ -62,10 +64,28 @@ void Diag3078A0(lifted::Context& c) {
     F_003078A0(c);
 }
 
+// Diagnostic: the unpacker's entry (a0 its struct, a1 the packed data's header,
+// a2 the output). Logged when the header or the output is not a plausible RAM address.
+int g_suspicious_32DE80 = 0;
+
+void Diag32DE80(lifted::Context& c) {
+    const u32 input = u32(c.r[5]), output = u32(c.r[6]);
+    const bool plausible_in = input >= 0x00100000u && input < 0x02000000u;
+    const bool plausible_out = output == 0 || (output >= 0x00100000u && output < 0x02000000u);
+    if ((!plausible_in || !plausible_out) && g_suspicious_32DE80 < 40) {
+        std::fprintf(stderr, "[diag] 32DE80 in %08X out %08X head %08X %08X struct %08X ra %08X\n",
+                     unsigned(input), unsigned(output), unsigned(ps2host::GuestMemory().Read(input, 4)),
+                     unsigned(ps2host::GuestMemory().Read(input + 4, 4)), unsigned(c.r[4]), unsigned(c.r[31]));
+        ++g_suspicious_32DE80;
+    }
+    F_0032DE80(c);
+}
+
 }  // namespace
 
 void RegisterGameOverrides() {
     ps2host::Override(0x003078A0u, Diag3078A0, "diagnostic: the resource entry handed to the loader");
+    ps2host::Override(0x0032DE80u, Diag32DE80, "diagnostic: the unpacker's entry");
     // The game's own sound driver, from the disc, in the IOP interpreter. The
     // sound library (LIBSD.IRX) stays the host's: its exports are the host's
     // libsd, which ZNASND imports.

@@ -374,6 +374,7 @@ jobs:
           cp games/up/build/smoke/summary.txt ci-results/smoke-summary.txt 2>/dev/null || true
           cp games/up/build/disc-modules.txt ci-results/disc-modules.txt 2>/dev/null || true
           # The determinism check (scripts/determinism_check.sh): its summary, and the tail of each run.
+            for i in 1 2; do grep -a '^\[diag\]' games/up/build/determinism/run-$i.txt > ci-results/determinism-diag-$i.txt 2>/dev/null || true; done
           if [ -f games/up/build/determinism/summary.txt ]; then
             cp games/up/build/determinism/summary.txt ci-results/determinism-summary.txt
             for i in 1 2; do tail -n 1500 games/up/build/determinism/run-$i.nowall.txt > ci-results/determinism-run-$i.txt 2>/dev/null || true; done
