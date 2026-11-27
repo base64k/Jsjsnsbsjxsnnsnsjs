@@ -1,9 +1,8 @@
   seeded 1948 null global pointers for testing, and 3 more found by running (0s)
-lifted 1 of 1 functions; refused 0
-  0 verdicts remembered, 1 verified afresh
-  building and verifying took 1s (4 processes)
-lifted and verified: 0 functions, 0 bytes (0.00% of code)
-      1  disagrees: registers (N: lifted N, original N)
-  disagreeing: 0x002A7BF0
-wrote 1 files to games/up/src/lifted (1 functions, 1 not verified)
-  elapsed 28s
+lifted 4 of 4 functions; refused 0
+  0 verdicts remembered, 4 verified afresh
+  building and verifying took 8s (4 processes)
+lifted and verified: 3 functions, 2,756 bytes (0.06% of code)
+      1  untestable: only N cases ran
+wrote 1 files to games/up/src/lifted (4 functions, 1 not verified)
+  elapsed 25s
