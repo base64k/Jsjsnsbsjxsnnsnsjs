@@ -1,8 +1,7 @@
-  seeded 1948 null global pointers for testing, and 3 more found by running (0s)
-lifted 4 of 4 functions; refused 0
-  0 verdicts remembered, 4 verified afresh
-  building and verifying took 8s (4 processes)
-lifted and verified: 3 functions, 2,756 bytes (0.06% of code)
-      1  untestable: only N cases ran
-wrote 1 files to games/up/src/lifted (4 functions, 1 not verified)
-  elapsed 25s
+  seeded 1948 null global pointers for testing, and 0 more found by running (0s)
+lifted 5 of 5 functions; refused 0
+  0 verdicts remembered, 5 verified afresh
+  building and verifying took 31s (4 processes)
+lifted and verified: 5 functions, 1,156 bytes (0.02% of code)
+wrote 1 files to games/up/src/lifted (5 functions, 0 not verified)
+  elapsed 51s
