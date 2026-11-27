@@ -848,6 +848,9 @@ jobs:
           for a in $UP_ADDRESSES; do
             hex="${a#0x}"; hex="$(printf '%08X' "0x$hex")"
             { echo "== original assembly of 0x$hex"; python3 engine/tools/disasm.py --game games/up --addr "0x$hex" 2>&1 || echo "disasm failed"; } > "$OUT/$hex.s.txt"
+            # The original over the whole extent the lifter follows (the analysis range can be shorter).
+            END=$(printf '0x%08X' $(( 0x$hex + 0x700 )))
+            { echo "== original assembly, 0x$hex to $END"; python3 engine/tools/disasm.py --game games/up --range "0x$hex" "$END" 2>&1 || echo "disasm failed"; } > "$OUT/$hex.range.txt"
             # The lifted C++ of the function (from the derived cache): its body, up to the closing brace at column 0.
             FILE="$(grep -rl "^void F_$hex(lifted::Context& c) {" games/up/src 2>/dev/null | head -n 1)"
             if [ -n "$FILE" ]; then
