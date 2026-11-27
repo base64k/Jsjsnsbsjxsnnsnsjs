@@ -1,0 +1,10 @@
+  seeded 1948 null global pointers for testing, and 3 more found by running (0s)
+lifted 2 of 2 functions; refused 0
+  0 verdicts remembered, 2 verified afresh
+  building and verifying took 24s (4 processes)
+lifted and verified: 0 functions, 0 bytes (0.00% of code)
+      1  untestable: original, every memory profile: ExecutionLimit: exceeded N instructions; likely an infinite loop
+      1  disagrees: registers (N: lifted N, original N)
+  disagreeing: 0x002A7BF0
+wrote 1 files to games/up/src/lifted (2 functions, 2 not verified)
+  elapsed 51s
