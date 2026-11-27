@@ -265,6 +265,19 @@ jobs:
           [ -n "$STAGES" ] || STAGES="disc extract analyze lift host"
           bash scripts/build_apk.sh --stage "$STAGES" --abi "$UP_ABI"
 
+      # The engine's own check (the method in engine/docs/METHODOLOGY.md) of the
+      # functions on the crash chain: each lifted function is run against the
+      # original on test cases, and the verdict says whether it agrees. Only these
+      # functions, without writing any code (no --emit). ci-results/chain-verdicts.txt.
+      - name: The lifted functions of the crash chain, verified against the original
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          mkdir -p ci-results
+          ONLY=""
+          for a in 0x003078A0 0x003078F0 0x003079C0 0x00307ACC 0x003097C0 0x0030A240 0x0032DE80 0x0032DFA0 0x004C49A0 0x004C4BD0 0x004C4F40 0x0032F1B0 0x0032EAA0 0x00426350 0x00426E00 0x00356A60 0x0041B550; do ONLY="$ONLY --only $a"; done
+          python3 engine/tools/lift.py --game games/up $ONLY --jobs 4 --no-cache > ci-results/chain-verdicts.txt 2>&1 || echo "lift.py exit $?" >> ci-results/chain-verdicts.txt
+
       # Which of the disc's own files serve the SIF RPC servers the trace names
       # (the sound module waits for 0x01000002): the report is saved to
       # ci-results/disc-modules.txt. It never fails the run.
