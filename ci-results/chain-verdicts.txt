@@ -1,0 +1,7 @@
+  seeded 1948 null global pointers for testing, and 0 more found by running (0s)
+lifted 15 of 15 functions; refused 0
+  verification SKIPPED: vswhere not found; no Visual Studio installed - nothing is verified
+  building and verifying took 0s (4 processes)
+lifted and verified: 0 functions, 0 bytes (0.00% of code)
+     15  not verified: no C++ compiler (vswhere not found; no Visual Studio installed)
+  elapsed 25s
