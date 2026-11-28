@@ -117,6 +117,19 @@ OutputModule = nullout
 EOF
 log "settings written to $BINDIR/inis/PCSX2.ini"
 
+# ------------------------------------------------------------- the sound ---
+# PCSX2 opens an audio stream at start-up; without a sound server it shows a
+# modal error dialog ("Failed to create or configure audio stream") that takes
+# all the keys. A PulseAudio server with a null sink gives it a device.
+if command -v pulseaudio >/dev/null 2>&1; then
+    pulseaudio --start --exit-idle-time=-1 --disallow-exit -n \
+        --load="module-null-sink sink_name=null" --load="module-native-protocol-unix" >"$REF/logs/pulse.txt" 2>&1 || true
+    sleep 2
+    log "sound: $(pactl info 2>/dev/null | grep 'Default Sink' || echo 'no sink')"
+else
+    log "sound: no pulseaudio"
+fi
+
 # ------------------------------------------------------------- the display ---
 export DISPLAY=:99
 Xvfb :99 -screen 0 1280x1024x24 -nolisten tcp >"$REF/logs/xvfb.log" 2>&1 &
