@@ -126,12 +126,28 @@ kill -0 "$XVFB_PID" 2>/dev/null || die "Xvfb did not start (see $REF/logs/xvfb.l
 
 # Send one key to the PCSX2 window. Without a window manager there is no
 # activation, so the focus is set directly, then the key is sent (XTEST).
+# The window: by the name, the class, the process id, or else the first visible
+# window (the names are logged once, so a wrong guess shows up in the report).
+find_window() {
+    local wid=""
+    wid="$(xdotool search --onlyvisible --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
+    [ -n "$wid" ] || wid="$(xdotool search --onlyvisible --class 'pcsx2' 2>/dev/null | head -n 1 || true)"
+    [ -n "$wid" ] || wid="$(xdotool search --onlyvisible --pid "$PCSX2_PID" 2>/dev/null | head -n 1 || true)"
+    [ -n "$wid" ] || wid="$(xdotool search --onlyvisible --name '.' 2>/dev/null | head -n 1 || true)"
+    printf '%s' "$wid"
+}
+
 press() {
     local wid
-    wid="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
+    wid="$(find_window)"
     if [ -z "$wid" ]; then
-        log "press $1: no PCSX2 window"
+        log "press $1: no window"
         return 0
+    fi
+    if [ -z "${WINDOWS_LOGGED:-}" ]; then
+        log "windows: $(xdotool search --name '.' 2>/dev/null | while read -r w; do printf '[%s %s] ' "$w" "$(xdotool getwindowname "$w" 2>/dev/null)"; done)"
+        log "chosen window: $wid ($(xdotool getwindowname "$wid" 2>/dev/null))"
+        WINDOWS_LOGGED=1
     fi
     xdotool windowfocus "$wid" 2>/dev/null || true
     sleep 1
