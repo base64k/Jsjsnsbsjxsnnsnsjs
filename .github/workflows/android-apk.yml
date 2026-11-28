@@ -931,7 +931,7 @@ jobs:
         run: |
           set -e
           test -n "$UP_BIOS_DRIVE_FILE_ID" || { echo "::error title=reference::the secret UP_BIOS_DRIVE_FILE_ID is not set"; exit 1; }
-          python -m pip install --disable-pip-version-check gdown
+          python -m pip install --disable-pip-version-check gdown zstandard
           bash scripts/fetch_bios.sh
 
       - name: The reference run (PCSX2 headless, screenshots every minute)
@@ -955,6 +955,7 @@ jobs:
         run: |
           mkdir -p ci-results/reference
           cp bios/report.txt ci-results/reference/bios-report.txt 2>/dev/null || true
+          cp reference/logs/ee-snapshot.txt ci-results/reference/ee-snapshot.txt 2>/dev/null || true
           if [ -f reference/logs/pcsx2.log ]; then
             tail -n 3000 reference/logs/pcsx2.log > ci-results/reference/pcsx2-tail.txt
           fi

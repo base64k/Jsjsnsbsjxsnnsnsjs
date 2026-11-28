@@ -25,6 +25,7 @@ VERSION="${PCSX2_VERSION:-v2.8.2}"
 ASSET="pcsx2-${VERSION}-linux-appimage-x64-Qt.AppImage"
 URL="https://github.com/PCSX2/pcsx2/releases/download/${VERSION}/${ASSET}"
 SECONDS_TOTAL="${UP_REFERENCE_SECONDS:-600}"
+SNAPSHOT_AT="${UP_SNAPSHOT_AT:-300}"
 DISC="$REPO_ROOT/disc/${UP_DISC_IMAGE:-up.iso}"
 REF="$REPO_ROOT/reference"
 
@@ -124,6 +125,16 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
     if [ $((t % 60)) -eq 0 ]; then
         import -window root "$REF/shots/t${t}.png" 2>/dev/null || true
     fi
+    # The savestate (F1 by default): the whole EE RAM as the console has it at
+    # this point, read afterwards by scripts/ee_snapshot.py.
+    if [ "$t" -eq "$SNAPSHOT_AT" ]; then
+        WID="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
+        if [ -n "$WID" ]; then
+            xdotool windowfocus --sync "$WID" key F1 2>/dev/null || true
+        fi
+        sleep 10
+        log "savestate requested at ${t}s"
+    fi
 done
 
 if kill -0 "$PCSX2_PID" 2>/dev/null; then
@@ -133,6 +144,22 @@ if kill -0 "$PCSX2_PID" 2>/dev/null; then
     log "stopped PCSX2 after ${SECONDS_TOTAL}s"
 fi
 kill "$XVFB_PID" 2>/dev/null || true
+
+# The EE RAM of the savestate: the words the port's stop points at, and which
+# parts of RAM hold anything. Numbers only.
+SAVE="$(find "$APP" -name '*.p2s' 2>/dev/null | sort | tail -n 1 || true)"
+if [ -n "$SAVE" ]; then
+    cp "$SAVE" "$REF/logs/savestate.p2s"
+    python3 "$REPO_ROOT/scripts/ee_snapshot.py" "$REF/logs/savestate.p2s" \
+        0x00795F70 0x00795F74 0x00795F78 0x00795F7C 0x00795F80 0x00795F84 0x00795F88 0x00795F8C \
+        0x00795F90 0x00795F94 0x00795F98 0x00795F9C 0x00795FA0 0x00795F94 0x00714678 0x00076000 \
+        0x00200008 0x002DD240 0x0032F250 0x00331230 0x0043E880 0x009E40B0 \
+        --ranges > "$REF/logs/ee-snapshot.txt" 2>&1 || log "the savestate could not be read (see ee-snapshot.txt)"
+    log "savestate read: $(wc -l < "$REF/logs/ee-snapshot.txt") lines"
+else
+    log "no savestate was written"
+fi
+rm -f "$REF/logs/savestate.p2s"
 
 log "log lines: $(wc -l < "$REF/logs/pcsx2.log")"
 log "screenshots: $(ls "$REF/shots" | wc -l)"
