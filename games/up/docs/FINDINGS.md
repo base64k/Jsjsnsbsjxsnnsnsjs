@@ -1111,3 +1111,31 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - Conclusion: neither repository gives a ready fix for our stop. The method that works
   here is the differential one: the reference's RAM at a time aligned with the port's stop.
   The `--value` search in `scripts/ram_compare.py` finds where the bad pointer is stored.
+
+### Runs 46149039572 to 46153985873: the reference at 6 s, and the EE's bad read (patch 0026)
+
+- **The reference at 6 s** (`UP_REFERENCE_SECONDS=6`, run 46151517092): the ELF's code is in
+  memory (`0x0032F250` and `0x0043E880` have their prologues), but the ManipulatorMgr's globals
+  are still 0 (`0x795F94`, `0x795F70`). So 6 s is before the game's init, not the menu. The port
+  at its stop has them set (`0x795F94 = 0x009E40B0`). The 60 s and 900 s references are the
+  menu. Comparing at the game's own events (the first write to `0x795F94`) is the way to align them.
+- **The value 0x10010000 is in the game's data** (`ram-compare.txt`, `--value`): the port has it
+  at `0x006DD380`, `0x006DF5C8`, `0x006E2A58`, `0x006F9C08`, `0x0070E250`, and so does the
+  reference at the same five addresses. So it is a constant in the game's table, not a corruption.
+- **Patch 0026: unmapped EE hardware reads return 0.** The port stopped on a read at 0x10010000
+  (the first address past the 64 KB EE register window), which faults. PCSX2's `HwRead.cpp`
+  default case, for an unknown hardware address, logs "Unknown Hardware Read" and returns 0; a
+  write is ignored. Patch 0019 already did that for the physical gap 0x02000000-0x0FFFFFFF. The
+  patch extends it to 0x10010000-0x1FFFFFFF. Run 46153985873: the EE stop is gone, the run goes on.
+- **The next stop is on the IOP** (`stopped: IOP: instruction 0x00000001 at 0x000C2EE0`). Thread 7
+  (cdvdman, entry 0x1C2D0) is at 0x000C2EE4 when it stops. The IOP executed a word that is data
+  (0x00000001, a SPECIAL funct that does not exist), so a jump went to a wrong or stale address.
+  The thread's loop (`sceCdStatus`, `sceCdSync`, `sceCdGetError`, `DelayThread(0x1F4)` from
+  0x1C2FC) runs right up to the wake-up; the address is 0x10000 below the cdvdman code at 0x1C2E0.
+  Checked in the engine: the thread's context is run in place, `Vm::Call` keeps its own, the
+  wake-up sets only `r[2]`, and `R_MIPS_HI16` relocation has the carry (+0x8000) right. So the jump
+  is from the module's code, not the scheduler. The word at 0xC2EE0 is 1 and the SIF DMA descriptor
+  is at 0xC2EF4 (`sceSifSetDma(0xC2EF4, 1, 0x9000)`), so 0xC2EE0 is the EE's transfer area.
+- **Patch 0027 (diagnostic only):** an IOP stop now prints the instruction run before the bad one
+  (`previous_executing`), its word, and all 32 registers. The next run shows which `jr`/`jalr`
+  took the thread there.
