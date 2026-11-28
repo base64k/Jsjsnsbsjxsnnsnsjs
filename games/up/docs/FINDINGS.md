@@ -1055,3 +1055,27 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - **The golden trace DQ8 uses** (`tools/oracle/`): the retail game in PCSX2, with a pnach that restores two debug-log call sites (`tools/oracle/pnach/SLUS-21207_F4715852.pnach`), so the game prints file loads, VRAM allocations, IOP allocations and thread create/delete. `tools/oracle/logdiff.py` reports the first divergence against the runtime's log, by category. The same idea applies to Up: the game's own debug output does run (see "Correction: the game's own debug output does run (kputs)").
 - **Blocker for that golden trace: a PS2 BIOS.** PCSX2 does not run without a BIOS dump from the user's own console (PCSX2 has no open replacement). The BIOS is not in the repository and is not downloaded from the internet. The user has to supply their own dump, as with the disc.
 - Our engine already does what both do: it reimplements the EE services in the runtime and runs the IOP modules on an interpreter. So the recompiler alone does not explain the runtime garbage. What it adds is the reference method (the golden trace and `logdiff`), not a different translation.
+
+## The reference run: PCSX2 with the owner's BIOS and disc (CI, `reference=true`)
+
+- The BIOS dump's main ROM is `SCPH-90001_BIOS_V18_USA_230.ROM0` (4 MiB, with ROM1,
+  NVM, MEC, INF). `scripts/fetch_bios.sh` picks `*.ROM0` (not the same-size `.DIFF`).
+- PCSX2 v2.8.2 (the official Linux AppImage) runs the disc (SLUS-21864 in its log;
+  the ELF is `SLUS_218.64`). Headless under Xvfb, with a PulseAudio null sink (without
+  it PCSX2 opens a modal "Failed to create or configure audio stream" dialog that takes
+  every key) and the keyboard bound to the first pad (without bindings the game gets
+  no input). The game reaches the title, the intro, and a menu ("Back"); the IOP loops
+  `MENU.JOE` / `MUSICMENU.JOE`, which is the menu's data.
+- The savestate on shutdown (`SaveStateOnShutdown`) is read by `scripts/ee_snapshot.py`
+  (zstd entries, `eeMemory.bin` = the EE's 32 MiB). `ci-results/reference/ee-snapshot.txt`
+  holds only numbers: the words at the addresses the port's stop is about, and the
+  non-zero RAM pages.
+- Compared with the port: `0x795F70 = 0x007BD3D0` and `0x795F94 = 0x009E40B0` in the
+  reference, the same values the port writes (`0x0032F250`). `0x795F80..0x795FA0` are
+  pointers into the heap (`0x9D…`/`0x9E…`). `0x0032F250`, `0x00331230`, `0x0043E880`
+  hold the code's prologues in the reference RAM, so those functions are the game's.
+- Not yet established: the reference's RAM at the port's stop (`0x10010000`, a hardware
+  address that reads 0 in the reference's RAM). The next differential step is the RAM
+  of the port at the same logical point, compared page by page with `ee-snapshot.txt`.
+- Artifacts: the screenshots and the savestate are artifacts only (`up-reference`);
+  the repository keeps the text (`ci-results/reference/`).
