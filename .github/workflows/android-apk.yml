@@ -965,10 +965,12 @@ jobs:
           fi
           ls reference/shots 2>/dev/null > ci-results/reference/shots.txt || true
           # The text of each screen (OCR): the menu's words, to compare with the port's.
+          rm -f ci-results/reference/ocr.txt
           for shot in reference/shots/*.png; do
             [ -f "$shot" ] || continue
             { echo "== $(basename "$shot")"; tesseract "$shot" - 2>/dev/null | grep -v '^\s*$' || true; } >> ci-results/reference/ocr.txt
           done
+          cp reference/logs/error-text.txt ci-results/reference/error-text.txt 2>/dev/null || true
           git config user.email "agent@arena.ai"
           git config user.name "Arena Agent"
           git add ci-results/reference

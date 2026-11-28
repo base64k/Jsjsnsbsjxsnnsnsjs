@@ -187,6 +187,13 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
     if [ $((t % 60)) -eq 0 ]; then
         import -window root "$REF/shots/t${t}.png" 2>/dev/null || true
     fi
+    # Any error dialog of PCSX2 (it can hold the keys): its window is read
+    # on its own, since it may lie outside the picture above.
+    for ew in $(xdotool search --name '^Error$' 2>/dev/null || true); do
+        import -window "$ew" "$REF/logs/error-$t.png" 2>/dev/null || true
+        echo "== error window at ${t}s" >> "$REF/logs/error-text.txt"
+        tesseract "$REF/logs/error-$t.png" - 2>/dev/null >> "$REF/logs/error-text.txt" || true
+    done
     # The savestate (F1 by default): the whole EE RAM as the console has it at
     # this point, read afterwards by scripts/ee_snapshot.py.
     if [ "$t" -eq "$SNAPSHOT_AT" ] || [ "$t" -eq $((SNAPSHOT_AT + 30)) ]; then
