@@ -83,6 +83,7 @@ Renderer = 12
 EnableEEConsole = true
 EnableIOPConsole = true
 EnableTimeStamps = true
+EnableVerbose = true
 
 [Audio]
 OutputModule = nullout
@@ -127,13 +128,13 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
     fi
     # The savestate (F1 by default): the whole EE RAM as the console has it at
     # this point, read afterwards by scripts/ee_snapshot.py.
-    if [ "$t" -eq "$SNAPSHOT_AT" ]; then
+    if [ "$t" -eq "$SNAPSHOT_AT" ] || [ "$t" -eq $((SNAPSHOT_AT + 30)) ]; then
         WID="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
+        log "savestate requested at ${t}s (window: ${WID:-none})"
         if [ -n "$WID" ]; then
-            xdotool windowfocus --sync "$WID" key F1 2>/dev/null || true
+            xdotool windowfocus --sync "$WID" key F1 2>/dev/null || log "xdotool: the key was not sent"
         fi
-        sleep 10
-        log "savestate requested at ${t}s"
+        sleep 8
     fi
 done
 
@@ -147,6 +148,10 @@ kill "$XVFB_PID" 2>/dev/null || true
 
 # The EE RAM of the savestate: the words the port's stop points at, and which
 # parts of RAM hold anything. Numbers only.
+{
+    echo "files under the PCSX2 folder (names and sizes):"
+    find "$APP" -path '*/usr/bin/*' -newer "$REF/logs/xvfb.log" -type f -printf '%s %p\n' 2>/dev/null | grep -v '/usr/bin/lib' | head -n 60 || true
+} > "$REF/logs/files.txt"
 SAVE="$(find "$APP" -name '*.p2s' 2>/dev/null | sort | tail -n 1 || true)"
 if [ -n "$SAVE" ]; then
     cp "$SAVE" "$REF/logs/savestate.p2s"

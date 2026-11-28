@@ -956,6 +956,7 @@ jobs:
           mkdir -p ci-results/reference
           cp bios/report.txt ci-results/reference/bios-report.txt 2>/dev/null || true
           cp reference/logs/ee-snapshot.txt ci-results/reference/ee-snapshot.txt 2>/dev/null || true
+          cp reference/logs/files.txt ci-results/reference/files.txt 2>/dev/null || true
           if [ -f reference/logs/pcsx2.log ]; then
             tail -n 3000 reference/logs/pcsx2.log > ci-results/reference/pcsx2-tail.txt
           fi
