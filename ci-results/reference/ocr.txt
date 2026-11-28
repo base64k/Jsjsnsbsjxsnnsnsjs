@@ -1,70 +1,40 @@
 == t120.png
 System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
-0K
-Press START button
-OpenGL 640x447 (1x) GPU: 90%  FPS:55 VPS:55 @Speed:91% | c)Volume: 100% _
+Please do not remove
+memory card (PS2) or
+reset/switch off the console with
+this icon displayed.
+als
+Press & to continue
+‘OpenGL.
+640x447 (1x) GPU: 90% —FPS:47 VPS:47  @Speed: 78% | q)Volume: 100% .
 == t180.png
+System Settings View Tools Help
+s
+SSSEGEE88
+JK LM NOP OR
+SESSEEE88
+PI
+OpenGL 640x447 (1x) GPU: 91% FPS:44 VPS: 44 @Speed: 73% . ch) Volume: 100% _
 == t240.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
-OpenGL 640x447 (1x) GP
-© Speed: 100% . )Volume: 100% _
+ok
+— oo oe
 == t300.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-OpenGL 640x447 (1x) GPU: 91% —FPS:60 VPS: 60 @Speed: 100% _ Volume: 100% _
 == t360.png
-System Settings View Tools Help
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-x) Failed to create or configure audio stream, falling back to null
-OpenGL 640x447 (1x) GPU: 89% —FPS:58 — VPS:60 @Speed: 100% . Volume: 100% .
 == t420.png
+— oc 2 =
 == t480.png
 == t540.png
-System Settings View Tools Help
-output. The error was:
-‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
-x) Failed to create or configure audio stream, falling back to null
-OpenGL 640x447 (1x) GPU: 92% —FPS:60 VPS: 60 @Speed: 100% . <)Volume: 100% _
+— oc 2 =
+Back
 == t60.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-We're on our way.
-OpenGL 640x447 (1x) GPU: 92% —FPS:60 VPS: 60 @Speed: 100% . <)Volume: 100% _
+Ellie, | haven't forgotten your dream about Paradise Falls.
 == t600.png
 == t660.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-OpenGL 640x447 (1x) GPU: 92% —FPS:60 VPS: 60 @Speed: 100% . <)Volume: 100% _
+— oc 2 =
 == t720.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-OpenGL 640x447 (1x) GPU: 90% —FPS:58 VPS: 60 @Speed: 100% . <)Volume: 100% _
+a
+— oc 2 =
 == t780.png
 == t840.png
-System Settings View Tools Help
-Failed to create or configure audio stream, falling back to null
-output. The error was:
-cubeb_stream_init() failed: CUBEB_ERROR (-1)
-OpenGL 640x447 (1x) GPU: 89% —FPS:58 — VPS:60 @Speed: 100% . Volume: 100% .
 == t900.png
-System Settings View Tools Help
-output. The error was:
-‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
-x) Failed to create or configure audio stream, falling back to null
-OpenGL 640x447 (1x) GPA
-vps: 60 @Speed: 100% . <)Volume: 100% _
