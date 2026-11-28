@@ -3,28 +3,31 @@
   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
                                  Dload  Upload  Total   Spent   Left   Speed
   0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0
-  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 165.3M      0                              0100 57.33M 100 57.33M   0      0 165.3M      0                              0100 57.33M 100 57.33M   0      0 165.2M      0                              0
+  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0
 [1;34m[reference][0m settings written to /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/inis/PCSX2.ini
 [1;34m[reference][0m starting PCSX2 with the disc, for 900s
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
-[1;34m[reference][0m press k: no PCSX2 window
-[1;34m[reference][0m press Return: no PCSX2 window
+[1;34m[reference][0m windows: [2097157 Qt Selection Owner for AppRun] [2097161 AppRun] [2097159 Disney/Pixar Up] [2097175 Error] 
+[1;34m[reference][0m chosen window: 2097159 (Disney/Pixar Up)
+[1;34m[reference][0m focus: the window 2097159 has the focus: 2097159
+[1;34m[reference][0m pressed Return at 30s
+[1;34m[reference][0m pressed k at 45s
+[1;34m[reference][0m pressed Return at 60s
+[1;34m[reference][0m pressed k at 75s
+[1;34m[reference][0m pressed Return at 90s
+[1;34m[reference][0m pressed k at 105s
+[1;34m[reference][0m pressed Return at 120s
+[1;34m[reference][0m pressed k at 135s
+[1;34m[reference][0m pressed Return at 150s
+[1;34m[reference][0m pressed k at 165s
+[1;34m[reference][0m pressed Return at 180s
+[1;34m[reference][0m pressed k at 195s
+[1;34m[reference][0m pressed Return at 210s
+[1;34m[reference][0m pressed k at 225s
+[1;34m[reference][0m pressed Return at 240s
 [1;34m[reference][0m savestate requested at 300s
-[1;34m[reference][0m press F1: no PCSX2 window
+[1;34m[reference][0m pressed F1 at 300s
 [1;34m[reference][0m savestate requested at 330s
-[1;34m[reference][0m press F1: no PCSX2 window
+[1;34m[reference][0m pressed F1 at 330s
 [1;34m[reference][0m stopped PCSX2 after 900s
 [1;34m[reference][0m no savestate was written
 [1;34m[reference][0m log lines: 3

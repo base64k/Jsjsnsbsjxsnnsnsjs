@@ -468,3 +468,88 @@ Failed to create or configure audio stream, falling back to null
 output. The error was:
 cubeb_stream_init() failed: CUBEB_ERROR (-1)
 OpenGL 640x447 (1x) GPU: 94% —FPS:60 VPS: 60 @Speed: 100% . <)Volume: 100% _
+== t120.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 90% FPS:47 VPS: 47 @Speed: 78% . ch) Volume: 100% _
+== t180.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 90% —FPS:60 VPS: 60 @Speed: 100% . Volume: 100% _
+== t240.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+0K
+OpenGL 640x447 (1x) GPU: 90% —FPS:47 VPS: 47 @Speed: 78% . ch) Volume: 100% _
+== t300.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 90% —FPS:60 VPS: 60 @Speed: 100% . Volume: 100% _
+== t360.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 91%  FPS:47 —VPS:47 @Speed: 79% _ c)Volume: 100%
+== t420.png
+== t480.png
+System Settings View Tools Help
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+OpenGL 640x447 (1x) GPU: 90%  FPS:46 VPS: 46 @Speed: 77% . <)Volume: 100% _
+== t540.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_jnit() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 84% —FPS:53_ VPS:59 @Speed: 99% _ Volume: 100% _
+== t60.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+=a
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+Ellie, | haven't forgotten your dream about Paradise Falls.
+OpenGL 640x447 (1x) GPU: 117% FPS
+98 @Speed: 113% . Volume: 100% _
+== t600.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+ress START button
+OpenGL 640x447 (1x) GPU: 90%  FPS:46 VPS:46  @Speed: 77% | c)Volume: 100% _
+== t660.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 91% —FPS:60 VPS: 60 @Speed: 100% _ Volume: 100% _
+== t720.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 90% — FPS:47 —VPS:47  @Speed: 79% . c) Volume: 100% _
+== t780.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 92% —FPS:60 VPS: 60 @Speed: 100% . <)Volume: 100% _
+== t840.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GP 90 @Speed: 100% . Volume: 100% _
+== t900.png
