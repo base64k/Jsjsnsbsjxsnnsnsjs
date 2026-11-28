@@ -10,7 +10,7 @@ extracted/
 asm/
 build/
 bios/
-reference/
+/reference/
 # PS2 BIOS dump files (ROM0, ROM1, NVM, MEC, DIFF)
 *.ROM0
 *.ROM1
