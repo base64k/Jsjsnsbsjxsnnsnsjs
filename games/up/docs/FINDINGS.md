@@ -1156,3 +1156,19 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   (CpuSuspendIntr, SIF DMA setups) and possibly by an EE-to-IOP SIF DMA whose destination falls in
   the stack. Patch 0028 (`PS2HOST_IOP_WATCH=0xC2D00-0xC2FD0`, set in the smoke step) reports every
   byte of that range that changes, with the thread and its last instruction.
+
+### Runs 46159167991, 46161674065: the stop keeps moving (the cause is the run's timing)
+
+- Five real-time runs of the same code now stop at five different places: EE `0xFFFFF000`,
+  `0x10010000` (before patch 0026), `0xF8AD2C78` (run 46161674065, the EE read), IOP instruction
+  `0x000C2EE0` / `0x0008BF08` (cdvdman's stack, run 46156045070). The guest's call stack at the EE
+  stop is the same every time (`0x200008 -> ... -> 0x32DFA0`); only the bad value changes.
+- So the bad pointer is written at a time that varies, not by one fixed instruction. The IOP
+  stack watch (patch 0028) did not catch the write in the run that stopped on the EE (its report is
+  printed only on an IOP stop). The per-quantum granularity of the watch also shows normal stack
+  use of cdvdman (its own `sw ra`) as "changes", so the writer has to be separated from them.
+- **Next, in order:** (1) make the IOP stop report also the EE read stop (a `ReadFault` path), so the
+  watch's report comes with every bad read; (2) find the wall-clock inputs that change a guest
+  write's timing (patch 0012 "wall-clock marks", `host.cpp` virtual_time 863-884), since a variable
+  stop is a race between the host and the guest; (3) make the run repeatable before chasing the
+  pointer again (the determinism check, `scripts/determinism_check.sh`).
