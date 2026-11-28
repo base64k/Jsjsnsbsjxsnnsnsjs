@@ -75,6 +75,9 @@ BIOS = $BIOS_NAME
 
 [EmuCore]
 EnableFastBoot = true
+# The state at the end of the run, written when PCSX2 shuts down (the stop
+# below is a graceful one): the EE RAM as the game has it at that point.
+SaveStateOnShutdown = true
 
 [EmuCore/GS]
 Renderer = 12
@@ -218,7 +221,11 @@ done
 
 if kill -0 "$PCSX2_PID" 2>/dev/null; then
     kill "$PCSX2_PID" 2>/dev/null || true
-    sleep 5
+    # Give the graceful shutdown time to write the state (32 MiB, compressed).
+    for _ in $(seq 1 90); do
+        kill -0 "$PCSX2_PID" 2>/dev/null || break
+        sleep 1
+    done
     kill -9 "$PCSX2_PID" 2>/dev/null || true
     log "stopped PCSX2 after ${SECONDS_TOTAL}s"
 fi
