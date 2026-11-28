@@ -25,7 +25,6 @@ VERSION="${PCSX2_VERSION:-v2.8.2}"
 ASSET="pcsx2-${VERSION}-linux-appimage-x64-Qt.AppImage"
 URL="https://github.com/PCSX2/pcsx2/releases/download/${VERSION}/${ASSET}"
 SECONDS_TOTAL="${UP_REFERENCE_SECONDS:-600}"
-SNAPSHOT_AT="${UP_SNAPSHOT_AT:-300}"
 DISC="$REPO_ROOT/disc/${UP_DISC_IMAGE:-up.iso}"
 REF="$REPO_ROOT/reference"
 
@@ -184,38 +183,30 @@ log "starting PCSX2 with the disc, for ${SECONDS_TOTAL}s"
     >"$REF/logs/pcsx2.log" 2>&1 &
 PCSX2_PID=$!
 
-# The first minutes: the logos and the intro movies wait for Start (Return by
-# default on the keyboard), so press it now and then. After that the game is
+# The first minutes: the logos and the intro movies wait for Start, so the
+# keys are pressed now and then (on the pad bound above). After that the game is
 # left alone and the screens are the record.
 t=0
 while [ "$t" -lt "$SECONDS_TOTAL" ]; do
-    sleep 15
-    t=$((t + 15))
+    sleep 1
+    t=$((t + 1))
     if ! kill -0 "$PCSX2_PID" 2>/dev/null; then
         log "PCSX2 exited at ${t}s"
         break
     fi
-    if [ "$t" -ge 30 ] && [ "$t" -le 240 ]; then
-        # Start, then Cross: the title and the first choice. Alternating keeps
-        # the menu moving whichever one the screen waits for.
+    if [ $((t % 15)) -eq 0 ] && [ "$t" -ge 30 ] && [ "$t" -le 240 ]; then
         if [ $((t % 30)) -eq 0 ]; then press Return; else press k; fi
     fi
     if [ $((t % 60)) -eq 0 ]; then
         import -window root "$REF/shots/t${t}.png" 2>/dev/null || true
     fi
-    # Any error dialog of PCSX2 (it can hold the keys): its window is read
-    # on its own, since it may lie outside the picture above.
-    for ew in $(xdotool search --name '^Error$' 2>/dev/null || true); do
-        import -window "$ew" "$REF/logs/error-$t.png" 2>/dev/null || true
-        echo "== error window at ${t}s" >> "$REF/logs/error-text.txt"
-        tesseract "$REF/logs/error-$t.png" - 2>/dev/null >> "$REF/logs/error-text.txt" || true
-    done
-    # The savestate (F1 by default): the whole EE RAM as the console has it at
-    # this point, read afterwards by scripts/ee_snapshot.py.
-    if [ "$t" -eq "$SNAPSHOT_AT" ] || [ "$t" -eq $((SNAPSHOT_AT + 30)) ]; then
-        log "savestate requested at ${t}s"
-        press F1
-        sleep 8
+    if [ $((t % 15)) -eq 0 ]; then
+        # Any error dialog of PCSX2: its window is read on its own.
+        for ew in $(xdotool search --name '^Error$' 2>/dev/null || true); do
+            import -window "$ew" "$REF/logs/error-$t.png" 2>/dev/null || true
+            echo "== error window at ${t}s" >> "$REF/logs/error-text.txt"
+            tesseract "$REF/logs/error-$t.png" - 2>/dev/null >> "$REF/logs/error-text.txt" || true
+        done
     fi
 done
 
@@ -239,8 +230,8 @@ kill "$XVFB_PID" 2>/dev/null || true
 } > "$REF/logs/files.txt"
 SAVE="$(find "$APP" -name '*.p2s' 2>/dev/null | sort | tail -n 1 || true)"
 if [ -n "$SAVE" ]; then
-    cp "$SAVE" "$REF/logs/savestate.p2s"
-    python3 "$REPO_ROOT/scripts/ee_snapshot.py" "$REF/logs/savestate.p2s" \
+    cp "$SAVE" "$REF/savestate.p2s"
+    python3 "$REPO_ROOT/scripts/ee_snapshot.py" "$REF/savestate.p2s" \
         0x00795F70 0x00795F74 0x00795F78 0x00795F7C 0x00795F80 0x00795F84 0x00795F88 0x00795F8C \
         0x00795F90 0x00795F94 0x00795F98 0x00795F9C 0x00795FA0 0x00795F94 0x00714678 0x00076000 \
         0x00200008 0x002DD240 0x0032F250 0x00331230 0x0043E880 0x009E40B0 \
@@ -249,7 +240,6 @@ if [ -n "$SAVE" ]; then
 else
     log "no savestate was written"
 fi
-rm -f "$REF/logs/savestate.p2s"
 
 # PCSX2's own log (the emulator's messages, the keys it received).
 if [ -f "$BINDIR/logs/emulog.txt" ]; then

@@ -105,7 +105,7 @@ run_game() {
     local -a watch=() w
     for w in ${UP_SMOKE_WATCH//,/ }; do watch+=(--watch-write "$w"); done
     set +e
-    SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl \
+    SDL_VIDEODRIVER=dummy PS2HOST_RENDERER=sdl PS2HOST_RAM_DUMP="$GAME/build/smoke/port-ram.bin" \
         "${headless[@]+"${headless[@]}"}" "$BUILD/up" "$ELF" \
             --disc "${UP_ISO:-disc/up.iso}" --no-memcard \
             --audio ${iop_trace[@]+"${iop_trace[@]}"} ${watch[@]+"${watch[@]}"} \

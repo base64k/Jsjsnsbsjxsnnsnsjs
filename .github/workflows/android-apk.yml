@@ -84,6 +84,8 @@ jobs:
       group: up-android-apk
       cancel-in-progress: true
     env:
+      # The owner's BIOS, for the reference run the RAM comparison uses (the smoke run).
+      UP_BIOS_DRIVE_FILE_ID: ${{ secrets.UP_BIOS_DRIVE_FILE_ID }}
       UP_ABI: ${{ inputs.abi || 'arm64-v8a' }}
       # 'true' unless the run says otherwise: a push has no inputs at all.
       UP_CACHE: ${{ github.event_name == 'push' && 'true' || (inputs.cache && 'true' || 'false') }}
@@ -330,6 +332,59 @@ jobs:
         env:
           UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70"   # the flag the main thread waits on at 0x47DB38; the ManipulatorMgr's globals (0x795F94 its object, 0x795F70 the one the update walks)
         run: bash scripts/smoke_test.sh
+
+      # The comparison: the port's RAM at its stop against the reference's RAM
+      # (the original on PCSX2 with the owner's BIOS and disc, the same first
+      # minute). Numbers only in ci-results/ram-compare.txt; continue-on-error:
+      # the comparison is worth having, the APK is not held up by it.
+      - name: The reference's packages (PCSX2's display and sound)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb xdotool imagemagick tesseract-ocr pulseaudio pulseaudio-utils \
+            libgl1 libglx-mesa0 libgl1-mesa-dri libopengl0 libglx0 libegl1 libfontconfig1 libdbus-1-3 \
+            libxkbcommon0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+            libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxcb-randr0 libxcb-xfixes0 libxcb-glx0
+          python3 -m pip install --disable-pip-version-check gdown zstandard
+
+      - name: The reference run (the BIOS and the disc; a short run, its savestate at the end)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        env:
+          UP_REFERENCE_SECONDS: "60"
+        run: |
+          set -o pipefail
+          bash scripts/fetch_bios.sh
+          bash scripts/reference_run.sh
+
+      - name: The RAM of the port against the reference's (numbers only)
+        if: ${{ env.UP_SMOKE == 'true' }}
+        continue-on-error: true
+        run: |
+          mkdir -p ci-results
+          if [ -f reference/savestate.p2s ] && [ -f games/up/build/smoke/port-ram.bin ]; then
+            python3 scripts/ram_compare.py reference/savestate.p2s games/up/build/smoke/port-ram.bin \
+              0x00795F94 0x00795F70 0x00795F80 0x00795F8C 0x00795FA0 0x0032F250 0x0043E880 > ci-results/ram-compare.txt 2>&1 || true
+          else
+            echo "no comparison: the reference savestate or the port's RAM is missing" > ci-results/ram-compare.txt
+            ls reference 2>/dev/null >> ci-results/ram-compare.txt || true
+            ls games/up/build/smoke 2>/dev/null | head -20 >> ci-results/ram-compare.txt || true
+          fi
+
+      - name: Save the comparison's text to the repository
+        if: ${{ always() && env.UP_SMOKE == 'true' }}
+        run: |
+          mkdir -p ci-results/reference
+          cp reference/logs/ee-snapshot.txt ci-results/reference/ee-snapshot.txt 2>/dev/null || true
+          git config user.email "agent@arena.ai"
+          git config user.name "Arena Agent"
+          git add ci-results/ram-compare.txt ci-results/reference 2>/dev/null || true
+          git commit -m "ci(up): the port's RAM against the reference's, run ${{ github.run_id }}" || exit 0
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          git push -q origin "HEAD:refs/heads/$BRANCH" \
+            || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+            || echo "::warning title=compare::could not push to $BRANCH"
 
       # The disc reads the port made (the engine's [disc] lines, patch 0021) against
       # the image's own sectors: seconds, no emulation. ci-results/disc-crc.txt.
