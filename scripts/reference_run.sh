@@ -85,6 +85,30 @@ EnableIOPConsole = true
 EnableTimeStamps = true
 EnableVerbose = true
 
+[InputSources]
+Keyboard = true
+SDL = false
+XInput = false
+
+# The first controller on the keyboard: without these bindings the game gets
+# no input at all (the log says so: "Controller 1 has no input bindings").
+[Pad1]
+Type = DualShock2
+Up = Keyboard/Up
+Down = Keyboard/Down
+Left = Keyboard/Left
+Right = Keyboard/Right
+Start = Keyboard/Return
+Select = Keyboard/Backspace
+Cross = Keyboard/K
+Circle = Keyboard/L
+Square = Keyboard/J
+Triangle = Keyboard/I
+L1 = Keyboard/Q
+R1 = Keyboard/E
+L2 = Keyboard/1
+R2 = Keyboard/3
+
 [Audio]
 OutputModule = nullout
 
@@ -111,6 +135,10 @@ press() {
     fi
     xdotool windowfocus "$wid" 2>/dev/null || true
     sleep 1
+    if [ -z "${FOCUS_LOGGED:-}" ]; then
+        log "focus: the window $wid has the focus: $(xdotool getwindowfocus 2>/dev/null || echo none)"
+        FOCUS_LOGGED=1
+    fi
     xdotool key --delay 150 "$1" 2>/dev/null || log "press $1: xdotool failed"
 }
 
@@ -131,8 +159,10 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
         log "PCSX2 exited at ${t}s"
         break
     fi
-    if [ "$t" -le 180 ]; then
-        press Return
+    if [ "$t" -ge 30 ] && [ "$t" -le 240 ]; then
+        # Start, then Cross: the title and the first choice. Alternating keeps
+        # the menu moving whichever one the screen waits for.
+        if [ $((t % 30)) -eq 0 ]; then press Return; else press k; fi
     fi
     if [ $((t % 60)) -eq 0 ]; then
         import -window root "$REF/shots/t${t}.png" 2>/dev/null || true
