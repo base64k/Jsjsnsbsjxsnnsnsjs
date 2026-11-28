@@ -3,7 +3,7 @@
   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
                                  Dload  Upload  Total   Spent   Left   Speed
   0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0
-  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0100 57.33M 100 57.33M   0      0 174.4M      0                              0
+  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 117.8M      0                              0100 57.33M 100 57.33M   0      0 117.8M      0                              0100 57.33M 100 57.33M   0      0 117.8M      0                              0
 [1;34m[reference][0m settings written to /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/inis/PCSX2.ini
 [1;34m[reference][0m starting PCSX2 with the disc, for 900s
 [1;34m[reference][0m windows: [2097157 Qt Selection Owner for AppRun] [2097161 AppRun] [2097159 Disney/Pixar Up] [2097175 Error] 

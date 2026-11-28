@@ -1,641 +1,641 @@
-[    1.2944] Couldn't find translation for system language C, using en instead
-[    1.2946] Loaded translation file for language en-US
-[    1.3526] PCSX2 v2.8.2
-[    1.3526] Savestate version: 0x9a590000
-[    1.3526] 
-[    1.3526] 
-[    1.3526] Host Machine Init:
-[    1.3527]   Operating System = Ubuntu 26.04
-[    1.3527]   Available RAM    = 14439 MB (14.10 GB)
-[    1.3527]   Physical RAM     = 15982 MB (15.61 GB)
-[    1.3527] 
-[    1.3527]   Processor        = Intel INTEL XEON PLATINUM 8573C
-[    1.3527]   Core Count       = 2 cores
-[    1.3527]   Thread Count     = 4 threads
-[    1.3527]   Cluster Count    = 1 clusters
-[    1.3527] CPU Extensions Detected:
-[    1.3527]   AVX AVX2 AVX512F
-[    1.3527] 
-[    1.3527] Allocating host memory for virtual systems...
-[    1.3529]   EE Main Memory                   @ 0x00007C3333200000 -> 0x00007C333C100000 [143mb]
-[    1.3529]   IOP Main Memory                  @ 0x00007C333C100000 -> 0x00007C3344200000 [129mb]
-[    1.3529]   VU0/1 On-Chip Memory             @ 0x00007C3344200000 -> 0x00007C3344300000 [1mb]
-[    1.3529]   VTLB Virtual Map                 @ 0x00007C3344300000 -> 0x00007C3344B00000 [8mb]
-[    1.3529]   VTLB Address Map                 @ 0x00007C3344B00000 -> 0x00007C3344F00000 [4mb]
-[    1.3529]   R5900 Recompiler Cache           @ 0x00007C3344F00000 -> 0x00007C3348F00000 [64mb]
-[    1.3529]   R3000A Recompiler Cache          @ 0x00007C3348F00000 -> 0x00007C334AF00000 [32mb]
-[    1.3529]   Micro VU0 Recompiler Cache       @ 0x00007C334BF00000 -> 0x00007C334FF00000 [64mb]
-[    1.3529]   Micro VU1 Recompiler Cache       @ 0x00007C334FF00000 -> 0x00007C3353F00000 [64mb]
-[    1.3529]   VIF0 Unpack Recompiler Cache     @ 0x00007C334AF00000 -> 0x00007C334B700000 [8mb]
-[    1.3529]   VIF1 Unpack Recompiler Cache     @ 0x00007C334B700000 -> 0x00007C334BF00000 [8mb]
-[    1.3529]   VIF Unpack Recompiler Cache      @ 0x00007C3353F00000 -> 0x00007C3354000000 [1mb]
-[    1.3529]   GS Software Renderer             @ 0x00007C3354000000 -> 0x00007C3358000000 [64mb]
-[    1.3549] Fastmem area: 0x7c3233200000 - 0x7c33331fffff
-[    1.3588] Generating SSE-optimized unpacking functions for VIF interpreters...
-[    1.3589] Unpack function generation complete.  Generated function statistics:
-[    1.3589]   Reserved buffer    : 1048576 bytes @ 0x00007C3353F00000
-[    1.3589]   x86 code generated : 7422 bytes
-[    1.3589] 
-[    1.3590] SDLInputSource: Using Controller DB from resources.
-[    1.4798] SDLInputSource: 759 gamepad mappings are loaded.
-[    1.5682] Loading BIOS...
-[    1.5683] BIOS Found: USA     v02.30(20/02/2008)  Console 20080220-175343
-[    1.5708] BIOS rom1 module not found, skipping...
-[    1.5709] BIOS rom2 module not found, skipping...
-[    1.5709] Mechacon version: 0x00020603
-[    1.5709] Opening CDVD...
-[    1.5712] isoFile open ok: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/disc/up.iso
-[    1.5712]   Image type  = DVD
-[    1.5712]   blocks      = 705152
-[    1.5712]   offset      = 0
-[    1.5712]   blocksize   = 2048
-[    1.5712]   blockoffset = 24
-[    1.5712]  * CDVD Disk Open: DVD, Single layer or unknown:
-[    1.5712]  * * Track 1: Data (Mode 1) (705152 sectors)
-[    1.5712] ISOReader: PVD found at index 0
-[    1.5714] ISOReader: PVD found at index 0
-[    1.5715] (SYSTEM.CNF) Detected PS2 Disc = cdrom0:\SLUS_218.64;1
-[    1.5715] (SYSTEM.CNF) Software version = 1.00
-[    1.5715] (SYSTEM.CNF) Disc region type = NTSC
-[    1.5715] cdvdLoadElf(): 'cdrom0:\SLUS_218.64;1' -> 'SLUS_218.64' in ISO.
-[    1.5759] Initializing Elf: 5851096 bytes
-[    1.5763] GameDB: Has not been initialized yet, initializing...
-[    1.6199] GameDB: 12841 games on record (loaded in 43.55ms)
-[    1.6199] Disc changed to up.iso.
-[    1.6199]   Name: Disney/Pixar Up
-[    1.6199]   Serial: SLUS-21864
-[    1.6199]   Version: 1.00
-[    1.6199]   CRC: F78D6593
-[    1.6199] No game settings found (tried '/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/gamesettings/F78D6593.ini')
-[    1.6199] Applying settings...
-[    1.6201] [Unsafe Settings] Graphics API is not set to Automatic. This may cause performance problems and graphical issues.
-[    1.6201] OSD [unsafe_settings_warning]:  Graphics API is not set to Automatic. This may cause performance problems and graphical issues.
-[    1.6219] Reopening memory cards...
-[    1.6219] (FileMcd) Creating new 8MB memory card: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/memcards/Mcd001.ps2
-[    1.6255] McdSlot 0 [File]: Mcd001.ps2 [8 MB, UNFORMATTED]
-[    1.6255] (FileMcd) Creating new 8MB memory card: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/memcards/Mcd002.ps2
-[    1.6290] McdSlot 1 [File]: Mcd002.ps2 [8 MB, UNFORMATTED]
-[    1.6300] HLE Host: Set 'host:' root path to: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/disc
-[    1.6301] EE/iR5900 Recompiler Reset
-[    1.6788] iR3000A Recompiler reset.
-[    1.6936] Resetting host memory for virtual systems...
-[    1.9153] Time Zone Offset: GMT-06:00
-[    1.9153] Time Zone Location: Central (USA)
-[    1.9153] DST: Summer Time
-[    1.9153] Time Format: 12-Hour
-[    1.9153] Date Format: MM/DD/YYYY
-[    1.9153] System Time Basis: Operating System Time
-[    1.9153] Resulting System Time: 2026-11-28 06:30:12
-[    1.9153] Close virtual disk tray
-[    1.9153] Media already loaded (fast boot)
-[    1.9153] Opening GS...
-[    1.9158] acquireRenderWindow() recreate=true fullscreen=false render_to_main=true surfaceless=false
-[    1.9176] (GetRefreshRateFromXRandR) Modeline is invalid: 0/0/0
-[    1.9176] Surface refresh rate: 60 Hz
-[    1.9178] Loading EGL from libEGL.so...
-[    1.9180] Loading EGL from libEGL.so.1...
-[    1.9362] GLAD EGL Version: 1.0
-[    1.9362] Using EGL platform EGL_EXT_platform_x11.
-[    2.0796] eglInitialize() version: 1.5
-[    2.0797] GLAD EGL Version: 1.5
-[    2.0797] Trying GL version 4.6
-[    2.0798] eglCreateContext() failed: 0x3009
-[    2.0798] Trying GL version 4.5
-[    3.6084] Got GL version 4.5
-[    3.6084] EGL_MIN_SWAP_INTERVAL = 1
-[    3.6084] EGL_MAX_SWAP_INTERVAL = 1
-[    3.6084] Negative swap interval/tear-control is NOT supported
-[    3.6117] GL_VENDOR: Mesa
-[    3.6117] GL_VERSION: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-[    3.6117] GL_RENDERER: llvmpipe (LLVM 21.1.8, 256 bits)
-[    3.6117] GL_SHADING_LANGUAGE_VERSION: 4.50
-[    3.6118] GL_EXTENSIONS: GL_3DFX_texture_compression_FXT1 GL_AMD_conservative_depth GL_AMD_draw_buffers_blend GL_AMD_gpu_shader_int64 GL_AMD_multi_draw_indirect GL_AMD_pinned_memory GL_AMD_query_buffer_object GL_AMD_seamless_cubemap_per_texture GL_AMD_shader_stencil_export GL_AMD_shader_trinary_minmax GL_AMD_texture_texture4 GL_AMD_vertex_shader_layer GL_AMD_vertex_shader_viewport_index GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ARB_ES2_compatibility GL_ARB_ES3_1_compatibility GL_ARB_ES3_2_compatibility GL_ARB_ES3_compatibility GL_ARB_arrays_of_arrays GL_ARB_base_instance GL_ARB_blend_func_extended GL_ARB_buffer_storage GL_ARB_clear_buffer_object GL_ARB_clear_texture GL_ARB_clip_control GL_ARB_compressed_texture_pixel_storage GL_ARB_compute_shader GL_ARB_conditional_render_inverted GL_ARB_conservative_depth GL_ARB_copy_buffer GL_ARB_copy_image GL_ARB_cull_distance GL_ARB_debug_output GL_ARB_depth_buffer_float GL_ARB_depth_clamp GL_ARB_derivative_control GL_ARB_direct_state_access GL_ARB_draw_buffers GL_ARB_draw_buffers_blend GL_ARB_draw_elements_base_vertex GL_ARB_draw_indirect GL_ARB_draw_instanced GL_ARB_enhanced_layouts GL_ARB_explicit_attrib_location GL_ARB_explicit_uniform_location GL_ARB_fragment_coord_conventions GL_ARB_fragment_layer_viewport GL_ARB_fragment_shader GL_ARB_framebuffer_no_attachments GL_ARB_framebuffer_object GL_ARB_framebuffer_sRGB GL_ARB_get_program_binary GL_ARB_get_texture_sub_image GL_ARB_gl_spirv GL_ARB_gpu_shader5 GL_ARB_gpu_shader_fp64 GL_ARB_gpu_shader_int64 GL_ARB_half_float_pixel GL_ARB_half_float_vertex GL_ARB_indirect_parameters GL_ARB_instanced_arrays GL_ARB_internalformat_query GL_ARB_internalformat_query2 GL_ARB_invalidate_subdata GL_ARB_map_buffer_alignment GL_ARB_map_buffer_range GL_ARB_multi_bind GL_ARB_multi_draw_indirect GL_ARB_occlusion_query2 GL_ARB_parallel_shader_compile GL_ARB_pipeline_statistics_query GL_ARB_pixel_buffer_object GL_ARB_point_sprite GL_ARB_polygon_offset_clamp GL_ARB_post_depth_coverage GL_ARB_program_interface_query GL_ARB_provoking_vertex GL_ARB_query_buffer_object GL_ARB_robust_buffer_access_behavior GL_ARB_robustness GL_ARB_sample_locations GL_ARB_sample_shading GL_ARB_sampler_objects GL_ARB_seamless_cube_map GL_ARB_seamless_cubemap_per_texture GL_ARB_separate_shader_objects GL_ARB_shader_atomic_counter_ops GL_ARB_shader_atomic_counters GL_ARB_shader_ballot GL_ARB_shader_bit_encoding GL_ARB_shader_clock GL_ARB_shader_draw_parameters GL_ARB_shader_group_vote GL_ARB_shader_image_load_store GL_ARB_shader_image_size GL_ARB_shader_objects GL_ARB_shader_precision GL_ARB_shader_stencil_export GL_ARB_shader_storage_buffer_object GL_ARB_shader_subroutine GL_ARB_shader_texture_image_samples GL_ARB_shader_texture_lod GL_ARB_shader_viewport_layer_array GL_ARB_shading_language_420pack GL_ARB_shading_language_include GL_ARB_shading_language_packing GL_ARB_spirv_extensions GL_ARB_stencil_texturing GL_ARB_sync GL_ARB_tessellation_shader GL_ARB_texture_barrier GL_ARB_texture_border_clamp GL_ARB_texture_buffer_object GL_ARB_texture_buffer_object_rgb32 GL_ARB_texture_buffer_range GL_ARB_texture_compression_bptc GL_ARB_texture_compression_rgtc GL_ARB_texture_cube_map_array GL_ARB_texture_filter_anisotropic GL_ARB_texture_filter_minmax GL_ARB_texture_float GL_ARB_texture_gather GL_ARB_texture_mirror_clamp_to_edge GL_ARB_texture_multisample GL_ARB_texture_non_power_of_two GL_ARB_texture_query_levels GL_ARB_texture_query_lod GL_ARB_texture_rectangle GL_ARB_texture_rg GL_ARB_texture_rgb10_a2ui GL_ARB_texture_stencil8 GL_ARB_texture_storage GL_ARB_texture_storage_multisample GL_ARB_texture_swizzle GL_ARB_texture_view GL_ARB_timer_query GL_ARB_transform_feedback2 GL_ARB_transform_feedback3 GL_ARB_transform_feedback_instanced GL_ARB_transform_feedback_overflow_query GL_ARB_uniform_buffer_object GL_ARB_vertex_array_bgra GL_ARB_vertex_array_object GL_ARB_vertex_attrib_64bit GL_ARB_vertex_attrib_binding GL_ARB_vertex_buffer_object GL_ARB_vertex_shader GL_ARB_vertex_type_10f_11f_11f_rev GL_ARB_vertex_type_2_10_10_10_rev GL_ARB_viewport_array GL_ARM_shader_framebuffer_fetch_depth_stencil GL_ATI_blend_equation_separate GL_ATI_meminfo GL_ATI_texture_float GL_ATI_texture_mirror_once GL_EXT_EGL_image_storage GL_EXT_EGL_image_storage_compression GL_EXT_EGL_sync GL_EXT_abgr GL_EXT_blend_equation_separate GL_EXT_debug_label GL_EXT_depth_bounds_test GL_EXT_draw_buffers2 GL_EXT_draw_instanced GL_EXT_framebuffer_blit GL_EXT_framebuffer_multisample GL_EXT_framebuffer_multisample_blit_scaled GL_EXT_framebuffer_object GL_EXT_framebuffer_sRGB GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_packed_depth_stencil GL_EXT_packed_float GL_EXT_pixel_buffer_object GL_EXT_polygon_offset_clamp GL_EXT_provoking_vertex GL_EXT_shader_clock GL_EXT_shader_framebuffer_fetch GL_EXT_shader_framebuffer_fetch_non_coherent GL_EXT_shader_image_load_formatted GL_EXT_shader_integer_mix GL_EXT_texture_array GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc GL_EXT_texture_filter_anisotropic GL_EXT_texture_filter_minmax GL_EXT_texture_integer GL_EXT_texture_mirror_clamp GL_EXT_texture_sRGB GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_EXT_texture_sRGB_decode GL_EXT_texture_shadow_lod GL_EXT_texture_shared_exponent GL_EXT_texture_snorm GL_EXT_texture_storage GL_EXT_texture_swizzle GL_EXT_timer_query GL_EXT_transform_feedback GL_EXT_vertex_array_bgra GL_EXT_vertex_attrib_64bit GL_IBM_multimode_draw_arrays GL_INTEL_shader_atomic_float_minmax GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_KHR_context_flush_control GL_KHR_debug GL_KHR_no_error GL_KHR_parallel_shader_compile GL_KHR_robust_buffer_access_behavior GL_KHR_robustness GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_MESA_framebuffer_flip_y GL_MESA_pack_invert GL_MESA_shader_integer_functions GL_MESA_texture_signed_rgba GL_NVX_gpu_memory_info GL_NV_alpha_to_coverage_dither_control GL_NV_conditional_render GL_NV_copy_image GL_NV_depth_clamp GL_NV_packed_depth_stencil GL_NV_sample_locations GL_NV_shader_atomic_float GL_NV_texture_barrier GL_OES_EGL_image GL_OVR_multiview GL_OVR_multiview2 GL_S3_s3tc
-[    3.9742] GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS: 16
-[    3.9742] GL: Using hardware for point expansion, vertex expanding for line expansion and vertex expanding for sprite expansion.
-[    3.9822] 1 program binary formats supported by driver
-[    4.0786] Program binary retrieved, 5141 bytes, format 34655
-[    4.0805] Program binary retrieved, 5149 bytes, format 34655
-[    4.0969] Program binary retrieved, 5357 bytes, format 34655
-[    4.1039] Program binary retrieved, 5101 bytes, format 34655
-[    4.1059] Program binary retrieved, 5101 bytes, format 34655
-[    4.1080] Program binary retrieved, 5101 bytes, format 34655
-[    4.1101] Program binary retrieved, 5101 bytes, format 34655
-[    4.1179] Program binary retrieved, 5253 bytes, format 34655
-[    4.1201] Program binary retrieved, 5317 bytes, format 34655
-[    4.1221] Program binary retrieved, 5173 bytes, format 34655
-[    4.1241] Program binary retrieved, 5157 bytes, format 34655
-[    4.1262] Program binary retrieved, 5157 bytes, format 34655
-[    4.1285] Program binary retrieved, 5349 bytes, format 34655
-[    4.1312] Program binary retrieved, 5349 bytes, format 34655
-[    4.1333] Program binary retrieved, 5357 bytes, format 34655
-[    4.1355] Program binary retrieved, 5365 bytes, format 34655
-[    4.1515] Program binary retrieved, 6525 bytes, format 34655
-[    4.1545] Program binary retrieved, 6533 bytes, format 34655
-[    4.1566] Program binary retrieved, 5381 bytes, format 34655
-[    4.1589] Program binary retrieved, 5389 bytes, format 34655
-[    4.1618] Program binary retrieved, 6581 bytes, format 34655
-[    4.1647] Program binary retrieved, 6589 bytes, format 34655
-[    4.1669] Program binary retrieved, 5373 bytes, format 34655
-[    4.1691] Program binary retrieved, 5381 bytes, format 34655
-[    4.1721] Program binary retrieved, 6573 bytes, format 34655
-[    4.1750] Program binary retrieved, 6581 bytes, format 34655
-[    4.1772] Program binary retrieved, 5405 bytes, format 34655
-[    4.1793] Program binary retrieved, 5413 bytes, format 34655
-[    4.1824] Program binary retrieved, 6661 bytes, format 34655
-[    4.1854] Program binary retrieved, 6669 bytes, format 34655
-[    4.1874] Program binary retrieved, 5205 bytes, format 34655
-[    4.1895] Program binary retrieved, 5213 bytes, format 34655
-[    4.1977] Program binary retrieved, 6861 bytes, format 34655
-[    4.2101] Program binary retrieved, 6561 bytes, format 34655
-[    4.2186] Program binary retrieved, 7941 bytes, format 34655
-[    4.2208] Program binary retrieved, 5605 bytes, format 34655
-[    4.2284] Program binary retrieved, 5741 bytes, format 34655
-[    4.2410] Program binary retrieved, 6109 bytes, format 34655
-[    4.2430] Program binary retrieved, 5125 bytes, format 34655
-[    4.2484] Program binary retrieved, 5173 bytes, format 34655
-[    4.2534] Program binary retrieved, 5129 bytes, format 34655
-[    4.2553] Program binary retrieved, 6369 bytes, format 34655
-[    4.2571] Program binary retrieved, 6921 bytes, format 34655
-[    4.2591] Program binary retrieved, 6953 bytes, format 34655
-[    4.2608] Program binary retrieved, 5385 bytes, format 34655
-[    4.3688] Program binary retrieved, 30117 bytes, format 34655
-[    4.3706] Program binary retrieved, 5817 bytes, format 34655
-[    4.3724] Program binary retrieved, 6721 bytes, format 34655
-[    4.3734] Program binary retrieved, 5169 bytes, format 34655
-[    4.3744] Program binary retrieved, 5441 bytes, format 34655
-[    4.3764] Program binary retrieved, 5781 bytes, format 34655
-[    4.3783] Program binary retrieved, 5137 bytes, format 34655
-[    4.3803] Program binary retrieved, 5741 bytes, format 34655
-[    4.3825] Program binary retrieved, 5893 bytes, format 34655
-[    4.3860] Program binary retrieved, 8165 bytes, format 34655
-[    4.3873] Program binary retrieved, 5817 bytes, format 34655
-[    4.4208] Program binary retrieved, 16753 bytes, format 34655
-[    4.4771] Program binary retrieved, 16113 bytes, format 34655
-[    4.5220] Program binary retrieved, 7017 bytes, format 34655
-[    4.5239] Program binary retrieved, 5181 bytes, format 34655
-[    4.5257] Program binary retrieved, 5181 bytes, format 34655
-[    4.5275] Program binary retrieved, 5189 bytes, format 34655
-[    4.5293] Program binary retrieved, 5189 bytes, format 34655
-[    4.5872] Program binary retrieved, 6433 bytes, format 34655
-[    5.3419] OpenGL Graphics Driver Info:
-[    5.3419] OpenGL Context:
-[    5.3419] 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
-[    5.3419] Mesa llvmpipe (LLVM 21.1.8, 256 bits)
-[    5.3419] GLSL: 4.50
-[    5.3446] Opening SPU2...
-[    5.3456] Creating Cubeb audio stream, sample rate = 48000, expansion = Disabled, buffer = 50, latency = 20, stretching enabled, driver = , device = 
-[    5.3852] Minimum latency: 40 ms (1920 audio frames)
-[    5.3852] Minimum latency is above requested latency: 1920 vs 960, adjusting to compensate.
-[    5.3854] Allocated buffer of 38400 frames for buffer of 50 ms [expansion Disabled (block size 128), stretch enabled, target size 2432].
-[    5.3858] ReportErrorAsync: Error: Failed to create or configure audio stream, falling back to null output. The error was:
-[    5.3858] cubeb_stream_init() failed: CUBEB_ERROR (-1)
-[    5.3858] Allocated buffer of 2432 frames for buffer of 50 ms [expansion Disabled (block size 2048), stretch disabled, target size 2432].
-[    5.3858] Initializing Pad...
-[    5.3858] Initializing SIO2...
-[    5.3858] Initializing SIO0...
-[    5.3858] Opening DEV9...
-[    5.3858] DEV9: DEV9init
-[    5.3858] DEV9: DEV9init2
-[    5.3858] DEV9: DEV9init3
-[    5.3896] DEV9: DEV9init ok
-[    5.3896] DEV9: DEV9open
-[    5.3897] Opening USB...
-[    5.3897] Opening FW...
-[    5.3899] Frame rate: 60, target speed: 1, target frame rate: 60, ticks per frame: 16666666
-[    5.3959] VM subsystems initialized in 3828.06 ms
-[    5.3968] Failed to inhibit screen saver.
-[    5.3969] Failed to inhibit screen saver.
-[    5.4146] # Initialize memory (rev:4.00, ctm:196Mhz, cpuclk:147Mhz detected)
-[    5.4230] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
-[    5.4244] RegisterLibraryEntries: excepman version 1.01
-[    5.4252] RegisterLibraryEntries:  intrman version 1.02
-[    5.4252] RegisterLibraryEntries:   ssbusc version 1.01
-[    5.4254] RegisterLibraryEntries:  dmacman version 1.02
-[    5.4257] RegisterLibraryEntries:  timrman version 1.01
-[    5.4259] RegisterLibraryEntries:  sysclib version 1.01
-[    5.4259] RegisterLibraryEntries:    stdio version 1.01
-[    5.4260] RegisterLibraryEntries:  heaplib version 1.01
-[    5.4263] FW: read mem 0x1f80847c: 0x10000001
-[    5.4263] FW: write mem 0x1f808414: 0x417f0000
-[    5.4263] FW: read mem 0x1f808400: 0xffc00001
-[    5.4263] FW: write mem 0x1f80844c: 0xffffffff
-[    5.4263] FW: write mem 0x1f808420: 0xffffffff
-[    5.4263] FW: write mem 0x1f808428: 0xffffffff
-[    5.4263] FW: write mem 0x1f808430: 0xffffffff
-[    5.4269] RegisterLibraryEntries:   thbase version 1.01
-[    5.4270] RegisterLibraryEntries:  thevent version 1.01
-[    5.4270] RegisterLibraryEntries:  thsemap version 1.01
-[    5.4270] RegisterLibraryEntries:  thmsgbx version 1.01
-[    5.4271] RegisterLibraryEntries:  thfpool version 1.01
-[    5.4271] RegisterLibraryEntries:  thvpool version 1.01
-[    5.4277] RegisterLibraryEntries:   vblank version 1.01
-[    5.4284] RegisterLibraryEntries:    ioman version 1.02
-[    5.4289] RegisterLibraryEntries:  modload version 1.01
-[    5.4292] RegisterLibraryEntries:   romdrv version 2.01
-[    5.4293] RegisterLibraryEntries:    stdio version 1.02
-[    5.4296] RegisterLibraryEntries:   sifman version 1.01
-[    5.4298] 
-[    5.4298] PlayStation 2 ======== Hard reset boot
-[    5.4300]  ROMGEN=2008-0220, IOP info (CPUID=1f, CACH_CONFIG=14000200, 2MB, IOP mode)
-[    5.4301]  <20080220-175343,ROMconf,PS20230WC20080220.bin:11824>
-[    5.4323] # Total accessable memory size: 32 MB (B:2:8:0) (400:2:7c30)
-[    5.4332] # TLB spad=0 kernel=1:12 default=13:30 extended=31:38
-[    5.4954] # Initialize Start.
-[    5.4958] # Initialize GS ...
-[    5.4958] # Initialize INTC ...
-[    5.4958] # Initialize TIMER ...
-[    5.4959] # Initialize DMAC ...
-[    5.4960] # Initialize VU1 ...
-[    5.4961] # Initialize VIF1 ...
-[    5.4962] # Initialize GIF ...
-[    5.4962] # Initialize VU0 ...
-[    5.4963] # Initialize VIF0 ...
-[    5.4963] # Initialize IPU ...
-[    5.4964] # Initialize FPU ...
-[    5.4965] # Initialize User Memory ...
-[    6.1979] # Initialize Scratch Pad ...
-[    6.1979] # Initialize Done.
-[    6.1989] 
-[    6.1989] EE DECI2 Manager version 0.06 Sep  5 2006 12:57:08
-[    6.1989]   CPUID=2e20, BoardID=0, ROMGEN=2008-0220, 32M
-[    6.1989] 
-[    6.1991] RegisterLibraryEntries:   sifcmd version 1.01
-[    6.1997] ISOReader: PVD found at index 0
-[    6.1997] (SYSTEM.CNF) Detected PS2 Disc = cdrom0:\SLUS_218.64;1
-[    6.1997] (SYSTEM.CNF) Software version = 1.00
-[    6.1997] (SYSTEM.CNF) Disc region type = NTSC
-[    6.1998] ISOReader: PVD found at index 0
-[    6.1998] cdvdLoadElf(): 'cdrom0:\SLUS_218.64;1' -> 'SLUS_218.64' in ISO.
-[    6.2039] Initializing Elf: 5851096 bytes
-[    6.2067] ELF Loading: cdrom0:\SLUS_218.64;1, Game CRC = F78D6593, EntryPoint = 0x00200008
-[    6.2094] RegisterLibraryEntries:  cdvdman version 1.01
-[    6.2109] RegisterLibraryEntries:  cdvdfsv version 1.01
-[    6.2122] RegisterLibraryEntries:  secrman version 1.03
-[    6.2123] RegisterLibraryEntries:   eesync version 1.01
-[    6.2124] 
-[    6.2124] IOP Realtime Kernel Ver.0.9.1
-[    6.2125]     Copyright 1999 (C) Sony Computer Entertainment Inc. 
-[    6.2130] Reboot service module.(99/11/10)
-[    6.2150] cdvd driver module version 0.1.1 (C)SCEI
-[    6.2153] Load File service.(99/11/05)
-[    6.2154] Multi Threaded Fileio module.(99/11/15) 
-[    6.2154] iop heap service (99/11/03)
-[    6.2311] loadelf: fname cdrom0:SLUS_218.64;1 secname all
-[    6.2311] loadelf version 3.30
-[    6.4147] Input ELF format filename = cdrom0:SLUS_218.64;1
-[    8.7812] 1 00200000 00594500 ..........................................................................................
-[    8.7813] Loaded, cdrom0:SLUS_218.64;1
-[    8.7814] start address 0x200008
-[    8.7814] gp address 00000000
-[    8.7822] # Restart Without Memory Clear.
-[    8.7969] # Initialize GS ...
-[    8.7970] # Initialize INTC ...
-[    8.7970] # Initialize TIMER ...
-[    8.7970] # Initialize DMAC ...
-[    8.7970] # Initialize VU1 ...
-[    8.7970] # Initialize VIF1 ...
-[    8.7970] # Initialize GIF ...
-[    8.7970] # Initialize VU0 ...
-[    8.7970] # Initialize VIF0 ...
-[    8.7970] # Initialize IPU ...
-[    8.7971] # Initialize FPU ...
-[    8.7971] # Initialize Scratch Pad ...
-[    8.7971] # Restart Without Memory Clear Done.
-[    8.7972] ELF cdrom0:\SLUS_218.64;1 with entry point at 0x00200008 is executing.
-[    8.7972] ELF changed, active CRC F78D6593 (cdrom0:\SLUS_218.64;1)
-[    8.7975] Patch error: Stretch is an unknown aspect ratio.
-[    8.7975] Patch error: Stretch is an unknown aspect ratio.
-[    8.7975] Patch error: Stretch is an unknown aspect ratio.
-[    8.7975] Patch error: Stretch is an unknown aspect ratio.
-[    8.7976] Patch error: Stretch is an unknown aspect ratio.
-[    8.7976] Patch error: Stretch is an unknown aspect ratio.
-[    8.7976] Found 6 game patches in SLUS-21864_F78D6593.pnach.
-[    8.7976] Applying core settings...
-[    8.7981] Updating CPU configuration...
-[    8.7981] iR3000A Recompiler reset.
-[    8.8197] iR3000A Recompiler reset.
-[    8.8290] EE/iR5900 Recompiler Reset
-[    8.8437] BIOS: Successfully found the instruction pattern. Assuming the thread list is here: 8001ac00
-[    8.8530] sce_fileio: unrecognized code ff
-[    8.8545] Language: 1
-[    8.8551] App : cdrom0:SLUS_218.64;1
-[    8.8551] SCE Product Code = SLUS_218.64
-[    8.8551] SCE Product Number = 21864
-[    8.8552] 
-[    8.8552] > Startup :
-[    8.8552] >            start       end         size         usage
-[    8.8555] >     SYSTEM 0x00000000  0x001fffff  00002048 ko
-[    8.8555] >     ELF    0x00200000  0x007ab38f  00005804 ko
-[    8.8555] >     STACK  0x01fa8800  0x02000fff  00000354 ko
-[    8.8568] >     HEAP   0x007ab390  0x01fa77f0  00024561 mo   0.00 mo
-[    8.8568] 
-[    8.8579] Game is in NTSC mode
-[    8.8591] UpdateVSyncRate: Mode Changed to NTSC.
-[    8.8591] Frame rate: 59.829998, target speed: 1, target frame rate: 59.829998, ticks per frame: 16714023
-[    8.8591] Set GS CRTC configuration. NTSC 640x448 @ 59.940 (59.82) Interlaced (FIELD)
-[    8.8593] UpdateVSyncRate: Mode Changed to NTSC.
-[    8.8593] Frame rate: 59.94, target speed: 1, target frame rate: 59.94, ticks per frame: 16683350
-[    9.1807] [FIRSTSCREEN] Texture format: 256 256 PSMT8
-[    9.3980] GL: Compiling new vertex shader with selector 0x3
-[    9.3980] GL: Compiling new pixel shader with selector 0x0000000000010008_4815000008800000
-[    9.4030] Program binary retrieved, 15933 bytes, format 34655
-[   10.4342] Path : 
-[   10.4349] Path : (null)
-[   10.4360] Get Reboot Request From EE
-[   10.4373] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
-[   10.4390] RegisterLibraryEntries: excepman version 1.01
-[   10.4398] RegisterLibraryEntries:  intrman version 1.02
-[   10.4399] RegisterLibraryEntries:   ssbusc version 1.01
-[   10.4402] RegisterLibraryEntries:  dmacman version 1.02
-[   10.4406] RegisterLibraryEntries:  timrman version 1.01
-[   10.4408] RegisterLibraryEntries:  sysclib version 1.01
-[   10.4409] RegisterLibraryEntries:    stdio version 1.01
-[   10.4410] RegisterLibraryEntries:  heaplib version 1.01
-[   10.4420] RegisterLibraryEntries:   thbase version 1.01
-[   10.4421] RegisterLibraryEntries:  thevent version 1.01
-[   10.4421] RegisterLibraryEntries:  thsemap version 1.01
-[   10.4421] RegisterLibraryEntries:  thmsgbx version 1.01
-[   10.4421] RegisterLibraryEntries:  thfpool version 1.01
-[   10.4422] RegisterLibraryEntries:  thvpool version 1.01
-[   10.4430] RegisterLibraryEntries:   vblank version 1.01
-[   10.4433] RegisterLibraryEntries:    ioman version 1.02
-[   10.4440] RegisterLibraryEntries:  modload version 1.01
-[   10.4443] RegisterLibraryEntries:   romdrv version 2.01
-[   10.4491] ROM directory not found
-[   10.4494] RegisterLibraryEntries:    stdio version 1.02
-[   10.4499] RegisterLibraryEntries:   sifman version 1.01
-[   10.4503] 
-[   10.4504] PlayStation 2 ======== Update rebooting..
-[   10.4525] RegisterLibraryEntries:  cdvdman version 1.01
-[   10.4531] RegisterLibraryEntries:  secrman version 1.03
-[   10.4534] RegisterLibraryEntries:  sio2man version 1.01
-[   10.4658] RegisterLibraryEntries:    mcman version 1.01
-[   10.8186] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
-[   10.8842] RegisterLibraryEntries: excepman version 1.01
-[   10.8849] RegisterLibraryEntries:  intrman version 1.02
-[   10.8850] RegisterLibraryEntries:   ssbusc version 1.01
-[   10.8853] RegisterLibraryEntries:  dmacman version 1.02
-[   10.8857] RegisterLibraryEntries:  timrman version 1.03
-[   10.8860] RegisterLibraryEntries:  sysclib version 1.04
-[   10.8860] RegisterLibraryEntries:    stdio version 1.02
-[   10.8862] RegisterLibraryEntries:  heaplib version 1.01
-[   10.8875] RegisterLibraryEntries:   thbase version 1.02
-[   10.8875] RegisterLibraryEntries:  thevent version 1.01
-[   10.8875] RegisterLibraryEntries:  thsemap version 1.01
-[   10.8876] RegisterLibraryEntries:  thmsgbx version 1.01
-[   10.8876] RegisterLibraryEntries:  thfpool version 1.01
-[   10.8876] RegisterLibraryEntries:  thvpool version 1.01
-[   10.8990] RegisterLibraryEntries:   vblank version 1.01
-[   10.8997] RegisterLibraryEntries:    ioman version 1.04
-[   10.9006] RegisterLibraryEntries:  modload version 1.06
-[   10.9011] RegisterLibraryEntries:   romdrv version 2.01
-[   10.9013] RegisterLibraryEntries:    stdio version 1.03
-[   10.9016] RegisterLibraryEntries:   sifman version 1.01
-[   10.9019] 
-[   10.9019] PlayStation 2 ======== Update reboot complete
-[   10.9024] RegisterLibraryEntries:   sifcmd version 1.01
-[   10.9162] RegisterLibraryEntries:  cdvdman version 1.01
-[   10.9165] cdvdman Init
-[   10.9184] RegisterLibraryEntries:  cdvdfsv version 1.01
-[   10.9204] RegisterLibraryEntries:  secrman version 1.03
-[   10.9206] RegisterLibraryEntries:   eesync version 1.01
-[   10.9332] 
-[   10.9332] IOP Realtime Kernel Ver. 2.2
-[   10.9333]     Copyright 1999-2002 (C) Sony Computer Entertainment Inc. 
-[   10.9336] Reboot service module.(99/11/10)
-[   10.9343] cdvd driver module version 0.1.1 (C)SCEI
-[   10.9348] Load File service.(99/11/05)
-[   10.9348] Multi Threaded Fileio module.(99/11/15) 
-[   10.9349] iop heap service (99/11/03)
-[   10.9671] loadmodule: fname cdrom0:MODULESSIO2MAN.IRX;1 args 0 arg 
-[   10.9675] CDGetToc Param[0]=0, Param[1]=117
-[   11.2161] RegisterLibraryEntries:  sio2man version 2.04
-[   11.2166] loadmodule: id 25, ret 0
-[   11.2168] loadmodule: fname cdrom0:MODULESPADMAN.IRX;1 args 0 arg 
-[   11.2666] RegisterLibraryEntries:   padman version 2.03
-[   11.2670] loadmodule: id 26, ret 0
-[   11.2671] loadmodule: fname cdrom0:MODULESMCMAN.IRX;1 args 0 arg 
-[   11.3497] RegisterLibraryEntries:    mcman version 2.07
-[   11.3504] loadmodule: id 27, ret 2
-[   11.3506] loadmodule: fname cdrom0:MODULESMCSERV.IRX;1 args 0 arg 
-[   11.3511] RegisterLibraryEntries:   mcserv version 2.01
-[   11.3513] loadmodule: id 28, ret 2
-[   11.3514] loadmodule: fname cdrom0:MODULESLIBSD.IRX;1 args 0 arg 
-[   11.3999] RegisterLibraryEntries:    libsd version 1.05
-[   11.4001] loadmodule: id 29, ret 0
-[   11.4002] loadmodule: fname cdrom0:MODULESZNASND.IRX;1 args 0 arg 
-[   11.4672] ptr 0x9cf00, db=0x9cf40
-[   11.9001] [IOP]DiskManager_Z.c: Building filesystem... found 556 entries.
-[   11.9009] [IOP] ZnaSnd.irx Loaded Successfully...
-[   11.9009] 
-[   11.9010] loadmodule: id 30, ret 0
-[   12.9678] GL: Compiling new vertex shader with selector 0x3
-[   12.9679] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008800000
-[   12.9724] Program binary retrieved, 15629 bytes, format 34655
-[   12.9844] UpdateVSyncRate: Mode Changed to NTSC.
-[   12.9844] Frame rate: 59.829998, target speed: 1, target frame rate: 59.829998, ticks per frame: 16714023
-[   12.9844] Set GS CRTC configuration. NTSC 640x448 @ 59.940 (59.82) Interlaced (FIELD)
-[   12.9845] UpdateVSyncRate: Mode Changed to NTSC.
-[   12.9845] Frame rate: 59.94, target speed: 1, target frame rate: 59.94, ticks per frame: 16683350
-[   13.0182] [IOP] Sound Init...
-[   13.0182] [IOP] ZnaSnd.irx - Ver: -1793767096
-[   13.0371] microVU0: Cached Prog = [000] [PC=04e8] [List=01] (Cache=0.000%) [0.0mb]
-[   13.0371] microVU0: Cached Prog = [001] [PC=04f8] [List=01] (Cache=0.000%) [0.0mb]
-[   13.2180] Pad: DS2 Config Finished - P1/S1 - AL: Off - AB: Usable - VS: Disabled - VL: Disabled - RB: D (0x00000000)
-[   13.8717] [IOP] SearchFile = cdrom0:MUSICDIALOG01.SPS;1 (MUSICDIALOG01.SPS;1)
-[   13.8717] szEntryName = MUSIC
-[   13.8718] szEntryName = DIALOG
-[   13.8718] szEntryName = 01.SPS
-[   13.8718] Read SBF : size=16384
-[   14.1365] Load SBF : Version=1003, NbEntry = 507
-[   14.3437] [IOP] SearchFile = DATASFONTES.DPS;1 (DATASFONTES.DPS;1)
-[   14.3438] szEntryName = DATAS
-[   14.3438] szEntryName = FONTES.DPS
-[   14.3581] GL: Compiling new vertex shader with selector 0x0
-[   14.3581] GL: Compiling new pixel shader with selector 0x0000000000000008_0000000004000010
-[   14.3617] Program binary retrieved, 13845 bytes, format 34655
-[   14.3868] GL: Compiling new vertex shader with selector 0x33
-[   14.3868] GL: Compiling new pixel shader with selector 0x0000000000000108_0800000300800020
-[   14.3946] Program binary retrieved, 22621 bytes, format 34655
-[   14.4990] GL: Compiling new vertex shader with selector 0x2
-[   14.4990] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010000
-[   14.5037] Program binary retrieved, 15781 bytes, format 34655
-[   14.5453] GL: Compiling new vertex shader with selector 0x33
-[   14.5453] GL: Compiling new pixel shader with selector 0x0000000000000108_18000004A0800020
-[   14.5532] Program binary retrieved, 23557 bytes, format 34655
-[   14.8073] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Disabled - VL: Disabled - RB: D (0x00000000)
-[   17.2422] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D (0x00000000)
-[   17.4431] [IOP] oneshot mode
-[   18.0164] [IOP] SearchFile = DATASSHARED.DPS;1 (DATASSHARED.DPS;1)
-[   18.0164] szEntryName = DATAS
-[   18.0165] szEntryName = SHARED.DPS
-[   20.2086] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D+A+P (0x0003FFFF)
-[   22.3756] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D+A+P (0x0003FFFF)
-[   23.2189] [IOP] oneshot mode
-[   23.9792] [IOP] SearchFile = DATASRTCSYS.DPS;1 (DATASRTCSYS.DPS;1)
-[   23.9792] szEntryName = DATAS
-[   23.9792] szEntryName = RTCSYS.DPS
-[   25.3781] [IOP] oneshot mode
-[   31.5201] [IOP] SearchFile = WORLDMENU.DPS;1 (WORLDMENU.DPS;1)
-[   31.5201] szEntryName = WORLD
-[   31.5201] szEntryName = MENU.DPS
-[   49.1832] [IOP] oneshot mode
-[   49.8858] microVU0: Cached Prog = [002] [PC=0378] [List=01] (Cache=0.004%) [0.0mb]
-[   49.8859] microVU0: 2 cycle stall on branch instruction [03e8]
-[   49.8982] microVU1: Cached Prog = [000] [PC=0000] [List=01] (Cache=0.000%) [0.0mb]
-[   49.8984] microVU1: Cached Prog = [001] [PC=0180] [List=01] (Cache=0.003%) [0.0mb]
-[   49.9063] GL: Compiling new vertex shader with selector 0x2
-[   49.9063] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008000000
-[   49.9108] Program binary retrieved, 15469 bytes, format 34655
-[   49.9385] GL: Compiling new vertex shader with selector 0x33
-[   49.9385] GL: Compiling new pixel shader with selector 0x0000000000000008_18000004A1800000
-[   49.9463] Program binary retrieved, 22517 bytes, format 34655
-[   49.9916] GL: Compiling new vertex shader with selector 0x31
-[   49.9916] GL: Compiling new pixel shader with selector 0x0000000000000009_0015000004000000
-[   49.9975] Program binary retrieved, 19981 bytes, format 34655
-[   50.0195] GL: Compiling new vertex shader with selector 0x33
-[   50.0196] GL: Compiling new pixel shader with selector 0x0000000000000008_00000004A1800000
-[   50.0270] Program binary retrieved, 22517 bytes, format 34655
-[   50.0679] GL: Compiling new vertex shader with selector 0x33
-[   50.0679] GL: Compiling new pixel shader with selector 0x0000000000000008_40150004A0800000
-[   50.0757] Program binary retrieved, 23221 bytes, format 34655
-[   50.1098] GL: Compiling new vertex shader with selector 0x33
-[   50.1098] GL: Compiling new pixel shader with selector 0x0000000000000008_000C8004A0800000
-[   50.1176] Program binary retrieved, 23421 bytes, format 34655
-[   50.1401] GL: Compiling new vertex shader with selector 0x33
-[   50.1402] GL: Compiling new pixel shader with selector 0x0000000000000008_08150004A1800000
-[   50.1478] Program binary retrieved, 22797 bytes, format 34655
-[   50.2931] GL: Compiling new vertex shader with selector 0x33
-[   50.2931] GL: Compiling new pixel shader with selector 0x0000000000000008_5815000000800000
-[   50.3008] Program binary retrieved, 22253 bytes, format 34655
-[   50.3661] GL: Compiling new vertex shader with selector 0x2
-[   50.3662] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000000
-[   50.3706] Program binary retrieved, 15589 bytes, format 34655
-[   50.4405] microVU0: Cached Prog = [003] [PC=01c0] [List=01] (Cache=0.012%) [0.0mb]
-[   50.4408] microVU0: Cached Prog = [004] [PC=0000] [List=01] (Cache=0.021%) [0.0mb]
-[   50.4467] microVU1: Cached Prog = [002] [PC=0000] [List=02] (Cache=0.312%) [0.2mb]
-[   50.4468] microVU1: Cached Prog = [003] [PC=0a00] [List=01] (Cache=0.316%) [0.2mb]
-[   50.4600] GL: Compiling new vertex shader with selector 0x2
-[   50.4600] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008000400
-[   50.4648] Program binary retrieved, 15869 bytes, format 34655
-[   50.9238] [IOP] SearchFile = DATASLEGAL_01.DPS;1 (DATASLEGAL_01.DPS;1)
-[   50.9238] szEntryName = DATAS
-[   50.9238] szEntryName = LEGAL_01.DPS
-[   51.5556] [IOP] oneshot mode
-[   58.4211] GL: Compiling new vertex shader with selector 0x33
-[   58.4211] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000000800000
-[   58.4279] Program binary retrieved, 21949 bytes, format 34655
-[   58.4618] GL: Compiling new vertex shader with selector 0x31
-[   58.4619] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000004000000
-[   58.4673] Program binary retrieved, 19733 bytes, format 34655
-[   63.3066] Vertex Trace: float overflow detected ! min 3.402823e+38 max 3.402823e+38
-[   63.3069] GL: Compiling new vertex shader with selector 0x6
-[   63.3069] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010800
-[   63.3119] Program binary retrieved, 15781 bytes, format 34655
-[   63.3550] GL: Compiling new vertex shader with selector 0x3
-[   63.3550] GL: Compiling new pixel shader with selector 0x0000000000000108_18000004A0800020
-[   63.3605] Program binary retrieved, 17221 bytes, format 34655
-[   63.4261] GL: Compiling new vertex shader with selector 0x3
-[   63.4261] GL: Compiling new pixel shader with selector 0x0000000000000008_5815000000800000
-[   63.4306] Program binary retrieved, 15917 bytes, format 34655
-[   63.4479] GL: Compiling new vertex shader with selector 0x3
-[   63.4480] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000000800000
-[   63.4523] Program binary retrieved, 15613 bytes, format 34655
-[   63.4542] GL: Compiling new vertex shader with selector 0x1
-[   63.4542] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000004000000
-[   63.4572] Program binary retrieved, 13845 bytes, format 34655
-[  113.5446] [IOP] SearchFile = DATASLOGO01.DPS;1 (DATASLOGO01.DPS;1)
-[  113.5447] szEntryName = DATAS
-[  113.5447] szEntryName = LOGO01.DPS
-[  113.5557] microVU1: Cached Prog = [004] [PC=0000] [List=03] (Cache=0.664%) [0.4mb]
-[  113.5558] microVU1: Cached Prog = [005] [PC=0178] [List=01] (Cache=0.667%) [0.4mb]
-[  113.5558] microVU1: 3 cycle stall on branch instruction [0188]
-[  113.5560] microVU1: Cached Prog = [006] [PC=0620] [List=01] (Cache=0.690%) [0.4mb]
-[  113.5560] microVU1: 3 cycle stall on branch instruction [0188]
-[  113.5566] microVU1: Cached Prog = [007] [PC=01a0] [List=01] (Cache=0.714%) [0.4mb]
-[  113.5573] microVU1: Cached Prog = [008] [PC=0000] [List=04] (Cache=0.755%) [0.5mb]
-[  113.5573] microVU1: Cached Prog = [009] [PC=00e8] [List=01] (Cache=0.757%) [0.5mb]
-[  113.5578] microVU1: Cached Prog = [010] [PC=0000] [List=05] (Cache=0.814%) [0.5mb]
-[  113.5578] recVifUnpk: Bucket 0x2d04 has 4 micro-programs
-[  113.5578] microVU1: Cached Prog = [011] [PC=0190] [List=01] (Cache=0.818%) [0.5mb]
-[  113.5588] recVifUnpk: Bucket 0x2d02 has 4 micro-programs
-[  113.5588] microVU1: Cached Prog = [012] [PC=0b28] [List=01] (Cache=0.982%) [0.6mb]
-[  113.5600] microVU1: Cached Prog = [013] [PC=0000] [List=06] (Cache=1.147%) [0.7mb]
-[  113.5600] microVU1: Cached Prog = [014] [PC=0180] [List=02] (Cache=1.150%) [0.7mb]
-[  113.5601] microVU1: 3 cycle stall on branch instruction [0190]
-[  113.5601] microVU1: 1 cycle stall on branch instruction [02c0]
-[  113.5651] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  113.5652] szEntryName = MUSIC
-[  113.5652] szEntryName = MENU.JOE
-[  113.6722] GL: Compiling new vertex shader with selector 0x6
-[  113.6723] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000C00
-[  113.6768] Program binary retrieved, 15989 bytes, format 34655
-[  113.7171] GL: Compiling new vertex shader with selector 0x6
-[  113.7171] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008010C00
-[  113.7216] Program binary retrieved, 15989 bytes, format 34655
-[  113.7436] GL: Compiling new vertex shader with selector 0x2
-[  113.7436] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000400
-[  113.7481] Program binary retrieved, 15989 bytes, format 34655
-[  113.7886] GL: Compiling new vertex shader with selector 0x2
-[  113.7886] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008010400
-[  113.7931] Program binary retrieved, 15989 bytes, format 34655
-[  113.8371] GL: Compiling new vertex shader with selector 0x2
-[  113.8371] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010400
-[  113.8421] Program binary retrieved, 16077 bytes, format 34655
-[  113.8683] GL: Compiling new vertex shader with selector 0x6
-[  113.8684] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010C00
-[  113.8795] Program binary retrieved, 16077 bytes, format 34655
-[  113.9506] GL: Compiling new vertex shader with selector 0x2
-[  113.9506] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008000400
-[  113.9558] Program binary retrieved, 16085 bytes, format 34655
-[  113.9819] GL: Compiling new vertex shader with selector 0x2
-[  113.9819] GL: Compiling new pixel shader with selector 0x0000000000010008_0811000008010000
-[  113.9869] Program binary retrieved, 15685 bytes, format 34655
-[  114.0103] GL: Compiling new vertex shader with selector 0x2
-[  114.0103] GL: Compiling new pixel shader with selector 0x0000000000010008_0815000008000000
-[  114.0153] Program binary retrieved, 15757 bytes, format 34655
-[  114.0862] [IOP] oneshot mode
-[  114.6481] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  115.4230] microVU1: Cached Prog = [015] [PC=0000] [List=07] (Cache=1.186%) [0.7mb]
-[  115.4231] microVU1: Cached Prog = [016] [PC=0158] [List=01] (Cache=1.188%) [0.7mb]
-[  115.5101] GL: Compiling new vertex shader with selector 0x2
-[  115.5102] GL: Compiling new pixel shader with selector 0x0000000000010008_4815000008010400
-[  115.5167] Program binary retrieved, 16173 bytes, format 34655
-[  153.8620] [IOP] Stop joe
-[  243.3683] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  243.3684] szEntryName = MUSIC
-[  243.3684] szEntryName = MENU.JOE
-[  243.5614] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  282.7135] [IOP] Stop joe
-[  371.9821] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  371.9822] szEntryName = MUSIC
-[  371.9822] szEntryName = MENU.JOE
-[  372.1721] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  411.0488] [IOP] Stop joe
-[  500.3077] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  500.3078] szEntryName = MUSIC
-[  500.3078] szEntryName = MENU.JOE
-[  500.5005] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  539.6647] [IOP] Stop joe
-[  628.9384] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  628.9384] szEntryName = MUSIC
-[  628.9384] szEntryName = MENU.JOE
-[  629.1247] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  667.8570] [IOP] Stop joe
-[  757.1142] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  757.1143] szEntryName = MUSIC
-[  757.1143] szEntryName = MENU.JOE
-[  757.3012] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  795.8856] [IOP] Stop joe
-[  885.1592] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
-[  885.1592] szEntryName = MUSIC
-[  885.1592] szEntryName = MENU.JOE
-[  885.3540] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
-[  923.9715] [IOP] Stop joe
-[  945.9840] (VMManager) Pausing...
-[  946.0015] Add 941 seconds play time to SLUS-21864 -> now 941
-[  946.1013] DEV9: DEV9close
-[  946.1177] Unloading EGL.
-[  946.1182] DEV9: DEV9shutdown
-[  946.1183] NVRAM has not changed, not writing to disk.
-[  946.1355] Releasing host memory for virtual systems...
+[    0.1183] Couldn't find translation for system language C, using en instead
+[    0.1185] Loaded translation file for language en-US
+[    0.1247] PCSX2 v2.8.2
+[    0.1248] Savestate version: 0x9a590000
+[    0.1248] 
+[    0.1248] 
+[    0.1248] Host Machine Init:
+[    0.1249]   Operating System = Ubuntu 26.04
+[    0.1249]   Available RAM    = 14725 MB (14.38 GB)
+[    0.1249]   Physical RAM     = 15983 MB (15.61 GB)
+[    0.1249] 
+[    0.1249]   Processor        = AMD EPYC 9V74 80-Core
+[    0.1249]   Core Count       = 4 cores
+[    0.1249]   Thread Count     = 4 threads
+[    0.1249]   Cluster Count    = 1 clusters
+[    0.1249] CPU Extensions Detected:
+[    0.1249]   AVX AVX2 AVX512F
+[    0.1249] 
+[    0.1249] Allocating host memory for virtual systems...
+[    0.1250]   EE Main Memory                   @ 0x000078C677200000 -> 0x000078C680100000 [143mb]
+[    0.1250]   IOP Main Memory                  @ 0x000078C680100000 -> 0x000078C688200000 [129mb]
+[    0.1250]   VU0/1 On-Chip Memory             @ 0x000078C688200000 -> 0x000078C688300000 [1mb]
+[    0.1250]   VTLB Virtual Map                 @ 0x000078C688300000 -> 0x000078C688B00000 [8mb]
+[    0.1250]   VTLB Address Map                 @ 0x000078C688B00000 -> 0x000078C688F00000 [4mb]
+[    0.1250]   R5900 Recompiler Cache           @ 0x000078C688F00000 -> 0x000078C68CF00000 [64mb]
+[    0.1250]   R3000A Recompiler Cache          @ 0x000078C68CF00000 -> 0x000078C68EF00000 [32mb]
+[    0.1250]   Micro VU0 Recompiler Cache       @ 0x000078C68FF00000 -> 0x000078C693F00000 [64mb]
+[    0.1250]   Micro VU1 Recompiler Cache       @ 0x000078C693F00000 -> 0x000078C697F00000 [64mb]
+[    0.1250]   VIF0 Unpack Recompiler Cache     @ 0x000078C68EF00000 -> 0x000078C68F700000 [8mb]
+[    0.1250]   VIF1 Unpack Recompiler Cache     @ 0x000078C68F700000 -> 0x000078C68FF00000 [8mb]
+[    0.1250]   VIF Unpack Recompiler Cache      @ 0x000078C697F00000 -> 0x000078C698000000 [1mb]
+[    0.1250]   GS Software Renderer             @ 0x000078C698000000 -> 0x000078C69C000000 [64mb]
+[    0.1271] Fastmem area: 0x78c577200000 - 0x78c6771fffff
+[    0.1335] Generating SSE-optimized unpacking functions for VIF interpreters...
+[    0.1335] Unpack function generation complete.  Generated function statistics:
+[    0.1335]   Reserved buffer    : 1048576 bytes @ 0x000078C697F00000
+[    0.1335]   x86 code generated : 7422 bytes
+[    0.1335] 
+[    0.1337] SDLInputSource: Using Controller DB from resources.
+[    0.1626] SDLInputSource: 759 gamepad mappings are loaded.
+[    0.2823] Loading BIOS...
+[    0.2824] BIOS Found: USA     v02.30(20/02/2008)  Console 20080220-175343
+[    0.2844] BIOS rom1 module not found, skipping...
+[    0.2844] BIOS rom2 module not found, skipping...
+[    0.2845] Mechacon version: 0x00020603
+[    0.2845] Opening CDVD...
+[    0.2848] isoFile open ok: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/disc/up.iso
+[    0.2848]   Image type  = DVD
+[    0.2848]   blocks      = 705152
+[    0.2848]   offset      = 0
+[    0.2848]   blocksize   = 2048
+[    0.2848]   blockoffset = 24
+[    0.2848]  * CDVD Disk Open: DVD, Single layer or unknown:
+[    0.2848]  * * Track 1: Data (Mode 1) (705152 sectors)
+[    0.2848] ISOReader: PVD found at index 0
+[    0.2850] ISOReader: PVD found at index 0
+[    0.2850] (SYSTEM.CNF) Detected PS2 Disc = cdrom0:\SLUS_218.64;1
+[    0.2850] (SYSTEM.CNF) Software version = 1.00
+[    0.2850] (SYSTEM.CNF) Disc region type = NTSC
+[    0.2850] cdvdLoadElf(): 'cdrom0:\SLUS_218.64;1' -> 'SLUS_218.64' in ISO.
+[    0.2886] Initializing Elf: 5851096 bytes
+[    0.2890] GameDB: Has not been initialized yet, initializing...
+[    0.3234] GameDB: 12841 games on record (loaded in 34.31ms)
+[    0.3234] Disc changed to up.iso.
+[    0.3234]   Name: Disney/Pixar Up
+[    0.3234]   Serial: SLUS-21864
+[    0.3234]   Version: 1.00
+[    0.3234]   CRC: F78D6593
+[    0.3234] No game settings found (tried '/home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/gamesettings/F78D6593.ini')
+[    0.3234] Applying settings...
+[    0.3236] [Unsafe Settings] Graphics API is not set to Automatic. This may cause performance problems and graphical issues.
+[    0.3236] OSD [unsafe_settings_warning]:  Graphics API is not set to Automatic. This may cause performance problems and graphical issues.
+[    0.3250] Reopening memory cards...
+[    0.3251] (FileMcd) Creating new 8MB memory card: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/memcards/Mcd001.ps2
+[    0.3311] McdSlot 0 [File]: Mcd001.ps2 [8 MB, UNFORMATTED]
+[    0.3311] (FileMcd) Creating new 8MB memory card: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/memcards/Mcd002.ps2
+[    0.3370] McdSlot 1 [File]: Mcd002.ps2 [8 MB, UNFORMATTED]
+[    0.3379] HLE Host: Set 'host:' root path to: /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/disc
+[    0.3380] EE/iR5900 Recompiler Reset
+[    0.3808] iR3000A Recompiler reset.
+[    0.3928] Resetting host memory for virtual systems...
+[    0.6681] Time Zone Offset: GMT-06:00
+[    0.6681] Time Zone Location: Central (USA)
+[    0.6681] DST: Summer Time
+[    0.6681] Time Format: 12-Hour
+[    0.6682] Date Format: MM/DD/YYYY
+[    0.6682] System Time Basis: Operating System Time
+[    0.6682] Resulting System Time: 2026-11-28 06:47:17
+[    0.6682] Close virtual disk tray
+[    0.6682] Media already loaded (fast boot)
+[    0.6682] Opening GS...
+[    0.6685] acquireRenderWindow() recreate=true fullscreen=false render_to_main=true surfaceless=false
+[    0.6700] (GetRefreshRateFromXRandR) Modeline is invalid: 0/0/0
+[    0.6700] Surface refresh rate: 60 Hz
+[    0.6701] Loading EGL from libEGL.so...
+[    0.6703] Loading EGL from libEGL.so.1...
+[    0.6904] GLAD EGL Version: 1.0
+[    0.6904] Using EGL platform EGL_EXT_platform_x11.
+[    0.7047] eglInitialize() version: 1.5
+[    0.7048] GLAD EGL Version: 1.5
+[    0.7048] Trying GL version 4.6
+[    0.7048] eglCreateContext() failed: 0x3009
+[    0.7048] Trying GL version 4.5
+[    0.8009] Got GL version 4.5
+[    0.8009] EGL_MIN_SWAP_INTERVAL = 1
+[    0.8009] EGL_MAX_SWAP_INTERVAL = 1
+[    0.8009] Negative swap interval/tear-control is NOT supported
+[    0.8045] GL_VENDOR: Mesa
+[    0.8045] GL_VERSION: 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
+[    0.8045] GL_RENDERER: llvmpipe (LLVM 21.1.8, 256 bits)
+[    0.8045] GL_SHADING_LANGUAGE_VERSION: 4.50
+[    0.8046] GL_EXTENSIONS: GL_3DFX_texture_compression_FXT1 GL_AMD_conservative_depth GL_AMD_draw_buffers_blend GL_AMD_gpu_shader_int64 GL_AMD_multi_draw_indirect GL_AMD_pinned_memory GL_AMD_query_buffer_object GL_AMD_seamless_cubemap_per_texture GL_AMD_shader_stencil_export GL_AMD_shader_trinary_minmax GL_AMD_texture_texture4 GL_AMD_vertex_shader_layer GL_AMD_vertex_shader_viewport_index GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ARB_ES2_compatibility GL_ARB_ES3_1_compatibility GL_ARB_ES3_2_compatibility GL_ARB_ES3_compatibility GL_ARB_arrays_of_arrays GL_ARB_base_instance GL_ARB_blend_func_extended GL_ARB_buffer_storage GL_ARB_clear_buffer_object GL_ARB_clear_texture GL_ARB_clip_control GL_ARB_compressed_texture_pixel_storage GL_ARB_compute_shader GL_ARB_conditional_render_inverted GL_ARB_conservative_depth GL_ARB_copy_buffer GL_ARB_copy_image GL_ARB_cull_distance GL_ARB_debug_output GL_ARB_depth_buffer_float GL_ARB_depth_clamp GL_ARB_derivative_control GL_ARB_direct_state_access GL_ARB_draw_buffers GL_ARB_draw_buffers_blend GL_ARB_draw_elements_base_vertex GL_ARB_draw_indirect GL_ARB_draw_instanced GL_ARB_enhanced_layouts GL_ARB_explicit_attrib_location GL_ARB_explicit_uniform_location GL_ARB_fragment_coord_conventions GL_ARB_fragment_layer_viewport GL_ARB_fragment_shader GL_ARB_framebuffer_no_attachments GL_ARB_framebuffer_object GL_ARB_framebuffer_sRGB GL_ARB_get_program_binary GL_ARB_get_texture_sub_image GL_ARB_gl_spirv GL_ARB_gpu_shader5 GL_ARB_gpu_shader_fp64 GL_ARB_gpu_shader_int64 GL_ARB_half_float_pixel GL_ARB_half_float_vertex GL_ARB_indirect_parameters GL_ARB_instanced_arrays GL_ARB_internalformat_query GL_ARB_internalformat_query2 GL_ARB_invalidate_subdata GL_ARB_map_buffer_alignment GL_ARB_map_buffer_range GL_ARB_multi_bind GL_ARB_multi_draw_indirect GL_ARB_occlusion_query2 GL_ARB_parallel_shader_compile GL_ARB_pipeline_statistics_query GL_ARB_pixel_buffer_object GL_ARB_point_sprite GL_ARB_polygon_offset_clamp GL_ARB_post_depth_coverage GL_ARB_program_interface_query GL_ARB_provoking_vertex GL_ARB_query_buffer_object GL_ARB_robust_buffer_access_behavior GL_ARB_robustness GL_ARB_sample_locations GL_ARB_sample_shading GL_ARB_sampler_objects GL_ARB_seamless_cube_map GL_ARB_seamless_cubemap_per_texture GL_ARB_separate_shader_objects GL_ARB_shader_atomic_counter_ops GL_ARB_shader_atomic_counters GL_ARB_shader_ballot GL_ARB_shader_bit_encoding GL_ARB_shader_clock GL_ARB_shader_draw_parameters GL_ARB_shader_group_vote GL_ARB_shader_image_load_store GL_ARB_shader_image_size GL_ARB_shader_objects GL_ARB_shader_precision GL_ARB_shader_stencil_export GL_ARB_shader_storage_buffer_object GL_ARB_shader_subroutine GL_ARB_shader_texture_image_samples GL_ARB_shader_texture_lod GL_ARB_shader_viewport_layer_array GL_ARB_shading_language_420pack GL_ARB_shading_language_include GL_ARB_shading_language_packing GL_ARB_spirv_extensions GL_ARB_stencil_texturing GL_ARB_sync GL_ARB_tessellation_shader GL_ARB_texture_barrier GL_ARB_texture_border_clamp GL_ARB_texture_buffer_object GL_ARB_texture_buffer_object_rgb32 GL_ARB_texture_buffer_range GL_ARB_texture_compression_bptc GL_ARB_texture_compression_rgtc GL_ARB_texture_cube_map_array GL_ARB_texture_filter_anisotropic GL_ARB_texture_filter_minmax GL_ARB_texture_float GL_ARB_texture_gather GL_ARB_texture_mirror_clamp_to_edge GL_ARB_texture_multisample GL_ARB_texture_non_power_of_two GL_ARB_texture_query_levels GL_ARB_texture_query_lod GL_ARB_texture_rectangle GL_ARB_texture_rg GL_ARB_texture_rgb10_a2ui GL_ARB_texture_stencil8 GL_ARB_texture_storage GL_ARB_texture_storage_multisample GL_ARB_texture_swizzle GL_ARB_texture_view GL_ARB_timer_query GL_ARB_transform_feedback2 GL_ARB_transform_feedback3 GL_ARB_transform_feedback_instanced GL_ARB_transform_feedback_overflow_query GL_ARB_uniform_buffer_object GL_ARB_vertex_array_bgra GL_ARB_vertex_array_object GL_ARB_vertex_attrib_64bit GL_ARB_vertex_attrib_binding GL_ARB_vertex_buffer_object GL_ARB_vertex_shader GL_ARB_vertex_type_10f_11f_11f_rev GL_ARB_vertex_type_2_10_10_10_rev GL_ARB_viewport_array GL_ARM_shader_framebuffer_fetch_depth_stencil GL_ATI_blend_equation_separate GL_ATI_meminfo GL_ATI_texture_float GL_ATI_texture_mirror_once GL_EXT_EGL_image_storage GL_EXT_EGL_image_storage_compression GL_EXT_EGL_sync GL_EXT_abgr GL_EXT_blend_equation_separate GL_EXT_debug_label GL_EXT_depth_bounds_test GL_EXT_draw_buffers2 GL_EXT_draw_instanced GL_EXT_framebuffer_blit GL_EXT_framebuffer_multisample GL_EXT_framebuffer_multisample_blit_scaled GL_EXT_framebuffer_object GL_EXT_framebuffer_sRGB GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_packed_depth_stencil GL_EXT_packed_float GL_EXT_pixel_buffer_object GL_EXT_polygon_offset_clamp GL_EXT_provoking_vertex GL_EXT_shader_clock GL_EXT_shader_framebuffer_fetch GL_EXT_shader_framebuffer_fetch_non_coherent GL_EXT_shader_image_load_formatted GL_EXT_shader_integer_mix GL_EXT_texture_array GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc GL_EXT_texture_filter_anisotropic GL_EXT_texture_filter_minmax GL_EXT_texture_integer GL_EXT_texture_mirror_clamp GL_EXT_texture_sRGB GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_EXT_texture_sRGB_decode GL_EXT_texture_shadow_lod GL_EXT_texture_shared_exponent GL_EXT_texture_snorm GL_EXT_texture_storage GL_EXT_texture_swizzle GL_EXT_timer_query GL_EXT_transform_feedback GL_EXT_vertex_array_bgra GL_EXT_vertex_attrib_64bit GL_IBM_multimode_draw_arrays GL_INTEL_shader_atomic_float_minmax GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_KHR_context_flush_control GL_KHR_debug GL_KHR_no_error GL_KHR_parallel_shader_compile GL_KHR_robust_buffer_access_behavior GL_KHR_robustness GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_MESA_framebuffer_flip_y GL_MESA_pack_invert GL_MESA_shader_integer_functions GL_MESA_texture_signed_rgba GL_NVX_gpu_memory_info GL_NV_alpha_to_coverage_dither_control GL_NV_conditional_render GL_NV_copy_image GL_NV_depth_clamp GL_NV_packed_depth_stencil GL_NV_sample_locations GL_NV_shader_atomic_float GL_NV_texture_barrier GL_OES_EGL_image GL_OVR_multiview GL_OVR_multiview2 GL_S3_s3tc
+[    0.8046] GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS: 16
+[    0.8046] GL: Using hardware for point expansion, vertex expanding for line expansion and vertex expanding for sprite expansion.
+[    0.8156] 1 program binary formats supported by driver
+[    0.8604] Program binary retrieved, 5141 bytes, format 34655
+[    0.8620] Program binary retrieved, 5149 bytes, format 34655
+[    0.8819] Program binary retrieved, 5357 bytes, format 34655
+[    0.8843] Program binary retrieved, 5101 bytes, format 34655
+[    0.8862] Program binary retrieved, 5101 bytes, format 34655
+[    0.8882] Program binary retrieved, 5101 bytes, format 34655
+[    0.8900] Program binary retrieved, 5101 bytes, format 34655
+[    0.8975] Program binary retrieved, 5253 bytes, format 34655
+[    0.8995] Program binary retrieved, 5317 bytes, format 34655
+[    0.9014] Program binary retrieved, 5173 bytes, format 34655
+[    0.9033] Program binary retrieved, 5157 bytes, format 34655
+[    0.9051] Program binary retrieved, 5157 bytes, format 34655
+[    0.9075] Program binary retrieved, 5349 bytes, format 34655
+[    0.9099] Program binary retrieved, 5349 bytes, format 34655
+[    0.9120] Program binary retrieved, 5357 bytes, format 34655
+[    0.9140] Program binary retrieved, 5365 bytes, format 34655
+[    0.9227] Program binary retrieved, 6525 bytes, format 34655
+[    0.9255] Program binary retrieved, 6533 bytes, format 34655
+[    0.9276] Program binary retrieved, 5381 bytes, format 34655
+[    0.9296] Program binary retrieved, 5389 bytes, format 34655
+[    0.9325] Program binary retrieved, 6581 bytes, format 34655
+[    0.9352] Program binary retrieved, 6589 bytes, format 34655
+[    0.9373] Program binary retrieved, 5373 bytes, format 34655
+[    0.9393] Program binary retrieved, 5381 bytes, format 34655
+[    0.9421] Program binary retrieved, 6573 bytes, format 34655
+[    0.9449] Program binary retrieved, 6581 bytes, format 34655
+[    0.9469] Program binary retrieved, 5405 bytes, format 34655
+[    0.9489] Program binary retrieved, 5413 bytes, format 34655
+[    0.9518] Program binary retrieved, 6661 bytes, format 34655
+[    0.9547] Program binary retrieved, 6669 bytes, format 34655
+[    0.9566] Program binary retrieved, 5205 bytes, format 34655
+[    0.9585] Program binary retrieved, 5213 bytes, format 34655
+[    0.9617] Program binary retrieved, 6861 bytes, format 34655
+[    0.9968] Program binary retrieved, 6561 bytes, format 34655
+[    1.0069] Program binary retrieved, 7941 bytes, format 34655
+[    1.0088] Program binary retrieved, 5605 bytes, format 34655
+[    1.0168] Program binary retrieved, 5741 bytes, format 34655
+[    1.0306] Program binary retrieved, 6109 bytes, format 34655
+[    1.0324] Program binary retrieved, 5125 bytes, format 34655
+[    1.0378] Program binary retrieved, 5173 bytes, format 34655
+[    1.0429] Program binary retrieved, 5129 bytes, format 34655
+[    1.0446] Program binary retrieved, 6369 bytes, format 34655
+[    1.0462] Program binary retrieved, 6921 bytes, format 34655
+[    1.0479] Program binary retrieved, 6953 bytes, format 34655
+[    1.0494] Program binary retrieved, 5385 bytes, format 34655
+[    1.0908] Program binary retrieved, 30117 bytes, format 34655
+[    1.0926] Program binary retrieved, 5817 bytes, format 34655
+[    1.0942] Program binary retrieved, 6721 bytes, format 34655
+[    1.0951] Program binary retrieved, 5169 bytes, format 34655
+[    1.0960] Program binary retrieved, 5441 bytes, format 34655
+[    1.0979] Program binary retrieved, 5781 bytes, format 34655
+[    1.0996] Program binary retrieved, 5137 bytes, format 34655
+[    1.1014] Program binary retrieved, 5741 bytes, format 34655
+[    1.1034] Program binary retrieved, 5893 bytes, format 34655
+[    1.1066] Program binary retrieved, 8165 bytes, format 34655
+[    1.1078] Program binary retrieved, 5817 bytes, format 34655
+[    1.1383] Program binary retrieved, 16753 bytes, format 34655
+[    1.1937] Program binary retrieved, 16113 bytes, format 34655
+[    1.2309] Program binary retrieved, 7017 bytes, format 34655
+[    1.2327] Program binary retrieved, 5181 bytes, format 34655
+[    1.2342] Program binary retrieved, 5181 bytes, format 34655
+[    1.2356] Program binary retrieved, 5189 bytes, format 34655
+[    1.2371] Program binary retrieved, 5189 bytes, format 34655
+[    1.2828] Program binary retrieved, 6433 bytes, format 34655
+[    1.2855] OpenGL Graphics Driver Info:
+[    1.2855] OpenGL Context:
+[    1.2855] 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3
+[    1.2855] Mesa llvmpipe (LLVM 21.1.8, 256 bits)
+[    1.2855] GLSL: 4.50
+[    1.2882] Opening SPU2...
+[    1.2891] Creating Cubeb audio stream, sample rate = 48000, expansion = Disabled, buffer = 50, latency = 20, stretching enabled, driver = , device = 
+[    1.3057] Minimum latency: 40 ms (1920 audio frames)
+[    1.3057] Minimum latency is above requested latency: 1920 vs 960, adjusting to compensate.
+[    1.3058] Allocated buffer of 38400 frames for buffer of 50 ms [expansion Disabled (block size 128), stretch enabled, target size 2432].
+[    1.3061] ReportErrorAsync: Error: Failed to create or configure audio stream, falling back to null output. The error was:
+[    1.3061] cubeb_stream_init() failed: CUBEB_ERROR (-1)
+[    1.3061] Allocated buffer of 2432 frames for buffer of 50 ms [expansion Disabled (block size 2048), stretch disabled, target size 2432].
+[    1.3061] Initializing Pad...
+[    1.3061] Initializing SIO2...
+[    1.3061] Initializing SIO0...
+[    1.3061] Opening DEV9...
+[    1.3061] DEV9: DEV9init
+[    1.3062] DEV9: DEV9init2
+[    1.3062] DEV9: DEV9init3
+[    1.3096] DEV9: DEV9init ok
+[    1.3096] DEV9: DEV9open
+[    1.3096] Opening USB...
+[    1.3096] Opening FW...
+[    1.3097] Frame rate: 60, target speed: 1, target frame rate: 60, ticks per frame: 16666666
+[    1.3127] VM subsystems initialized in 1030.61 ms
+[    1.3134] Failed to inhibit screen saver.
+[    1.3135] Failed to inhibit screen saver.
+[    1.3308] # Initialize memory (rev:4.00, ctm:196Mhz, cpuclk:147Mhz detected)
+[    1.3465] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
+[    1.3477] RegisterLibraryEntries: excepman version 1.01
+[    1.3483] RegisterLibraryEntries:  intrman version 1.02
+[    1.3484] RegisterLibraryEntries:   ssbusc version 1.01
+[    1.3486] RegisterLibraryEntries:  dmacman version 1.02
+[    1.3488] RegisterLibraryEntries:  timrman version 1.01
+[    1.3490] RegisterLibraryEntries:  sysclib version 1.01
+[    1.3491] RegisterLibraryEntries:    stdio version 1.01
+[    1.3491] RegisterLibraryEntries:  heaplib version 1.01
+[    1.3494] FW: read mem 0x1f80847c: 0x10000001
+[    1.3494] FW: write mem 0x1f808414: 0x417f0000
+[    1.3494] FW: read mem 0x1f808400: 0xffc00001
+[    1.3494] FW: write mem 0x1f80844c: 0xffffffff
+[    1.3494] FW: write mem 0x1f808420: 0xffffffff
+[    1.3494] FW: write mem 0x1f808428: 0xffffffff
+[    1.3494] FW: write mem 0x1f808430: 0xffffffff
+[    1.3501] RegisterLibraryEntries:   thbase version 1.01
+[    1.3501] RegisterLibraryEntries:  thevent version 1.01
+[    1.3502] RegisterLibraryEntries:  thsemap version 1.01
+[    1.3502] RegisterLibraryEntries:  thmsgbx version 1.01
+[    1.3502] RegisterLibraryEntries:  thfpool version 1.01
+[    1.3502] RegisterLibraryEntries:  thvpool version 1.01
+[    1.3508] RegisterLibraryEntries:   vblank version 1.01
+[    1.3510] RegisterLibraryEntries:    ioman version 1.02
+[    1.3515] RegisterLibraryEntries:  modload version 1.01
+[    1.3517] RegisterLibraryEntries:   romdrv version 2.01
+[    1.3518] RegisterLibraryEntries:    stdio version 1.02
+[    1.3520] RegisterLibraryEntries:   sifman version 1.01
+[    1.3522] 
+[    1.3522] PlayStation 2 ======== Hard reset boot
+[    1.3524]  ROMGEN=2008-0220, IOP info (CPUID=1f, CACH_CONFIG=14000200, 2MB, IOP mode)
+[    1.3525]  <20080220-175343,ROMconf,PS20230WC20080220.bin:11824>
+[    1.3543] # Total accessable memory size: 32 MB (B:2:8:0) (400:2:7c30)
+[    1.3552] # TLB spad=0 kernel=1:12 default=13:30 extended=31:38
+[    1.4847] # Initialize Start.
+[    1.4850] # Initialize GS ...
+[    1.4850] # Initialize INTC ...
+[    1.4850] # Initialize TIMER ...
+[    1.4850] # Initialize DMAC ...
+[    1.4851] # Initialize VU1 ...
+[    1.4852] # Initialize VIF1 ...
+[    1.4853] # Initialize GIF ...
+[    1.4853] # Initialize VU0 ...
+[    1.4854] # Initialize VIF0 ...
+[    1.4854] # Initialize IPU ...
+[    1.4855] # Initialize FPU ...
+[    1.4855] # Initialize User Memory ...
+[    1.5208] # Initialize Scratch Pad ...
+[    1.5209] # Initialize Done.
+[    1.5215] 
+[    1.5215] EE DECI2 Manager version 0.06 Sep  5 2006 12:57:08
+[    1.5215]   CPUID=2e20, BoardID=0, ROMGEN=2008-0220, 32M
+[    1.5215] 
+[    1.5216] RegisterLibraryEntries:   sifcmd version 1.01
+[    1.5221] ISOReader: PVD found at index 0
+[    1.5222] (SYSTEM.CNF) Detected PS2 Disc = cdrom0:\SLUS_218.64;1
+[    1.5222] (SYSTEM.CNF) Software version = 1.00
+[    1.5222] (SYSTEM.CNF) Disc region type = NTSC
+[    1.5222] ISOReader: PVD found at index 0
+[    1.5222] cdvdLoadElf(): 'cdrom0:\SLUS_218.64;1' -> 'SLUS_218.64' in ISO.
+[    1.5254] Initializing Elf: 5851096 bytes
+[    1.5278] ELF Loading: cdrom0:\SLUS_218.64;1, Game CRC = F78D6593, EntryPoint = 0x00200008
+[    1.5300] RegisterLibraryEntries:  cdvdman version 1.01
+[    1.5312] RegisterLibraryEntries:  cdvdfsv version 1.01
+[    1.5324] RegisterLibraryEntries:  secrman version 1.03
+[    1.5325] RegisterLibraryEntries:   eesync version 1.01
+[    1.5326] 
+[    1.5326] IOP Realtime Kernel Ver.0.9.1
+[    1.5326]     Copyright 1999 (C) Sony Computer Entertainment Inc. 
+[    1.5330] Reboot service module.(99/11/10)
+[    1.5345] cdvd driver module version 0.1.1 (C)SCEI
+[    1.5348] Load File service.(99/11/05)
+[    1.5348] Multi Threaded Fileio module.(99/11/15) 
+[    1.5348] iop heap service (99/11/03)
+[    1.5640] loadelf: fname cdrom0:SLUS_218.64;1 secname all
+[    1.5641] loadelf version 3.30
+[    1.7481] Input ELF format filename = cdrom0:SLUS_218.64;1
+[    4.1142] 1 00200000 00594500 ..........................................................................................
+[    4.1143] Loaded, cdrom0:SLUS_218.64;1
+[    4.1143] start address 0x200008
+[    4.1143] gp address 00000000
+[    4.1148] # Restart Without Memory Clear.
+[    4.1302] # Initialize GS ...
+[    4.1302] # Initialize INTC ...
+[    4.1302] # Initialize TIMER ...
+[    4.1302] # Initialize DMAC ...
+[    4.1302] # Initialize VU1 ...
+[    4.1303] # Initialize VIF1 ...
+[    4.1303] # Initialize GIF ...
+[    4.1303] # Initialize VU0 ...
+[    4.1303] # Initialize VIF0 ...
+[    4.1303] # Initialize IPU ...
+[    4.1304] # Initialize FPU ...
+[    4.1304] # Initialize Scratch Pad ...
+[    4.1304] # Restart Without Memory Clear Done.
+[    4.1305] ELF cdrom0:\SLUS_218.64;1 with entry point at 0x00200008 is executing.
+[    4.1305] ELF changed, active CRC F78D6593 (cdrom0:\SLUS_218.64;1)
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Patch error: Stretch is an unknown aspect ratio.
+[    4.1314] Found 6 game patches in SLUS-21864_F78D6593.pnach.
+[    4.1315] Applying core settings...
+[    4.1316] Updating CPU configuration...
+[    4.1316] iR3000A Recompiler reset.
+[    4.1597] iR3000A Recompiler reset.
+[    4.1637] EE/iR5900 Recompiler Reset
+[    4.1700] BIOS: Successfully found the instruction pattern. Assuming the thread list is here: 8001ac00
+[    4.1775] sce_fileio: unrecognized code ff
+[    4.1786] Language: 1
+[    4.1790] App : cdrom0:SLUS_218.64;1
+[    4.1791] SCE Product Code = SLUS_218.64
+[    4.1791] SCE Product Number = 21864
+[    4.1791] 
+[    4.1791] > Startup :
+[    4.1791] >            start       end         size         usage
+[    4.1793] >     SYSTEM 0x00000000  0x001fffff  00002048 ko
+[    4.1793] >     ELF    0x00200000  0x007ab38f  00005804 ko
+[    4.1794] >     STACK  0x01fa8800  0x02000fff  00000354 ko
+[    4.1803] >     HEAP   0x007ab390  0x01fa77f0  00024561 mo   0.00 mo
+[    4.1803] 
+[    4.1811] Game is in NTSC mode
+[    4.1820] UpdateVSyncRate: Mode Changed to NTSC.
+[    4.1821] Frame rate: 59.829998, target speed: 1, target frame rate: 59.829998, ticks per frame: 16714023
+[    4.1821] Set GS CRTC configuration. NTSC 640x448 @ 59.940 (59.82) Interlaced (FIELD)
+[    4.1822] UpdateVSyncRate: Mode Changed to NTSC.
+[    4.1822] Frame rate: 59.94, target speed: 1, target frame rate: 59.94, ticks per frame: 16683350
+[    4.5139] [FIRSTSCREEN] Texture format: 256 256 PSMT8
+[    4.7310] GL: Compiling new vertex shader with selector 0x3
+[    4.7311] GL: Compiling new pixel shader with selector 0x0000000000010008_4815000008800000
+[    4.7359] Program binary retrieved, 15933 bytes, format 34655
+[    5.7341] Path : 
+[    5.7348] Path : (null)
+[    5.7356] Get Reboot Request From EE
+[    5.7365] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
+[    5.7377] RegisterLibraryEntries: excepman version 1.01
+[    5.7383] RegisterLibraryEntries:  intrman version 1.02
+[    5.7384] RegisterLibraryEntries:   ssbusc version 1.01
+[    5.7387] RegisterLibraryEntries:  dmacman version 1.02
+[    5.7390] RegisterLibraryEntries:  timrman version 1.01
+[    5.7393] RegisterLibraryEntries:  sysclib version 1.01
+[    5.7393] RegisterLibraryEntries:    stdio version 1.01
+[    5.7394] RegisterLibraryEntries:  heaplib version 1.01
+[    5.7403] RegisterLibraryEntries:   thbase version 1.01
+[    5.7403] RegisterLibraryEntries:  thevent version 1.01
+[    5.7403] RegisterLibraryEntries:  thsemap version 1.01
+[    5.7404] RegisterLibraryEntries:  thmsgbx version 1.01
+[    5.7404] RegisterLibraryEntries:  thfpool version 1.01
+[    5.7404] RegisterLibraryEntries:  thvpool version 1.01
+[    5.7410] RegisterLibraryEntries:   vblank version 1.01
+[    5.7413] RegisterLibraryEntries:    ioman version 1.02
+[    5.7419] RegisterLibraryEntries:  modload version 1.01
+[    5.7421] RegisterLibraryEntries:   romdrv version 2.01
+[    5.7488] ROM directory not found
+[    5.7490] RegisterLibraryEntries:    stdio version 1.02
+[    5.7494] RegisterLibraryEntries:   sifman version 1.01
+[    5.7497] 
+[    5.7498] PlayStation 2 ======== Update rebooting..
+[    5.7518] RegisterLibraryEntries:  cdvdman version 1.01
+[    5.7524] RegisterLibraryEntries:  secrman version 1.03
+[    5.7527] RegisterLibraryEntries:  sio2man version 1.01
+[    5.7655] RegisterLibraryEntries:    mcman version 1.01
+[    6.1179] R3000 Debugger: Branch to 0x890 (SYSMEM). Clearing modules.
+[    6.1837] RegisterLibraryEntries: excepman version 1.01
+[    6.1843] RegisterLibraryEntries:  intrman version 1.02
+[    6.1844] RegisterLibraryEntries:   ssbusc version 1.01
+[    6.1847] RegisterLibraryEntries:  dmacman version 1.02
+[    6.1850] RegisterLibraryEntries:  timrman version 1.03
+[    6.1852] RegisterLibraryEntries:  sysclib version 1.04
+[    6.1853] RegisterLibraryEntries:    stdio version 1.02
+[    6.1854] RegisterLibraryEntries:  heaplib version 1.01
+[    6.1865] RegisterLibraryEntries:   thbase version 1.02
+[    6.1865] RegisterLibraryEntries:  thevent version 1.01
+[    6.1866] RegisterLibraryEntries:  thsemap version 1.01
+[    6.1866] RegisterLibraryEntries:  thmsgbx version 1.01
+[    6.1866] RegisterLibraryEntries:  thfpool version 1.01
+[    6.1866] RegisterLibraryEntries:  thvpool version 1.01
+[    6.1988] RegisterLibraryEntries:   vblank version 1.01
+[    6.1993] RegisterLibraryEntries:    ioman version 1.04
+[    6.2000] RegisterLibraryEntries:  modload version 1.06
+[    6.2004] RegisterLibraryEntries:   romdrv version 2.01
+[    6.2006] RegisterLibraryEntries:    stdio version 1.03
+[    6.2009] RegisterLibraryEntries:   sifman version 1.01
+[    6.2011] 
+[    6.2011] PlayStation 2 ======== Update reboot complete
+[    6.2015] RegisterLibraryEntries:   sifcmd version 1.01
+[    6.2159] RegisterLibraryEntries:  cdvdman version 1.01
+[    6.2162] cdvdman Init
+[    6.2178] RegisterLibraryEntries:  cdvdfsv version 1.01
+[    6.2196] RegisterLibraryEntries:  secrman version 1.03
+[    6.2198] RegisterLibraryEntries:   eesync version 1.01
+[    6.2329] 
+[    6.2329] IOP Realtime Kernel Ver. 2.2
+[    6.2329]     Copyright 1999-2002 (C) Sony Computer Entertainment Inc. 
+[    6.2332] Reboot service module.(99/11/10)
+[    6.2338] cdvd driver module version 0.1.1 (C)SCEI
+[    6.2341] Load File service.(99/11/05)
+[    6.2341] Multi Threaded Fileio module.(99/11/15) 
+[    6.2342] iop heap service (99/11/03)
+[    6.2667] loadmodule: fname cdrom0:MODULESSIO2MAN.IRX;1 args 0 arg 
+[    6.2670] CDGetToc Param[0]=0, Param[1]=117
+[    6.5160] RegisterLibraryEntries:  sio2man version 2.04
+[    6.5165] loadmodule: id 25, ret 0
+[    6.5167] loadmodule: fname cdrom0:MODULESPADMAN.IRX;1 args 0 arg 
+[    6.5664] RegisterLibraryEntries:   padman version 2.03
+[    6.5667] loadmodule: id 26, ret 0
+[    6.5668] loadmodule: fname cdrom0:MODULESMCMAN.IRX;1 args 0 arg 
+[    6.6495] RegisterLibraryEntries:    mcman version 2.07
+[    6.6501] loadmodule: id 27, ret 2
+[    6.6502] loadmodule: fname cdrom0:MODULESMCSERV.IRX;1 args 0 arg 
+[    6.6505] RegisterLibraryEntries:   mcserv version 2.01
+[    6.6507] loadmodule: id 28, ret 2
+[    6.6508] loadmodule: fname cdrom0:MODULESLIBSD.IRX;1 args 0 arg 
+[    6.6997] RegisterLibraryEntries:    libsd version 1.05
+[    6.6998] loadmodule: id 29, ret 0
+[    6.6999] loadmodule: fname cdrom0:MODULESZNASND.IRX;1 args 0 arg 
+[    6.7667] ptr 0x9cf00, db=0x9cf40
+[    7.1999] [IOP]DiskManager_Z.c: Building filesystem... found 556 entries.
+[    7.2005] [IOP] ZnaSnd.irx Loaded Successfully...
+[    7.2005] 
+[    7.2005] loadmodule: id 30, ret 0
+[    8.2675] GL: Compiling new vertex shader with selector 0x3
+[    8.2676] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008800000
+[    8.2723] Program binary retrieved, 15629 bytes, format 34655
+[    8.2843] UpdateVSyncRate: Mode Changed to NTSC.
+[    8.2843] Frame rate: 59.829998, target speed: 1, target frame rate: 59.829998, ticks per frame: 16714023
+[    8.2843] Set GS CRTC configuration. NTSC 640x448 @ 59.940 (59.82) Interlaced (FIELD)
+[    8.2843] UpdateVSyncRate: Mode Changed to NTSC.
+[    8.2843] Frame rate: 59.94, target speed: 1, target frame rate: 59.94, ticks per frame: 16683350
+[    8.3179] [IOP] Sound Init...
+[    8.3179] [IOP] ZnaSnd.irx - Ver: -1793767096
+[    8.3349] microVU0: Cached Prog = [000] [PC=04e8] [List=01] (Cache=0.000%) [0.0mb]
+[    8.3350] microVU0: Cached Prog = [001] [PC=04f8] [List=01] (Cache=0.000%) [0.0mb]
+[    8.5178] Pad: DS2 Config Finished - P1/S1 - AL: Off - AB: Usable - VS: Disabled - VL: Disabled - RB: D (0x00000000)
+[    9.1713] [IOP] SearchFile = cdrom0:MUSICDIALOG01.SPS;1 (MUSICDIALOG01.SPS;1)
+[    9.1714] szEntryName = MUSIC
+[    9.1714] szEntryName = DIALOG
+[    9.1714] szEntryName = 01.SPS
+[    9.1714] Read SBF : size=16384
+[    9.4362] Load SBF : Version=1003, NbEntry = 507
+[    9.6413] [IOP] SearchFile = DATASFONTES.DPS;1 (DATASFONTES.DPS;1)
+[    9.6413] szEntryName = DATAS
+[    9.6413] szEntryName = FONTES.DPS
+[    9.6563] GL: Compiling new vertex shader with selector 0x0
+[    9.6563] GL: Compiling new pixel shader with selector 0x0000000000000008_0000000004000010
+[    9.6596] Program binary retrieved, 13845 bytes, format 34655
+[    9.6811] GL: Compiling new vertex shader with selector 0x33
+[    9.6811] GL: Compiling new pixel shader with selector 0x0000000000000108_0800000300800020
+[    9.6877] Program binary retrieved, 22621 bytes, format 34655
+[    9.7922] GL: Compiling new vertex shader with selector 0x2
+[    9.7922] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010000
+[    9.7963] Program binary retrieved, 15781 bytes, format 34655
+[    9.8326] GL: Compiling new vertex shader with selector 0x33
+[    9.8326] GL: Compiling new pixel shader with selector 0x0000000000000108_18000004A0800020
+[    9.8400] Program binary retrieved, 23557 bytes, format 34655
+[   10.0616] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Disabled - VL: Disabled - RB: D (0x00000000)
+[   12.0709] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D (0x00000000)
+[   12.2400] [IOP] oneshot mode
+[   12.7228] [IOP] SearchFile = DATASSHARED.DPS;1 (DATASSHARED.DPS;1)
+[   12.7228] szEntryName = DATAS
+[   12.7228] szEntryName = SHARED.DPS
+[   14.5567] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D+A+P (0x0003FFFF)
+[   16.7355] Pad: DS2 Config Finished - P1/S1 - AL: On - AB: Locked - VS: Normal - VL: Normal - RB: D+A+P (0x0003FFFF)
+[   17.2929] [IOP] oneshot mode
+[   17.8942] [IOP] SearchFile = DATASRTCSYS.DPS;1 (DATASRTCSYS.DPS;1)
+[   17.8942] szEntryName = DATAS
+[   17.8942] szEntryName = RTCSYS.DPS
+[   19.1287] [IOP] oneshot mode
+[   25.2181] [IOP] SearchFile = WORLDMENU.DPS;1 (WORLDMENU.DPS;1)
+[   25.2181] szEntryName = WORLD
+[   25.2181] szEntryName = MENU.DPS
+[   39.7768] [IOP] oneshot mode
+[   40.3946] microVU0: Cached Prog = [002] [PC=0378] [List=01] (Cache=0.004%) [0.0mb]
+[   40.3946] microVU0: 2 cycle stall on branch instruction [03e8]
+[   40.4032] microVU1: Cached Prog = [000] [PC=0000] [List=01] (Cache=0.000%) [0.0mb]
+[   40.4033] microVU1: Cached Prog = [001] [PC=0180] [List=01] (Cache=0.003%) [0.0mb]
+[   40.4094] GL: Compiling new vertex shader with selector 0x2
+[   40.4094] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008000000
+[   40.4140] Program binary retrieved, 15469 bytes, format 34655
+[   40.4330] GL: Compiling new vertex shader with selector 0x33
+[   40.4330] GL: Compiling new pixel shader with selector 0x0000000000000008_18000004A1800000
+[   40.4396] Program binary retrieved, 22517 bytes, format 34655
+[   40.4778] GL: Compiling new vertex shader with selector 0x31
+[   40.4778] GL: Compiling new pixel shader with selector 0x0000000000000009_0015000004000000
+[   40.4829] Program binary retrieved, 19981 bytes, format 34655
+[   40.5025] GL: Compiling new vertex shader with selector 0x33
+[   40.5025] GL: Compiling new pixel shader with selector 0x0000000000000008_00000004A1800000
+[   40.5091] Program binary retrieved, 22517 bytes, format 34655
+[   40.5452] GL: Compiling new vertex shader with selector 0x33
+[   40.5452] GL: Compiling new pixel shader with selector 0x0000000000000008_40150004A0800000
+[   40.5518] Program binary retrieved, 23221 bytes, format 34655
+[   40.5804] GL: Compiling new vertex shader with selector 0x33
+[   40.5805] GL: Compiling new pixel shader with selector 0x0000000000000008_000C8004A0800000
+[   40.5872] Program binary retrieved, 23421 bytes, format 34655
+[   40.6030] GL: Compiling new vertex shader with selector 0x33
+[   40.6030] GL: Compiling new pixel shader with selector 0x0000000000000008_08150004A1800000
+[   40.6095] Program binary retrieved, 22797 bytes, format 34655
+[   40.7375] GL: Compiling new vertex shader with selector 0x33
+[   40.7375] GL: Compiling new pixel shader with selector 0x0000000000000008_5815000000800000
+[   40.7446] Program binary retrieved, 22253 bytes, format 34655
+[   40.8030] GL: Compiling new vertex shader with selector 0x2
+[   40.8030] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000000
+[   40.8069] Program binary retrieved, 15589 bytes, format 34655
+[   40.8687] microVU0: Cached Prog = [003] [PC=01c0] [List=01] (Cache=0.012%) [0.0mb]
+[   40.8690] microVU0: Cached Prog = [004] [PC=0000] [List=01] (Cache=0.021%) [0.0mb]
+[   40.8732] microVU1: Cached Prog = [002] [PC=0000] [List=02] (Cache=0.312%) [0.2mb]
+[   40.8733] microVU1: Cached Prog = [003] [PC=0a00] [List=01] (Cache=0.316%) [0.2mb]
+[   40.8887] GL: Compiling new vertex shader with selector 0x2
+[   40.8887] GL: Compiling new pixel shader with selector 0x0000000000010008_0800000008000400
+[   40.8933] Program binary retrieved, 15869 bytes, format 34655
+[   41.3519] [IOP] SearchFile = DATASLEGAL_01.DPS;1 (DATASLEGAL_01.DPS;1)
+[   41.3520] szEntryName = DATAS
+[   41.3520] szEntryName = LEGAL_01.DPS
+[   41.8614] [IOP] oneshot mode
+[   48.6778] GL: Compiling new vertex shader with selector 0x33
+[   48.6778] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000000800000
+[   48.6842] Program binary retrieved, 21949 bytes, format 34655
+[   48.7131] GL: Compiling new vertex shader with selector 0x31
+[   48.7131] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000004000000
+[   48.7175] Program binary retrieved, 19733 bytes, format 34655
+[   53.6160] Vertex Trace: float overflow detected ! min 3.402823e+38 max 3.402823e+38
+[   53.6162] GL: Compiling new vertex shader with selector 0x6
+[   53.6162] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010800
+[   53.6203] Program binary retrieved, 15781 bytes, format 34655
+[   53.6559] GL: Compiling new vertex shader with selector 0x3
+[   53.6559] GL: Compiling new pixel shader with selector 0x0000000000000108_18000004A0800020
+[   53.6603] Program binary retrieved, 17221 bytes, format 34655
+[   53.7200] GL: Compiling new vertex shader with selector 0x3
+[   53.7200] GL: Compiling new pixel shader with selector 0x0000000000000008_5815000000800000
+[   53.7237] Program binary retrieved, 15917 bytes, format 34655
+[   53.7382] GL: Compiling new vertex shader with selector 0x3
+[   53.7382] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000000800000
+[   53.7418] Program binary retrieved, 15613 bytes, format 34655
+[   53.7432] GL: Compiling new vertex shader with selector 0x1
+[   53.7432] GL: Compiling new pixel shader with selector 0x0000000000000008_0800000004000000
+[   53.7457] Program binary retrieved, 13845 bytes, format 34655
+[  103.8374] [IOP] SearchFile = DATASLOGO01.DPS;1 (DATASLOGO01.DPS;1)
+[  103.8374] szEntryName = DATAS
+[  103.8374] szEntryName = LOGO01.DPS
+[  103.8483] microVU1: Cached Prog = [004] [PC=0000] [List=03] (Cache=0.664%) [0.4mb]
+[  103.8484] microVU1: Cached Prog = [005] [PC=0178] [List=01] (Cache=0.667%) [0.4mb]
+[  103.8484] microVU1: 3 cycle stall on branch instruction [0188]
+[  103.8486] microVU1: Cached Prog = [006] [PC=0620] [List=01] (Cache=0.690%) [0.4mb]
+[  103.8486] microVU1: 3 cycle stall on branch instruction [0188]
+[  103.8495] microVU1: Cached Prog = [007] [PC=01a0] [List=01] (Cache=0.714%) [0.4mb]
+[  103.8503] microVU1: Cached Prog = [008] [PC=0000] [List=04] (Cache=0.755%) [0.5mb]
+[  103.8504] microVU1: Cached Prog = [009] [PC=00e8] [List=01] (Cache=0.757%) [0.5mb]
+[  103.8510] microVU1: Cached Prog = [010] [PC=0000] [List=05] (Cache=0.814%) [0.5mb]
+[  103.8510] recVifUnpk: Bucket 0x2d04 has 4 micro-programs
+[  103.8511] microVU1: Cached Prog = [011] [PC=0190] [List=01] (Cache=0.818%) [0.5mb]
+[  103.8522] recVifUnpk: Bucket 0x2d02 has 4 micro-programs
+[  103.8523] microVU1: Cached Prog = [012] [PC=0b28] [List=01] (Cache=0.982%) [0.6mb]
+[  103.8538] microVU1: Cached Prog = [013] [PC=0000] [List=06] (Cache=1.147%) [0.7mb]
+[  103.8539] microVU1: Cached Prog = [014] [PC=0180] [List=02] (Cache=1.150%) [0.7mb]
+[  103.8539] microVU1: 3 cycle stall on branch instruction [0190]
+[  103.8539] microVU1: 1 cycle stall on branch instruction [02c0]
+[  103.8590] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  103.8590] szEntryName = MUSIC
+[  103.8590] szEntryName = MENU.JOE
+[  103.9512] GL: Compiling new vertex shader with selector 0x6
+[  103.9512] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000C00
+[  103.9548] Program binary retrieved, 15989 bytes, format 34655
+[  103.9865] GL: Compiling new vertex shader with selector 0x6
+[  103.9865] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008010C00
+[  103.9900] Program binary retrieved, 15989 bytes, format 34655
+[  104.0076] GL: Compiling new vertex shader with selector 0x2
+[  104.0076] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008000400
+[  104.0109] Program binary retrieved, 15989 bytes, format 34655
+[  104.0418] GL: Compiling new vertex shader with selector 0x2
+[  104.0418] GL: Compiling new pixel shader with selector 0x0000000000010808_0800000008010400
+[  104.0452] Program binary retrieved, 15989 bytes, format 34655
+[  104.0791] GL: Compiling new vertex shader with selector 0x2
+[  104.0791] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010400
+[  104.0829] Program binary retrieved, 16077 bytes, format 34655
+[  104.1047] GL: Compiling new vertex shader with selector 0x6
+[  104.1047] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008010C00
+[  104.1088] Program binary retrieved, 16077 bytes, format 34655
+[  104.1662] GL: Compiling new vertex shader with selector 0x2
+[  104.1662] GL: Compiling new pixel shader with selector 0x0000000000010000_4811000008000400
+[  104.1701] Program binary retrieved, 16085 bytes, format 34655
+[  104.1906] GL: Compiling new vertex shader with selector 0x2
+[  104.1906] GL: Compiling new pixel shader with selector 0x0000000000010008_0811000008010000
+[  104.1945] Program binary retrieved, 15685 bytes, format 34655
+[  104.2129] GL: Compiling new vertex shader with selector 0x2
+[  104.2130] GL: Compiling new pixel shader with selector 0x0000000000010008_0815000008000000
+[  104.2169] Program binary retrieved, 15757 bytes, format 34655
+[  104.2808] [IOP] oneshot mode
+[  104.7769] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  105.3782] microVU1: Cached Prog = [015] [PC=0000] [List=07] (Cache=1.186%) [0.7mb]
+[  105.3783] microVU1: Cached Prog = [016] [PC=0158] [List=01] (Cache=1.188%) [0.7mb]
+[  105.4542] GL: Compiling new vertex shader with selector 0x2
+[  105.4542] GL: Compiling new pixel shader with selector 0x0000000000010008_4815000008010400
+[  105.4595] Program binary retrieved, 16173 bytes, format 34655
+[  138.7795] [IOP] Stop joe
+[  229.5076] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  229.5076] szEntryName = MUSIC
+[  229.5076] szEntryName = MENU.JOE
+[  229.6808] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  263.1393] [IOP] Stop joe
+[  352.7480] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  352.7480] szEntryName = MUSIC
+[  352.7480] szEntryName = MENU.JOE
+[  352.9203] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  387.2120] [IOP] Stop joe
+[  476.7722] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  476.7722] szEntryName = MUSIC
+[  476.7722] szEntryName = MENU.JOE
+[  476.9410] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  510.7822] [IOP] Stop joe
+[  600.1130] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  600.1130] szEntryName = MUSIC
+[  600.1130] szEntryName = MENU.JOE
+[  600.2882] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  634.1847] [IOP] Stop joe
+[  724.0375] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  724.0375] szEntryName = MUSIC
+[  724.0375] szEntryName = MENU.JOE
+[  724.2038] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  757.3790] [IOP] Stop joe
+[  846.7419] [IOP] SearchFile = cdrom0:MUSICMENU.JOE;1 (MUSICMENU.JOE;1)
+[  846.7419] szEntryName = MUSIC
+[  846.7419] szEntryName = MENU.JOE
+[  846.9116] WARNING: WaitEventFlag KE_CAN_NOT_WAIT
+[  880.7521] [IOP] Stop joe
+[  967.9742] (VMManager) Pausing...
+[  967.9995] Add 967 seconds play time to SLUS-21864 -> now 967
+[  968.1714] DEV9: DEV9close
+[  968.1966] Unloading EGL.
+[  968.1969] DEV9: DEV9shutdown
+[  968.1971] NVRAM has not changed, not writing to disk.
+[  968.2211] Releasing host memory for virtual systems...
