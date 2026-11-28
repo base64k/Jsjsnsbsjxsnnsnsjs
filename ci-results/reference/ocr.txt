@@ -316,3 +316,85 @@ output. The error was:
 cubeb_stream_init() failed: CUBEB_ERROR (-1)
 |
 OpenGL 640x447 (1x) GPU: 78% FPS:48 VPS: 60 @Speed: 100% . Volume: 100% _
+== t120.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+=a
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 88% | FPS:57 —VPS:57 @Speed: 95% . Volume: 100% .
+== t180.png
+System Settings View Tools Help
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+x) Failed to create or configure audio stream, falling back to null
+OpenGL 640x447 (1x) GPU: 89% FPS:52 VPS:52 @Speed: 87% _ c)Volume: 100% _
+== t240.png
+== t300.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 91% —FPS:36 VPS:36 @Speed: 60% . ch)Volume: 100% -
+== t360.png
+== t420.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+0K
+ss START button
+OpenGL 640x447 (1x) GPU: 92% FPS:37 VPS: 37 @Speed: 62% _ c)Volume: 100% _
+== t480.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 89% —FPS:58 VPS:58 @Speed: 97% _ <)Volume: 100% _
+== t540.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+0K
+OpenGL 640x447 (1x) GPU: 93%  FPS:36 VPS:36 @Speed: 61% . c)Volume: 100% _
+== t60.png
+System Settings View Tools Help
+UP © Disnev/Pixar. Licensed by THQ Inc. Developed by Asobo
+Biel em creamanee cea cine ecko eal
+tradems ©) SE eT canco canon en bo Studio
+SARL. U (2) 4D Games
+Tools, »gos are
+trademarks and/or registered trademarks of THO Inc. All
+rights reserved. All other trademarks, logos and copyrights
+are property of their respective owners.
+STN"
+OpenGL 640x447 (1x) GPU: 89% —FPS:50 VPS:50 @Speed: 84% | ch) Volume: 100% _
+== t600.png
+== t660.png
+== t720.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+Press START button
+OpenGL 640x447 (1x) GPU: 91% FPS:36 VPS: 36 @Speed: 60% _ <)Volume: 100% _
+== t780.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 89% —FPS:55  VPS:64 @Speed: 108% _ Volume: 100% _
+== t840.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+‘cubeb_stream_init() failed: CUBEB_ERROR (-1)
+0K
+OpenGL 640x447 (1x) GPU: 92% FPS:37 —VPS:37 @Speed: 62% _ c)Volume: 100% _
+== t900.png
+System Settings View Tools Help
+Failed to create or configure audio stream, falling back to null
+output. The error was:
+cubeb_stream_init() failed: CUBEB_ERROR (-1)
+OpenGL 640x447 (1x) GPU: 88% —FPS:59 —VPS:59  @Speed: 98% _ <)Volume: 100% _
