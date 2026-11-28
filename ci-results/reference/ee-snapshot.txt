@@ -1,20 +1,20 @@
 entries:
   PCSX2 Savestate Version.id  size=36  compressed=36  method=0
-  PCSX2 Internal Structures.dat  size=129962  compressed=4690  method=93
-  eeMemory.bin  size=33554432  compressed=8572354  method=93
-  iopMemory.bin  size=2097152  compressed=436953  method=93
+  PCSX2 Internal Structures.dat  size=130104  compressed=4782  method=93
+  eeMemory.bin  size=33554432  compressed=8497361  method=93
+  iopMemory.bin  size=2097152  compressed=429848  method=93
   eeHwRegs.bin  size=65536  compressed=211  method=93
-  iopHwRegs.bin  size=65536  compressed=232  method=93
-  Scratchpad.bin  size=16384  compressed=298  method=93
+  iopHwRegs.bin  size=65536  compressed=231  method=93
+  Scratchpad.bin  size=16384  compressed=283  method=93
   vu0Memory.bin  size=4096  compressed=18  method=93
-  vu1Memory.bin  size=16384  compressed=4655  method=93
+  vu1Memory.bin  size=16384  compressed=4556  method=93
   vu0MicroMem.bin  size=4096  compressed=863  method=93
-  vu1MicroMem.bin  size=16384  compressed=4461  method=93
-  SPU2.bin  size=2178992  compressed=125522  method=93
+  vu1MicroMem.bin  size=16384  compressed=3944  method=93
+  SPU2.bin  size=2178992  compressed=123923  method=93
   USB.bin  size=8491  compressed=85  method=93
   PAD.bin  size=228  compressed=97  method=93
-  GS.bin  size=4194813  compressed=410001  method=93
-  Screenshot.png  size=166913  compressed=166913  method=0
+  GS.bin  size=4194813  compressed=404354  method=93
+  Screenshot.png  size=85493  compressed=85493  method=0
 eeMemory: 33554432 bytes
 0x00795F70 = 0x007BD3D0
 0x00795F74 = 0x009DEC10
@@ -38,7 +38,7 @@ eeMemory: 33554432 bytes
 0x00331230 = 0x27BDFFD0
 0x0043E880 = 0x27BDFFA0
 0x009E40B0 = 0x009E70C0
-non-zero pages: 5437 of 8192
+non-zero pages: 5370 of 8192
   0x00000000..0x00018000
   0x00019000..0x00025000
   0x00075000..0x00077000
@@ -56,11 +56,12 @@ non-zero pages: 5437 of 8192
   0x0082A000..0x0082B000
   0x0082E000..0x0082F000
   0x00830000..0x00831000
-  0x00832000..0x0083F000
-  0x008B2000..0x008BE000
+  0x00832000..0x0083D000
+  0x008B2000..0x008BD000
   0x00932000..0x00935000
   0x00970000..0x00973000
-  0x009AF000..0x009D6000
+  0x009AF000..0x009D2000
+  0x009D5000..0x009D6000
   0x009D8000..0x009F6000
   0x00A09000..0x00A66000
   0x00A6B000..0x00A6C000
@@ -76,11 +77,11 @@ non-zero pages: 5437 of 8192
   0x01061000..0x010E1000
   0x010E3000..0x011D0000
   0x011D1000..0x01448000
-  0x0144B000..0x016E0000
-  0x016F2000..0x0170C000
-  0x0171F000..0x0172F000
-  0x01746000..0x01789000
-  0x017A5000..0x017A7000
+  0x0144B000..0x016C5000
+  0x016C6000..0x016E9000
+  0x016FB000..0x01714000
+  0x01728000..0x01738000
+  0x0174F000..0x01750000
   0x01DD3000..0x01F5D000
   0x01F6F000..0x01F89000
   0x01F9C000..0x01FA5000
