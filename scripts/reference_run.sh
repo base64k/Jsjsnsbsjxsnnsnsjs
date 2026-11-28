@@ -139,7 +139,11 @@ press() {
         log "focus: the window $wid has the focus: $(xdotool getwindowfocus 2>/dev/null || echo none)"
         FOCUS_LOGGED=1
     fi
-    xdotool key --delay 150 "$1" 2>/dev/null || log "press $1: xdotool failed"
+    # Held for a moment (the game reads buttons per frame), then released.
+    xdotool keydown "$1" 2>/dev/null || log "press $1: xdotool failed"
+    sleep 0.4
+    xdotool keyup "$1" 2>/dev/null || true
+    log "pressed $1 at ${t:-?}s"
 }
 
 # ------------------------------------------------------------------ the run ---

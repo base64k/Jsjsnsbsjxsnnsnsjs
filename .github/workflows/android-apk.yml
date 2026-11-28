@@ -937,7 +937,9 @@ jobs:
       - name: The reference run (PCSX2 headless, screenshots every minute)
         run: |
           set -e
-          bash scripts/reference_run.sh
+          set -o pipefail
+          mkdir -p ci-results/reference
+          bash scripts/reference_run.sh 2>&1 | tee ci-results/reference/script.txt
 
       - name: The reference's pictures (artifact only - the game's pictures are not committed)
         if: ${{ always() }}
