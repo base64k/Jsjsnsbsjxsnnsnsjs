@@ -44,7 +44,10 @@ case "$MAGIC" in
 esac
 
 # The ROM: a PS2 BIOS is 4 MiB (0x400000 bytes). Anything else is reported.
-ROM="$(find "$UNPACKED" -type f -size 4194304c | head -n 1 || true)"
+# A PCSX2-style dump has the main ROM as *.ROM0 (the .DIFF, *.ROM1 and the DVD
+# ROM are other files of the same size, so they are never picked here).
+ROM="$(find "$UNPACKED" -type f -iname '*.ROM0' | head -n 1 || true)"
+[ -n "$ROM" ] || ROM="$(find "$UNPACKED" -type f -size 4194304c ! -iname '*.DIFF' ! -iname '*.ROM1' | head -n 1 || true)"
 [ -n "$ROM" ] || log "no 4 MiB file in the dump - see the report"
 [ -n "$ROM" ] && cp "$ROM" "$DIR/bios.bin"
 
