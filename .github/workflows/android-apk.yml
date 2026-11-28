@@ -26,6 +26,10 @@ on:
         description: "Functions to investigate (space-separated hex, e.g. 0x002A7BF0)"
         type: string
         default: "0x002A7BF0"
+      bios:
+        description: "Fetch the PS2 BIOS dump from the secret UP_BIOS_DRIVE_FILE_ID and report its size and hashes (ci-results/bios-check.txt; the dump is never committed)"
+        type: boolean
+        default: false
       verify:
         description: "Verify every lifted function against the original instead of building (six shards, then the merged report in ci-results/verify/)"
         type: boolean
@@ -66,7 +70,7 @@ env:
 jobs:
   apk:
     name: Build the APK
-    if: ${{ !inputs.verify && !inputs.investigate }}
+    if: ${{ !inputs.verify && !inputs.investigate && !inputs.bios }}
     runs-on: ubuntu-latest
     timeout-minutes: 300
     # The release step writes to the repository; the rest only reads.
@@ -878,3 +882,42 @@ jobs:
             || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
             || echo "::warning title=investigate::could not push to $BRANCH"
 
+  bios:
+    name: The PS2 BIOS dump (size and hashes only)
+    if: ${{ inputs.bios }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      UP_BIOS_DRIVE_FILE_ID: ${{ secrets.UP_BIOS_DRIVE_FILE_ID }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Fetch the BIOS dump and report it (the dump is not printed or committed)
+        run: |
+          set -e
+          test -n "$UP_BIOS_DRIVE_FILE_ID" || { echo "::error title=bios::the secret UP_BIOS_DRIVE_FILE_ID is not set"; exit 1; }
+          bash scripts/fetch_bios.sh
+          mkdir -p ci-results
+          cp bios/report.txt ci-results/bios-check.txt
+
+      - name: Save the BIOS report to the repository (the dump itself stays out)
+        if: ${{ always() }}
+        run: |
+          git config user.email "agent@arena.ai"
+          git config user.name "Arena Agent"
+          git add ci-results/bios-check.txt
+          git commit -m "ci(up): the BIOS dump's report (size and hashes), run ${{ github.run_id }}" || exit 0
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          git push -q origin "HEAD:refs/heads/$BRANCH" \
+            || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+            || echo "::warning title=bios::could not push to $BRANCH"
