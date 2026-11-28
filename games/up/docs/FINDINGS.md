@@ -1139,3 +1139,20 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - **Patch 0027 (diagnostic only):** an IOP stop now prints the instruction run before the bad one
   (`previous_executing`), its word, and all 32 registers. The next run shows which `jr`/`jalr`
   took the thread there.
+
+### Run 46156045070: the IOP stop with its registers (patch 0027)
+
+- The stop moved: `stopped: IOP: instruction 0x005090F0 at 0x0008BF08`, after the instruction at
+  `0x0008BF04 = 0x00500000`. Thread 7 (cdvdman) has `sp = 0x000C2FA8` and `$ra = 0x0001C304`
+  (its return to the code after `DelayThread(0x1F4)` from 0x1C2FC). So **cdvdman's stack lies at
+  0xC2xxx**: the earlier stop at `0xC2EE0`/`0xC2EE4` was not a code address at all but a word in
+  that thread's own stack frame (the SIF DMA descriptors `0xC2F4C..0xC2F7C` are its locals too).
+  The word there was 1, so a return address the thread had saved on its stack was overwritten
+  and the thread returned into data. The `0x10000` difference I took for a relocation error
+  was the wrong idea; the cause is a write into the stack.
+- `0x005090F0` and `0x00500000` are data words (SPECIAL funct 0x30 = TGE, which the interpreter
+  does not implement, and an unused `sll`). So the thread went through data after the bad return.
+- **Who writes the stack:** not yet known. The cdvdman stack is written by the thread itself
+  (CpuSuspendIntr, SIF DMA setups) and possibly by an EE-to-IOP SIF DMA whose destination falls in
+  the stack. Patch 0028 (`PS2HOST_IOP_WATCH=0xC2D00-0xC2FD0`, set in the smoke step) reports every
+  byte of that range that changes, with the thread and its last instruction.
