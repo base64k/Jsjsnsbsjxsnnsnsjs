@@ -100,6 +100,20 @@ XVFB_PID=$!
 sleep 3
 kill -0 "$XVFB_PID" 2>/dev/null || die "Xvfb did not start (see $REF/logs/xvfb.log)"
 
+# Send one key to the PCSX2 window. Without a window manager there is no
+# activation, so the focus is set directly, then the key is sent (XTEST).
+press() {
+    local wid
+    wid="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
+    if [ -z "$wid" ]; then
+        log "press $1: no PCSX2 window"
+        return 0
+    fi
+    xdotool windowfocus "$wid" 2>/dev/null || true
+    sleep 1
+    xdotool key --delay 150 "$1" 2>/dev/null || log "press $1: xdotool failed"
+}
+
 # ------------------------------------------------------------------ the run ---
 log "starting PCSX2 with the disc, for ${SECONDS_TOTAL}s"
 (cd "$APP" && exec ./AppRun -portable -batch -fastboot -- "$DISC") \
@@ -118,10 +132,7 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
         break
     fi
     if [ "$t" -le 180 ]; then
-        WID="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
-        if [ -n "$WID" ]; then
-            xdotool windowfocus --sync "$WID" key Return 2>/dev/null || true
-        fi
+        press Return
     fi
     if [ $((t % 60)) -eq 0 ]; then
         import -window root "$REF/shots/t${t}.png" 2>/dev/null || true
@@ -129,11 +140,8 @@ while [ "$t" -lt "$SECONDS_TOTAL" ]; do
     # The savestate (F1 by default): the whole EE RAM as the console has it at
     # this point, read afterwards by scripts/ee_snapshot.py.
     if [ "$t" -eq "$SNAPSHOT_AT" ] || [ "$t" -eq $((SNAPSHOT_AT + 30)) ]; then
-        WID="$(xdotool search --name 'PCSX2' 2>/dev/null | head -n 1 || true)"
-        log "savestate requested at ${t}s (window: ${WID:-none})"
-        if [ -n "$WID" ]; then
-            xdotool windowfocus --sync "$WID" key F1 2>/dev/null || log "xdotool: the key was not sent"
-        fi
+        log "savestate requested at ${t}s"
+        press F1
         sleep 8
     fi
 done
@@ -165,6 +173,11 @@ else
     log "no savestate was written"
 fi
 rm -f "$REF/logs/savestate.p2s"
+
+# PCSX2's own log (the emulator's messages, the keys it received).
+if [ -f "$BINDIR/logs/emulog.txt" ]; then
+    tail -n 2000 "$BINDIR/logs/emulog.txt" > "$REF/logs/emulog-tail.txt"
+fi
 
 log "log lines: $(wc -l < "$REF/logs/pcsx2.log")"
 log "screenshots: $(ls "$REF/shots" | wc -l)"
