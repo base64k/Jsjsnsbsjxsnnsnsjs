@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare the port's guest RAM with the reference's, page by page.
 
-    scripts/ram_compare.py REFERENCE.p2s PORT_RAM.bin [ADDR ...]
+    scripts/ram_compare.py REFERENCE.p2s PORT_RAM.bin [--value WORD] [ADDR ...]
 
 REFERENCE.p2s is a PCSX2 savestate (scripts/ee_snapshot.py reads its EE RAM);
 PORT_RAM.bin is the EE's 32 MiB as the port's run left it (PS2HOST_RAM_DUMP).
@@ -59,7 +59,22 @@ def main(argv):
     if len(runs) > 120:
         print(f"  ... {len(runs) - 120} more runs")
 
-    for a in argv[3:]:
+    # --value V: where the word V sits in the port's RAM, and what the reference
+    # holds there. The port's bad pointer shows up as a value; this finds the slot.
+    args = list(argv[3:])
+    if "--value" in args:
+        i = args.index("--value")
+        want = int(args[i + 1], 16)
+        del args[i:i + 2]
+        hits = [a for a in range(0, RAM - 3, 4) if struct.unpack_from("<I", port, a)[0] == want]
+        print(f"port RAM words equal to 0x{want:08X}: {len(hits)}")
+        for a in hits[:40]:
+            r = struct.unpack_from("<I", ref, a)[0]
+            print(f"  0x{a:08X}: reference 0x{r:08X}")
+        if len(hits) > 40:
+            print(f"  ... {len(hits) - 40} more")
+
+    for a in args:
         addr = int(a, 16) & 0x1FFFFFFF
         if addr + 4 > RAM:
             print(f"{a}: outside the main RAM")

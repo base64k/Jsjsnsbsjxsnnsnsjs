@@ -352,7 +352,7 @@ jobs:
         if: ${{ env.UP_SMOKE == 'true' }}
         continue-on-error: true
         env:
-          UP_REFERENCE_SECONDS: "60"
+          UP_REFERENCE_SECONDS: "6"
         run: |
           set -o pipefail
           bash scripts/fetch_bios.sh
@@ -365,7 +365,7 @@ jobs:
           mkdir -p ci-results
           if [ -f reference/savestate.p2s ] && [ -f games/up/build/smoke/port-ram.bin ]; then
             python3 scripts/ram_compare.py reference/savestate.p2s games/up/build/smoke/port-ram.bin \
-              0x00795F94 0x00795F70 0x00795F80 0x00795F8C 0x00795FA0 0x0032F250 0x0043E880 > ci-results/ram-compare.txt 2>&1 || true
+              --value 0x10010000 0x00795F94 0x00795F70 0x00795F80 0x00795F8C 0x00795FA0 0x0032F250 0x0043E880 > ci-results/ram-compare.txt 2>&1 || true
           else
             echo "no comparison: the reference savestate or the port's RAM is missing" > ci-results/ram-compare.txt
             ls reference 2>/dev/null >> ci-results/ram-compare.txt || true

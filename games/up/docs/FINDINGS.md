@@ -1093,3 +1093,21 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
 - Next: a reference savestate at the same point as the port's stop (about 6-8 s after
   start, `UP_REFERENCE_SECONDS`), then the differences in the code and the game's
   data only, not the heap.
+
+## Two public PS2 static recompilers, studied (what applies to Up)
+
+- **ran-j/PS2Recomp** (`ps2xAnalyzer`, `ps2xRecomp`, `ps2xRuntime`, `ps2xIOP`): the same
+  design as ours - a translator, a runtime with HLE kernel, IRX modules interpreted.
+  Its `SetSyscall` stores the game's handler in an override table (`setEeSyscallOverride`),
+  as our kernel reads the table at `0x80001000`. Its stripped-ELF workflow is
+  `handler@0xADDR` stubs, which we have as address-bound overrides already. Nothing in it
+  explains our stop at `0x10010000`.
+- **exoteric33/ps2-native-recomp** (built on ps2-web-recomp): the build runs the game
+  headless for up to 3600 frames, pressing Start and Cross on a timer, and each time the
+  game jumps to untranslated code the build translates it and runs again (up to 8 times).
+  Runtime translation of code the analysis missed works the same way as our `--discover`.
+  Its "AOT window capture" (`PS2_CAPTURE_AOT_*`) saves selected EE RAM windows at chosen
+  frames, the same idea as our RAM dump.
+- Conclusion: neither repository gives a ready fix for our stop. The method that works
+  here is the differential one: the reference's RAM at a time aligned with the port's stop.
+  The `--value` search in `scripts/ram_compare.py` finds where the bad pointer is stored.
