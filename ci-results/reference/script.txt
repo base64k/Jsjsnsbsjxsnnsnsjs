@@ -3,7 +3,7 @@
   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
                                  Dload  Upload  Total   Spent   Left   Speed
   0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0  0      0   0      0   0      0      0      0                              0
-  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 76.36M      0                              0100 57.33M 100 57.33M   0      0 76.35M      0                              0100 57.33M 100 57.33M   0      0 76.35M      0                              0
+  0      0   0      0   0      0      0      0                              0100 57.33M 100 57.33M   0      0 117.9M      0                              0100 57.33M 100 57.33M   0      0 117.8M      0                              0100 57.33M 100 57.33M   0      0 117.8M      0                              0
 [1;34m[reference][0m settings written to /home/runner/work/Jsjsnsbsjxsnnsnsjs/Jsjsnsbsjxsnnsnsjs/reference/squashfs-root/usr/bin/inis/PCSX2.ini
 [1;34m[reference][0m sound: Default Sink: null
 [1;34m[reference][0m starting PCSX2 with the disc, for 900s
@@ -30,6 +30,6 @@
 [1;34m[reference][0m savestate requested at 330s
 [1;34m[reference][0m pressed F1 at 330s
 [1;34m[reference][0m stopped PCSX2 after 900s
-[1;34m[reference][0m no savestate was written
+[1;34m[reference][0m savestate read: 92 lines
 [1;34m[reference][0m log lines: 3
 [1;34m[reference][0m screenshots: 15
