@@ -331,6 +331,7 @@ jobs:
         continue-on-error: true
         env:
           UP_SMOKE_WATCH: "0x007A982C,0x00795F94,0x00795F70"   # the flag the main thread waits on at 0x47DB38; the ManipulatorMgr's globals (0x795F94 its object, 0x795F70 the one the update walks)
+          PS2HOST_IOP_WATCH: "0x000C2D00-0x000C2FD0"            # the IOP stack of cdvdman (thread 7, sp 0xC2FA8 at the stop): every change, with its thread and instruction
         run: bash scripts/smoke_test.sh
 
       # The comparison: the port's RAM at its stop against the reference's RAM
@@ -514,6 +515,7 @@ jobs:
             grep "^\[host\]" games/up/build/port/report.txt | head -n 20000 > ci-results/host-trace.txt || true
             # The writes to the watched address (UP_SMOKE_WATCH), with their callers.
             grep "^\[write\]" games/up/build/port/report.txt | head -n 2000 > ci-results/write-trace.txt || true
+            grep "^\[iopwatch\]" games/up/build/port/report.txt | head -n 400 > ci-results/iop-watch.txt || true
             # Every SIF command the IOP sends to the EE (sceSifSendCmd), and the IOP's
             # command-handler registrations: the EE flag 0x007A982C waits for command 0xB.
             grep -E 'to the EE: command|sifcmd#(10|12|13) ' games/up/build/port/report.txt | head -n 2000 > ci-results/iop-sendcmd.txt || true
