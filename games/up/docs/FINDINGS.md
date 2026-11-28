@@ -1079,3 +1079,17 @@ port should go past the stop it had before (the ManipulatorMgr read at `0x795F94
   of the port at the same logical point, compared page by page with `ee-snapshot.txt`.
 - Artifacts: the screenshots and the savestate are artifacts only (`up-reference`);
   the repository keeps the text (`ci-results/reference/`).
+
+### The first RAM comparison (CI run 46149039572, `ci-results/ram-compare.txt`)
+
+- The port's RAM at its stop (patch 0025, `PS2HOST_RAM_DUMP`) against the reference's
+  savestate (60 s, the menu): 3676 of 8192 pages differ, 106 runs.
+- Equal at the addresses the port's stop is about: `0x795F70..0x795FA0`, `0x795F94`,
+  `0x0032F250`, `0x0043E880` (the same words in both). So the ManipulatorMgr tables and
+  the functions that write them are right in the port.
+- Expected differences, not bugs: the reference's low RAM (`0x00000000..0x00018000`)
+  holds the BIOS kernel, which the port does not model; the stacks and heap are at
+  different points of the run (the reference is in the menu, the port at its stop).
+- Next: a reference savestate at the same point as the port's stop (about 6-8 s after
+  start, `UP_REFERENCE_SECONDS`), then the differences in the code and the game's
+  data only, not the heap.
