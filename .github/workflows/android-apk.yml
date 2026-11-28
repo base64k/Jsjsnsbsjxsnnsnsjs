@@ -30,6 +30,10 @@ on:
         description: "Fetch the PS2 BIOS dump from the secret UP_BIOS_DRIVE_FILE_ID and report its size and hashes (ci-results/bios-check.txt; the dump is never committed)"
         type: boolean
         default: false
+      reference:
+        description: "The reference run: the original on PCSX2 with the owner's BIOS and disc - screenshots and the emulator's console (artifact up-reference; the text goes to ci-results/reference/)"
+        type: boolean
+        default: false
       verify:
         description: "Verify every lifted function against the original instead of building (six shards, then the merged report in ci-results/verify/)"
         type: boolean
@@ -70,7 +74,7 @@ env:
 jobs:
   apk:
     name: Build the APK
-    if: ${{ !inputs.verify && !inputs.investigate && !inputs.bios }}
+    if: ${{ !inputs.verify && !inputs.investigate && !inputs.bios && !inputs.reference }}
     runs-on: ubuntu-latest
     timeout-minutes: 300
     # The release step writes to the repository; the rest only reads.
@@ -881,6 +885,88 @@ jobs:
           git push -q origin "HEAD:refs/heads/$BRANCH" \
             || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
             || echo "::warning title=investigate::could not push to $BRANCH"
+
+  reference:
+    name: The reference run (PCSX2, the owner's BIOS and disc)
+    if: ${{ inputs.reference }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      UP_BIOS_DRIVE_FILE_ID: ${{ secrets.UP_BIOS_DRIVE_FILE_ID }}
+      UP_REFERENCE_SECONDS: "900"
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: The display and the libraries PCSX2 needs
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb xdotool imagemagick libgl1 libegl1 libfontconfig1 libdbus-1-3 \
+            libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+            libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libxcb-randr0 libxcb-xfixes0
+
+      - name: The disc image - the cache
+        id: disc_cache
+        uses: actions/cache/restore@v6
+        with:
+          path: disc
+          key: disc-v1-${{ env.UP_DRIVE_FILE_ID }}
+
+      - name: The disc image (fetched only when the cache has none)
+        if: ${{ steps.disc_cache.outputs.cache-hit != 'true' }}
+        run: |
+          python -m pip install --disable-pip-version-check gdown
+          bash scripts/fetch_disc.sh
+
+      - name: The BIOS dump (from the secret; the dump is never printed or committed)
+        run: |
+          set -e
+          test -n "$UP_BIOS_DRIVE_FILE_ID" || { echo "::error title=reference::the secret UP_BIOS_DRIVE_FILE_ID is not set"; exit 1; }
+          python -m pip install --disable-pip-version-check gdown
+          bash scripts/fetch_bios.sh
+
+      - name: The reference run (PCSX2 headless, screenshots every minute)
+        run: |
+          set -e
+          bash scripts/reference_run.sh
+
+      - name: The reference's pictures (artifact only - the game's pictures are not committed)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: up-reference
+          path: |
+            reference/shots
+            reference/logs
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: The reference's text (the emulator's log, the BIOS report) to the repository
+        if: ${{ always() }}
+        run: |
+          mkdir -p ci-results/reference
+          cp bios/report.txt ci-results/reference/bios-report.txt 2>/dev/null || true
+          if [ -f reference/logs/pcsx2.log ]; then
+            tail -n 3000 reference/logs/pcsx2.log > ci-results/reference/pcsx2-tail.txt
+          fi
+          ls reference/shots 2>/dev/null > ci-results/reference/shots.txt || true
+          git config user.email "agent@arena.ai"
+          git config user.name "Arena Agent"
+          git add ci-results/reference
+          git commit -m "ci(up): the reference run's text (the emulator's log tail), run ${{ github.run_id }}" || exit 0
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          git push -q origin "HEAD:refs/heads/$BRANCH" \
+            || { git fetch -q origin "$BRANCH" && git merge -q --no-edit -X theirs FETCH_HEAD && git push -q origin "HEAD:refs/heads/$BRANCH"; } \
+            || echo "::warning title=reference::could not push to $BRANCH"
 
   bios:
     name: The PS2 BIOS dump (size and hashes only)
